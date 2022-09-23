@@ -1,0 +1,66 @@
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navbar a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 10px 0px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.navbar a.active {
+  background-color: #04aa6d;
+  color: white;
+}
+
+body {
+  background-color: #333;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+.center {
+  display: block;
+  padding-top: 5vh;
+  margin: 0 auto;
+}
+
+#game {
+  display: inline-grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  border: 2px solid rgb(0, 0, 0);
+  aspect-ratio: auto 1 / 1;
+}
+.square {
+  display: inline-block;
+  width: 10vmin;
+  aspect-ratio: auto 1 / 1;
+}
+.black:hover {
+  background-color: rgb(25, 27, 25);
+}
+.white:hover {
+  background-color: rgb(232, 243, 232);
+}
+
+.white {
+  background-color: rgb(221, 221, 221);
+}
+
+.black {
+  background-color: #000;
+}
+.center {
+  display: block;
+  margin: auto;
+  text-align: center;
+
