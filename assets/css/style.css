@@ -1,37 +1,7 @@
-.navbar {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.navbar a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 10px 0px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.navbar a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.navbar a.active {
-  background-color: #04aa6d;
-  color: white;
-}
-
 body {
   background-color: #333;
   margin-top: 0;
   margin-left: 0;
-}
-
-.center {
-  display: block;
-  padding-top: 5vh;
-  margin: 0 auto;
 }
 
 #game {
@@ -42,8 +12,12 @@ body {
 }
 .square {
   display: inline-block;
-  width: 10vmin;
+  /* width: 10vmin; */
+  width: max(30px, 10vmin);
   aspect-ratio: auto 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .black:hover {
   background-color: rgb(25, 27, 25);
@@ -51,11 +25,9 @@ body {
 .white:hover {
   background-color: rgb(232, 243, 232);
 }
-
 .white {
   background-color: rgb(221, 221, 221);
 }
-
 .black {
   background-color: #000;
 }
@@ -63,4 +35,18 @@ body {
   display: block;
   margin: auto;
   text-align: center;
+  padding-top: 5vh;
+}
+.piece {
+  border-radius: 50%;
+  width: max(17px, 7.5vmin);
+  height: max(17px, 7.5vmin);
+}
 
+.piece-white {
+  background-color: rgb(167, 61, 61);
+}
+
+.piece-black {
+  background-color: rgb(77, 114, 9);
+}
