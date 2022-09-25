@@ -29,7 +29,7 @@ body {
   background-color: rgb(221, 221, 221);
 }
 .black {
-  background-color: #000;
+  background-color: rgb(15, 15, 15);
 }
 .center {
   display: block;
