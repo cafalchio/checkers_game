@@ -87,7 +87,6 @@ class Board {
     document.addEventListener("dragend", (e) => {
       e.preventDefault();
       const movPiece = document.querySelector(".dragging");
-      // let posibleSquares = document.querySelectorAll(".possible");
       if (movPiece.getAttribute("dropId") != "false") {
         console.log("drop here " + movPiece.getAttribute("dropId"));
         document
@@ -95,6 +94,11 @@ class Board {
           .appendChild(movPiece);
       }
       e.target.classList.remove("dragging");
+      movPiece.setAttribute("dropId", "false");
+      let posibleSquares = game.querySelectorAll(".possible");
+      posibleSquares.forEach((item) => {
+        item.classList.remove("possible");
+      });
     });
   }
 
