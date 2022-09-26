@@ -28,16 +28,33 @@ class Board {
       e.target.classList.add("dragging");
       const possibleTarget = this.checkPossibleTarget(e.target.id);
       e.dataTransfer.setData("targets", possibleTarget);
-      console.log(possibleTarget);
+
+      // console.log(possibleTarget);
     });
+    // on dragover event
+    // document.addEventListener("dragover", (e) => {
+    //   e.preventDefault();
+    //   const data = e.dataTransfer.getData("targets");
+    //   let possibleSquares = data.split(",");
+    //   let squares = possibleSquares.map((item) => parseInt(item));
+    //   // console.log(squares);
+    //   squares.forEach((item) => {
+    //     document.getElementById(item).classList.add("possible");
+    //   });
+    // });
+
     // dragended event
     document.addEventListener("dragend", (e) => {
       e.target.classList.remove("dragging");
       const data = e.dataTransfer.getData("targets");
-      let possibleTarget = data.split(",");
-      let targets = possibleTarget.map((item) => parseInt(item));
-      if (targets.includes(e.target.id)) {
-        console.log("ok");
+      let possibleSquares = data.split(",");
+      let squares = possibleSquares.map((item) => parseInt(item));
+      // console.log(targets);
+      console.log(e.target.classList);
+      if (squares.includes(e.target.id)) {
+        console.log("can move");
+      } else {
+        console.log("can't move");
       }
     });
     // create pieces
@@ -59,7 +76,7 @@ class Board {
     }
   }
   // Method to check possible targets
-  checkPossibleTarget(id) {
+  checkPossibleTarget(targetId) {
     // left corners
     const leftCorners = [8, 16, 24, 32, 40, 48, 56];
     // right corners
@@ -104,14 +121,28 @@ class Board {
           break;
       }
     }
+
     // check for pieces on the way
-    for (let i = 0; i < possibleTargets.length; i++) {
-      if (possibleTargets[i] < 0 || possibleTargets[i] > 63) {
-        possibleTargets.splice(i, 1);
-      } else {
-        if (squares[possibleTargets[i]].hasChildNodes()) {
-          possibleTargets.splice(i, 1);
+    for (let i = 0; i < possibleTargets.length + 1; i++) {
+      try {
+        const target = possibleTargets[0];
+        if (squares[target].hasChildNodes()) {
+          // square has chield of same color
+          if (squares[target].children[0].classList[1] == pieceColor) {
+            const index = possibleTargets.indexOf(target);
+            possibleTargets.splice(index, 1);
+            // square has chield of opposite color
+          } else {
+            console.log("piece on the way");
+          }
         }
+        // if there is negative or bigger than 63
+        if (target < 0 || target > 63) {
+          const index = possibleTargets.indexOf(target);
+          possibleTargets.splice(index, 1);
+        }
+      } catch (error) {
+        console.log("error");
       }
     }
     return possibleTargets;

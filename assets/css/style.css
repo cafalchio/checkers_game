@@ -61,3 +61,7 @@ body {
   background-image: url("/assets/images/dark_piece.png");
   background-size: 100%;
 }
+
+.possible {
+  background-color: rgb(77, 114, 9);
+}
