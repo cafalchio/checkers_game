@@ -42,58 +42,58 @@ class Board {
     }
   }
 
+  // Method to add event listener
   addEventListener() {
     // dragstarted event
-
     document.addEventListener("dragstart", (e) => {
       e.target.classList.add("dragging");
       const possibleTarget = this.checkPossibleTarget();
-      if (possibleTarget.length != 0) {
+      if (possibleTarget) {
         possibleTarget.forEach((item) => {
           document.getElementById(item).classList.add("possible");
         });
-        e.dataTransfer.setData("targets", possibleTarget);
-        console.log("transfered: " + possibleTarget);
       } else {
         e.target.classList.remove("dragging");
       }
     });
 
-    // add event listeners
-    // squares[i].addEventListener("dragover", (e) => {
-    // const dragging = document.querySelector(".dragging");
-    // const applyAfter = this.movedPiece(squares[i]);
-    // console.log("dragover " + e.target.id);
+    // dragleave event
+    // newDiv.addEventListener("dragleave", () => {
+    //   const movPiece = document.querySelector(".dragging");
+    //   movPiece.setAttribute("dropId", "false");
     // });
 
-    // dragended event
-    // document.addEventListener("dragend", (e) => {
-    //   e.target.classList.remove("dragging");
-    //   const data = e.dataTransfer.getData("targets");
-    //   let possibleSquares = data.split(",");
-    //   let squares = possibleSquares.map((item) => parseInt(item));
-    //   // console.log(targets);
-    //   console.log(e.target.classList);
-    //   if (squares.includes(e.target.id)) {
-    //     console.log("can move");
-    //   } else {
-    //     console.log("can't move");
-    //   }
-    // });
+    // dragover event
+    // get all possible squares
+    document.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      let posibleSquares = game.querySelectorAll(".possible");
+      // get the square where the piece is adding dropId
+      posibleSquares.forEach((item) => {
+        item.addEventListener("dragover", () => {
+          const movPiece = document.querySelector(".dragging");
+          // console.log("dropId:  " + item.id);
+          movPiece.setAttribute("dropId", item.id);
+        });
+        // On dragleave, remove the dropId attribute
+        item.addEventListener("ondragleave", () => {
+          const movPiece = document.querySelector(".dragging");
+          movPiece.setAttribute("dropId", "false");
+        });
+      });
+    });
 
     // on dragend event
     document.addEventListener("dragend", (e) => {
       e.preventDefault();
+      const movPiece = document.querySelector(".dragging");
+      let posibleSquares = document.querySelectorAll(".possible");
+      posibleSquares.forEach((item) => {
+        if (movPiece.getAttribute("dropId") != "false") {
+          console.log("drop here " + movPiece.getAttribute("dropId"));
+        }
+      });
       e.target.classList.remove("dragging");
-      const data = e.dataTransfer.getData("targets");
-      if (data != "") {
-        let possibleSquares = data.split(",");
-        let squares = possibleSquares.map((item) => parseInt(item));
-        console.log(squares);
-        squares.forEach((item) => {
-          document.getElementById(item).classList.remove("possible");
-        });
-      }
     });
   }
 
@@ -171,6 +171,7 @@ class Board {
     if (possibleTargets.includes(NaN)) {
       return false;
     }
+    console.log(possibleTargets);
     return possibleTargets;
   }
 }
