@@ -21,12 +21,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-.black:hover {
-  background-color: rgb(25, 27, 25);
-}
-.white:hover {
-  background-color: rgb(232, 243, 232);
-}
+
 .white {
   background-color: rgb(221, 221, 221);
   background-image: url("/assets/images/white_wood.png");
@@ -47,7 +42,7 @@ body {
   border-radius: 50%;
   width: max(17px, 7.5vmin);
   height: max(17px, 7.5vmin);
-  box-shadow: 0.8vmin 0.8vmin 0.3vmin rgb(43, 25, 18);
+  box-shadow: 0.8vmin 0.8vmin 0.3vmin rgb(20, 11, 7);
 }
 
 .piece-white {
@@ -59,9 +54,12 @@ body {
 .piece-black {
   background-color: rgb(77, 114, 9);
   background-image: url("/assets/images/dark_piece.png");
-  background-size: 100%;
+  background-size: 108%;
+  background-position: center;
 }
 
-.possible {
-  background-color: rgb(77, 114, 9);
+.black.possible {
+  background-color: rgb(167, 61, 61);
+  background-image: url("/assets/images/white_piece.png");
+  background-size: 100%;
 }
