@@ -6,7 +6,9 @@ The website is the display and portifolio of images and a point of easy contact 
 
 ## Code institute MS1 Project Front End
 
-!["Checker's Game"](..assets/images/readme_game_big.png "Checker's Game")
+!["Checker's Game"](
+..checkers_game/assets/images
+/readme_game_big.png "Checker's Game")
 
 ## Features
 
