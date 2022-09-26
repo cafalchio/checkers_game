@@ -7,7 +7,9 @@ body {
 #game {
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto auto auto auto;
-  border: 2px solid rgb(0, 0, 0);
+  border: 2vmin solid;
+  border-color: rgb(80, 40, 11);
+  box-shadow: 2vmin 2vmin 0.4vmin rgb(14, 8, 6);
   aspect-ratio: auto 1 / 1;
 }
 .square {
@@ -27,9 +29,13 @@ body {
 }
 .white {
   background-color: rgb(221, 221, 221);
+  background-image: url("/assets/images/white_wood.png");
+  background-size: 100%;
 }
 .black {
   background-color: rgb(15, 15, 15);
+  background-image: url("/assets/images/dark_wood.png");
+  background-size: 100%;
 }
 .center {
   display: block;
@@ -41,12 +47,17 @@ body {
   border-radius: 50%;
   width: max(17px, 7.5vmin);
   height: max(17px, 7.5vmin);
+  box-shadow: 0.8vmin 0.8vmin 0.3vmin rgb(43, 25, 18);
 }
 
 .piece-white {
   background-color: rgb(167, 61, 61);
+  background-image: url("/assets/images/white_piece.png");
+  background-size: 100%;
 }
 
 .piece-black {
   background-color: rgb(77, 114, 9);
+  background-image: url("/assets/images/dark_piece.png");
+  background-size: 100%;
 }
