@@ -54,23 +54,18 @@ class Board {
       if (possibleTarget) {
         possibleTarget.forEach((item) => {
           const square = document.getElementById(item);
-          square.classList.add("possible");
-          console.log(square.getAttribute("occupied"));
-          // document.getElementById(item).classList.add("possible");
+          // check if has piece
+          console.log("add class " + square.getAttribute("occupied"));
+          if (square.getAttribute("occupied") == "false") {
+            square.classList.add("possible");
+          }
         });
       } else {
         e.target.classList.remove("dragging");
       }
     });
 
-    // dragleave event
-    // newDiv.addEventListener("dragleave", () => {
-    //   const movPiece = document.querySelector(".dragging");
-    //   movPiece.setAttribute("dropId", "false");
-    // });
-
     // dragover event
-    // get all possible squares
     document.addEventListener("dragover", (e) => {
       e.preventDefault();
       let posibleSquares;
@@ -102,9 +97,16 @@ class Board {
         (posibleSquares.length > 0)
       ) {
         try {
-          document
-            .getElementById(movPiece.getAttribute("dropId"))
-            .appendChild(movPiece);
+          // set square occupied to false
+          const parentId = movPiece.parentNode.id;
+          document.getElementById(parentId).setAttribute("occupied", "false");
+          // move the piece but check if the square is occupied
+          const position = document.getElementById(
+            movPiece.getAttribute("dropId")
+          );
+          if (position.getAttribute("occupied") == "false") {
+            position.appendChild(movPiece);
+          }
           // set square occupied to true
           document
             .getElementById(movPiece.getAttribute("dropId"))
@@ -224,6 +226,9 @@ class Piece {
     this.piece.id = id;
     return this.piece;
   }
+  touchStart() {}
+  touchMove() {}
+  touchEnd() {}
 }
 
 // create board
