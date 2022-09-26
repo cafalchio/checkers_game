@@ -87,12 +87,13 @@ class Board {
     document.addEventListener("dragend", (e) => {
       e.preventDefault();
       const movPiece = document.querySelector(".dragging");
-      let posibleSquares = document.querySelectorAll(".possible");
-      posibleSquares.forEach((item) => {
-        if (movPiece.getAttribute("dropId") != "false") {
-          console.log("drop here " + movPiece.getAttribute("dropId"));
-        }
-      });
+      // let posibleSquares = document.querySelectorAll(".possible");
+      if (movPiece.getAttribute("dropId") != "false") {
+        console.log("drop here " + movPiece.getAttribute("dropId"));
+        document
+          .getElementById(movPiece.getAttribute("dropId"))
+          .appendChild(movPiece);
+      }
       e.target.classList.remove("dragging");
     });
   }
