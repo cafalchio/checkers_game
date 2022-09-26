@@ -13,6 +13,7 @@ class Board {
       newDiv.className = "square";
       newDiv.classList.add(color);
       newDiv.id = i;
+      newDiv.setAttribute("occupied", "false");
       this.game.appendChild(newDiv);
     }
   }
@@ -35,9 +36,11 @@ class Board {
       const wPiece = new Piece("white");
       if (blackPieces.includes(i)) {
         squares[i].appendChild(bPiece.get_piece(100 + i));
+        squares[i].setAttribute("occupied", "true");
       }
       if (whitePieces.includes(i)) {
         squares[i].appendChild(wPiece.get_piece(200 + i));
+        squares[i].setAttribute("occupied", "true");
       }
     }
   }
@@ -50,7 +53,10 @@ class Board {
       const possibleTarget = this.checkPossibleTarget();
       if (possibleTarget) {
         possibleTarget.forEach((item) => {
-          document.getElementById(item).classList.add("possible");
+          const square = document.getElementById(item);
+          square.classList.add("possible");
+          console.log(square.getAttribute("occupied"));
+          // document.getElementById(item).classList.add("possible");
         });
       } else {
         e.target.classList.remove("dragging");
@@ -67,7 +73,8 @@ class Board {
     // get all possible squares
     document.addEventListener("dragover", (e) => {
       e.preventDefault();
-      let posibleSquares = game.querySelectorAll(".possible");
+      let posibleSquares;
+      posibleSquares = game.querySelectorAll(".possible");
       // get the square where the piece is adding dropId
       posibleSquares.forEach((item) => {
         item.addEventListener("dragover", () => {
@@ -78,28 +85,42 @@ class Board {
         item.addEventListener("ondragleave", () => {
           const movPiece = document.querySelector(".dragging");
           movPiece.setAttribute("dropId", "false");
+          posibleSquares.forEach((item) => {
+            item.removeEventListener("dragover", () => {}); // remove the event listener
+          });
         });
       });
     });
-
     // on dragend event
     document.addEventListener("dragend", (e) => {
       e.preventDefault();
       let posibleSquares = game.querySelectorAll(".possible");
-      // check if there is element in possible squares
+      // check if the piece is dropped in a possible square
       const movPiece = document.querySelector(".dragging");
       if (
         (movPiece.getAttribute("dropId") != "false") &
         (posibleSquares.length > 0)
       ) {
-        document
-          .getElementById(movPiece.getAttribute("dropId"))
-          .appendChild(movPiece);
+        try {
+          document
+            .getElementById(movPiece.getAttribute("dropId"))
+            .appendChild(movPiece);
+          // set square occupied to true
+          document
+            .getElementById(movPiece.getAttribute("dropId"))
+            .setAttribute("occupied", "true");
+        } catch (error) {
+          const message = document.getElementById("message");
+          message.innerHTML = "Add sound / message";
+        }
       }
+      // remove the dragging class
       e.target.classList.remove("dragging");
       movPiece.setAttribute("dropId", "false");
+      // remove the possible class
       posibleSquares.forEach((item) => {
         item.classList.remove("possible");
+        console.log(item);
       });
     });
   }
@@ -153,18 +174,23 @@ class Board {
     // check for pieces on the way
     for (let i = 0; i < possibleTargets.length + 1; i++) {
       try {
-        const target = possibleTargets[0];
-        if (squares[target].hasChildNodes()) {
-          // square has chield of same color
-          if (squares[target].children[0].classList[1] == pieceColor) {
-            const index = possibleTargets.indexOf(target);
-            possibleTargets.splice(index, 1);
-            // square has piece of opposite color
-          } else {
-            console.log("piece on the way");
+        const target = possibleTargets[i];
+        if (squares[target].getAttribute("occupied") == "true") {
+          console.log("piece on the way");
+          // square has piece of same color
+          if (squares[target].firstChild.classList[1] == pieceColor) {
+            console.log("same color");
+            possibleTargets.splice(i, 1);
+            i--;
+          }
+          // square has piece of different color
+          if (squares[target].firstChild.classList[1] != pieceColor) {
+            console.log("different color");
+            possibleTargets.splice(i, 1);
+            i--;
           }
         }
-        // if there is negative or bigger than 63
+        // There is no position to go! (out of the board)
         if (target < 0 || target > 63) {
           const index = possibleTargets.indexOf(target);
           possibleTargets.splice(index, 1);
@@ -177,6 +203,7 @@ class Board {
     if (possibleTargets.includes(NaN)) {
       return false;
     }
+    console.log(possibleTargets);
     return possibleTargets;
   }
 }
