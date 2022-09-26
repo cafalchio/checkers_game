@@ -60,6 +60,6 @@ body {
 
 .black.possible {
   background-color: rgb(167, 61, 61);
-  background-image: url("/assets/images/white_piece.png");
+  background-image: url("/assets/images/dark_selected_wood.png");
   background-size: 100%;
 }

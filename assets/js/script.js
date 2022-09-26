@@ -72,7 +72,6 @@ class Board {
       posibleSquares.forEach((item) => {
         item.addEventListener("dragover", () => {
           const movPiece = document.querySelector(".dragging");
-          // console.log("dropId:  " + item.id);
           movPiece.setAttribute("dropId", item.id);
         });
         // On dragleave, remove the dropId attribute
@@ -86,16 +85,19 @@ class Board {
     // on dragend event
     document.addEventListener("dragend", (e) => {
       e.preventDefault();
+      let posibleSquares = game.querySelectorAll(".possible");
+      // check if there is element in possible squares
       const movPiece = document.querySelector(".dragging");
-      if (movPiece.getAttribute("dropId") != "false") {
-        console.log("drop here " + movPiece.getAttribute("dropId"));
+      if (
+        (movPiece.getAttribute("dropId") != "false") &
+        (posibleSquares.length > 0)
+      ) {
         document
           .getElementById(movPiece.getAttribute("dropId"))
           .appendChild(movPiece);
       }
       e.target.classList.remove("dragging");
       movPiece.setAttribute("dropId", "false");
-      let posibleSquares = game.querySelectorAll(".possible");
       posibleSquares.forEach((item) => {
         item.classList.remove("possible");
       });
@@ -117,7 +119,6 @@ class Board {
     // get squares
     const squares = document.querySelectorAll(".square");
     let possibleTargets = [];
-    console.log("start: " + possibleTargets + "for  " + pieceId);
     // check if is a Queen
     if (movPiece.isQueen) {
       possibleTargets.push(pieceId - 9);
@@ -176,7 +177,6 @@ class Board {
     if (possibleTargets.includes(NaN)) {
       return false;
     }
-    console.log(possibleTargets);
     return possibleTargets;
   }
 }
