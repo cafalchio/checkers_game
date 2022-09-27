@@ -119,6 +119,18 @@ class Board {
             document
               .getElementById(movPiece.getAttribute("dropId"))
               .setAttribute("occupied", "true");
+
+            // check if the piece can promote
+            if (movPiece.classList[1] == "white") {
+              if (movPiece.getAttribute("dropId") < 8) {
+                this.promote(movPiece);
+                movPiece.isKing = true;
+              }
+            } else {
+              if (movPiece.getAttribute("dropId") > 55) {
+                movPiece.isKing = true;
+              }
+            }
           } catch (error) {
             const message = document.getElementById("message");
             message.innerHTML = error;
@@ -156,13 +168,13 @@ class Board {
     const pieceId = parseInt(movPiece.parentNode.id);
     // get piece position
     let possibleTargets = [];
-    // check if is a Queen
-    if (movPiece.isQueen) {
+    // check if is a isKing
+    if (movPiece.isKing) {
       possibleTargets.push(pieceId - 9);
       possibleTargets.push(pieceId - 7);
       possibleTargets.push(pieceId + 7);
       possibleTargets.push(pieceId + 9);
-      // console.log("queen");
+      // console.log("isKing");
     } else {
       switch (pieceColor) {
         case "piece-white":
@@ -264,7 +276,7 @@ class Board {
 class Piece {
   constructor(color) {
     this.color = color;
-    this.isQueen = false;
+    this.isKing = false;
     this.isTaken = false;
     this.piece = document.createElement("div");
     this.piece.className = "piece";
@@ -275,16 +287,6 @@ class Piece {
   get_piece(id) {
     this.piece.id = id;
     return this.piece;
-  }
-  // make the piece a queen
-  makeQueen() {
-    if ((this.piece.parentNode.id < 8) & (this.color == "white")) {
-      this.piece.classList.add("queen");
-      this.isQueen = true;
-    } else if ((this.piece.parentNode.id > 55) & (this.color == "black")) {
-      this.piece.classList.add("queen");
-      this.isQueen = true;
-    }
   }
 }
 
