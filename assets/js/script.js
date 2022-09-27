@@ -82,24 +82,13 @@ class Board {
               return false;
             }
             movPiece.setAttribute("dropId", item.id);
-            console.log("dropId " + movPiece.getAttribute("dropId"));
-          });
-          // On dragleave, remove the dropId attribute
-          item.addEventListener("ondragleave", () => {
-            const movPiece = document.querySelector(".dragging");
-            if (!movPiece) {
-              return false;
-            }
-            movPiece.setAttribute("dropId", "false");
-            posibleSquares.forEach((item) => {
-              item.removeEventListener("dragover", () => {}); // remove the event listener
-            });
           });
         });
       } else {
         return false;
       }
     });
+
     // on dragend event
     document.addEventListener("dragend", (e) => {
       // avoid another element to be dragged over
@@ -198,7 +187,6 @@ class Board {
           break;
       }
     }
-    console.log("before pieces " + possibleTargets);
     // check for pieces on the way
     if ((possibleTargets.length > 0) & (possibleTargets != null)) {
       for (let i = 0; i < possibleTargets.length + 1; i++) {
@@ -209,7 +197,6 @@ class Board {
             // (targetSquare.getAttribute("occupied") == "true")
             // square has piece of same color
             if (targetSquare.firstChild.classList[1] == pieceColor) {
-              console.log("same color");
               possibleTargets.splice(i, 1);
               i--;
             } else if (targetSquare.firstChild.classList[1] != pieceColor) {
@@ -240,7 +227,6 @@ class Board {
     }
     // check if there is a taking
     if (taking.length > 0) {
-      console.log("taking");
       return taking;
     }
     return possibleTargets;
@@ -251,7 +237,6 @@ class Board {
   }
 
   canTake(targetPieceId) {
-    console.log("can take?");
     const corners = [
       1, 3, 5, 7, 8, 24, 40, 56, 23, 39, 55, 62, 60, 58, 56, 3, 5,
     ];
@@ -290,6 +275,16 @@ class Piece {
   get_piece(id) {
     this.piece.id = id;
     return this.piece;
+  }
+  // make the piece a queen
+  makeQueen() {
+    if ((this.piece.parentNode.id < 8) & (this.color == "white")) {
+      this.piece.classList.add("queen");
+      this.isQueen = true;
+    } else if ((this.piece.parentNode.id > 55) & (this.color == "black")) {
+      this.piece.classList.add("queen");
+      this.isQueen = true;
+    }
   }
 }
 
