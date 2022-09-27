@@ -112,23 +112,31 @@ class Board {
             const position = document.getElementById(
               movPiece.getAttribute("dropId")
             );
-            if (position.getAttribute("occupied") == "false") {
-              position.appendChild(movPiece);
-            }
+            // if (position.getAttribute("occupied") == "false") & (posibleSquares ){}{
+            posibleSquares.forEach((item) => {
+              if (item.id == movPiece.getAttribute("dropId")) {
+                position.appendChild(movPiece);
+                position.setAttribute("occupied", "true");
+              }
+            });
+            // position.appendChild(movPiece);
+            // }
             // set square occupied to true
             document
               .getElementById(movPiece.getAttribute("dropId"))
               .setAttribute("occupied", "true");
 
             // check if the piece can promote
-            if (movPiece.classList[1] == "white") {
+            if (movPiece.classList[1] == "piece-white") {
               if (movPiece.getAttribute("dropId") < 8) {
                 this.promote(movPiece);
                 movPiece.isKing = true;
+                console.log("is King " + movPiece.isKing);
               }
             } else {
               if (movPiece.getAttribute("dropId") > 55) {
                 movPiece.isKing = true;
+                console.log("is King black " + movPiece.isKing);
               }
             }
           } catch (error) {
