@@ -52,16 +52,12 @@ class Board {
     document.addEventListener("dragstart", (e) => {
       // avoid another element to be dragged over
       if (e.target.classList[0] == "piece") {
-        console.log("dragstart");
         e.target.classList.add("dragging");
         const possibleTarget = this.checkPossibleTarget();
         if (possibleTarget.length > 0) {
           possibleTarget.forEach((item) => {
             const square = document.getElementById(item);
             square.classList.add("possible");
-            // if (square.getAttribute("occupied") == "false") {
-            //   // square.classList.add("possible");
-            // }
           });
         } else {
           e.target.classList.remove("dragging");
@@ -73,20 +69,27 @@ class Board {
 
     // dragover event
     document.addEventListener("dragover", (e) => {
+      e.preventDefault();
       // avoid another element to be dragged over
       if (e.target.classList[0] == "piece") {
-        e.preventDefault();
         let posibleSquares;
         posibleSquares = game.querySelectorAll(".possible");
         // get the square where the piece is adding dropId
         posibleSquares.forEach((item) => {
           item.addEventListener("dragover", () => {
             const movPiece = document.querySelector(".dragging");
+            if (!movPiece) {
+              return false;
+            }
             movPiece.setAttribute("dropId", item.id);
+            console.log("dropId " + movPiece.getAttribute("dropId"));
           });
           // On dragleave, remove the dropId attribute
           item.addEventListener("ondragleave", () => {
             const movPiece = document.querySelector(".dragging");
+            if (!movPiece) {
+              return false;
+            }
             movPiece.setAttribute("dropId", "false");
             posibleSquares.forEach((item) => {
               item.removeEventListener("dragover", () => {}); // remove the event listener
@@ -105,6 +108,9 @@ class Board {
         let posibleSquares = game.querySelectorAll(".possible");
         // check if the piece is dropped in a possible square
         const movPiece = document.querySelector(".dragging");
+        if (!movPiece) {
+          return false;
+        }
         if (
           (movPiece.getAttribute("dropId") != "false") &
           (posibleSquares.length > 0)
@@ -152,6 +158,9 @@ class Board {
     const rightCorners = [7, 15, 23, 31, 39, 47, 55, 63];
     // get piece
     const movPiece = document.querySelector(".dragging");
+    if (!movPiece) {
+      return false;
+    }
     // get piece color
     const pieceColor = movPiece.classList[1];
     // get piece id
