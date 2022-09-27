@@ -14,6 +14,7 @@ class Board {
       newDiv.classList.add(color);
       newDiv.id = i;
       newDiv.setAttribute("occupied", "false");
+      // newDiv.innerHTML = i; // for debug
       this.game.appendChild(newDiv);
     }
   }
@@ -54,14 +55,13 @@ class Board {
         console.log("dragstart");
         e.target.classList.add("dragging");
         const possibleTarget = this.checkPossibleTarget();
-        if (possibleTarget) {
+        if (possibleTarget.length > 0) {
           possibleTarget.forEach((item) => {
             const square = document.getElementById(item);
-            // check if has piece
-            // console.log("add class " + square.getAttribute("occupied"));
-            if (square.getAttribute("occupied") == "false") {
-              square.classList.add("possible");
-            }
+            square.classList.add("possible");
+            // if (square.getAttribute("occupied") == "false") {
+            //   // square.classList.add("possible");
+            // }
           });
         } else {
           e.target.classList.remove("dragging");
@@ -145,7 +145,7 @@ class Board {
   // Method to check possible targets
   checkPossibleTarget() {
     // will be used to check if the piece can take another piece
-    let canTake = false;
+    let taking = [];
     // left corners
     const leftCorners = [8, 16, 24, 32, 40, 48, 56];
     // right corners
@@ -156,8 +156,7 @@ class Board {
     const pieceColor = movPiece.classList[1];
     // get piece id
     const pieceId = parseInt(movPiece.parentNode.id);
-    // get squares
-    const squares = document.querySelectorAll(".square");
+    // get piece position
     let possibleTargets = [];
     // check if is a Queen
     if (movPiece.isQueen) {
@@ -172,10 +171,10 @@ class Board {
           possibleTargets.push(pieceId - 9);
           possibleTargets.push(pieceId - 7);
           if (leftCorners.includes(pieceId)) {
-            possibleTargets.shift();
+            possibleTargets.shift(); // remove the first element
           }
           if (rightCorners.includes(pieceId)) {
-            possibleTargets.pop();
+            possibleTargets.pop(); // remove the last element
           }
           break;
         case "piece-black":
@@ -190,8 +189,9 @@ class Board {
           break;
       }
     }
+    console.log("before pieces " + possibleTargets);
     // check for pieces on the way
-    if ((possibleTargets.length > 0) & (possibleTargets != null) || undefined) {
+    if ((possibleTargets.length > 0) & (possibleTargets != null)) {
       for (let i = 0; i < possibleTargets.length + 1; i++) {
         // try {
         const targetSquare = document.getElementById(possibleTargets[i]);
@@ -203,10 +203,14 @@ class Board {
               console.log("same color");
               possibleTargets.splice(i, 1);
               i--;
-            }
-            // square has piece of different color
-            if (targetSquare.firstChild.classList[1] != pieceColor) {
-              // console.log("different color");
+            } else if (targetSquare.firstChild.classList[1] != pieceColor) {
+              // if square has piece of different color
+              // check if the next square is occupied
+              let target = this.canTake(possibleTargets[i]);
+              if (target) {
+                // deal with the taking later
+                taking.push(target);
+              }
               possibleTargets.splice(i, 1);
               i--;
             }
@@ -225,7 +229,40 @@ class Board {
     if (possibleTargets.includes(NaN)) {
       return false;
     }
+    // check if there is a taking
+    if (taking.length > 0) {
+      console.log("taking");
+      return taking;
+    }
     return possibleTargets;
+  }
+
+  test() {
+    console.log("test");
+  }
+
+  canTake(targetPieceId) {
+    console.log("can take?");
+    const corners = [
+      1, 3, 5, 7, 8, 24, 40, 56, 23, 39, 55, 62, 60, 58, 56, 3, 5,
+    ];
+    // check if the oposite square is occupied
+    const movPiece = document.querySelector(".dragging");
+    // test for different directions
+    const piecePositionId = parseInt(movPiece.parentNode.id);
+    // target piece position
+    if (corners.includes(targetPieceId)) {
+      return false;
+    } else {
+      let relation = targetPieceId - piecePositionId;
+      let opositeSquareId = targetPieceId + relation;
+      const opositeSquare = document.getElementById(opositeSquareId);
+      if (opositeSquare.hasChildNodes()) {
+        return false;
+      } else {
+        return opositeSquareId;
+      }
+    }
   }
 }
 
