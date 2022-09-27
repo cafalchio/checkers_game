@@ -21,7 +21,7 @@ class Board {
   // Method to start the game
   startGame() {
     this.createPieces();
-    this.addEventListener();
+    this.addEventListeners();
   }
 
   // Method to create pieces
@@ -47,7 +47,7 @@ class Board {
   }
 
   // Method to add event listener
-  addEventListener() {
+  addEventListeners() {
     // dragstarted event
     document.addEventListener("dragstart", (e) => {
       // avoid another element to be dragged over
