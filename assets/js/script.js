@@ -38,7 +38,6 @@ class Board {
     if (this.whitePlay) {
       // check if white pieces can take
       // freeze black pieces
-      console.log("white play");
       let blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.draggable = false;
@@ -61,7 +60,6 @@ class Board {
       ////////////////////////////////////////////////////////////
       // Black move
       ////////////////////////////////////////////////////////////
-      console.log("Black Move");
       //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
       whitePieces.forEach((item) => {
@@ -112,7 +110,6 @@ class Board {
         (item.parentNode.id > 55)
       ) {
         item.classList.add("black-king");
-        console.log(item.id);
         item.isKing = true;
       }
     });
