@@ -38,11 +38,14 @@ class Board {
     if (this.whitePlay) {
       // check if white pieces can take
       // freeze black pieces
+      console.log("white play");
       let blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.draggable = false;
         this.checkpossibleMove(item);
       });
+      // promote to king
+      this.promoteToKing(blackPieces);
       // check if white pieces can take
       let whitePieces = document.querySelectorAll(".piece-white");
       if (!this.checkIfcanTake(whitePieces)) {
@@ -65,10 +68,10 @@ class Board {
         item.draggable = false;
         this.checkpossibleMove(item);
       });
-
-      // check if black pieces can take
-      const blackPieces = document.querySelectorAll(".piece-black");
+      // check if white piece can be promoted
+      this.promoteToKing(whitePieces);
       // deal with taking by freezing all except the ones that can take
+      const blackPieces = document.querySelectorAll(".piece-black");
       if (!this.checkIfcanTake(blackPieces)) {
         // unfreeze black pieces
         this.needTake = [];
@@ -96,6 +99,23 @@ class Board {
     } else {
       return false;
     }
+  }
+
+  // Promote to king
+  promoteToKing(pieces) {
+    pieces.forEach((item) => {
+      if (item.classList.contains("piece-white") & (item.parentNode.id < 8)) {
+        item.classList.add("white-king");
+        item.isKing = true;
+      } else if (
+        item.classList.contains("piece-black") &
+        (item.parentNode.id > 55)
+      ) {
+        item.classList.add("black-king");
+        console.log(item.id);
+        item.isKing = true;
+      }
+    });
   }
 
   // check winner
