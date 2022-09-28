@@ -3,6 +3,12 @@ class Board {
   constructor() {
     // create board
     this.game = document.getElementById("game");
+    this.whitePlay = true;
+    this.blackPlay = false;
+    this.whiteKing = false;
+    this.blackKing = false;
+    this.moved = false;
+    // create squares
     let color = "white";
     for (let i = 0; i < 64; i++) {
       color = color == "black" ? "white" : "black";
@@ -22,7 +28,113 @@ class Board {
   startGame() {
     this.createPieces();
     this.addEventListeners();
+    // const blackPieces = document.querySelectorAll(".piece-black");
+    // blackPieces.forEach((item) => {
+    //   item.draggable = false;
+    // });
+    //   // wait for white movement
+    //   this.waitForWhiteMovement();
+    //   //block all white pieces
+    // const whitePieces = document.querySelectorAll(".piece-white");
+    // whitePieces.forEach((item) => {
+    //   item.draggable = false;
+    // });
+    //   // wait for black movement
+    //   this.waitForBlackMovement();
+
+    // }
   }
+
+  // wait for white movement
+  waitForWhiteMovement() {
+    this.moved = false;
+    this.whitePlay = true;
+    this.blackPlay = false;
+    const whitePieces = document.querySelectorAll(".piece-white");
+    whitePieces.forEach((item) => {
+      item.draggable = true;
+    });
+    console.log("white");
+    while (!this.moved) {
+      if (this.whiteTime <= 0.0) {
+        this.checkWinner();
+      }
+    }
+  }
+
+  // wait for black movement
+  waitForBlackMovement() {
+    this.moved = false;
+    this.moved = false;
+    this.whitePlay = false;
+    this.blackPlay = true;
+    const blackPieces = document.querySelectorAll(".piece-black");
+    blackPieces.forEach((item) => {
+      item.draggable = true;
+    });
+    while (!this.moved) {
+      if (this.blackTime <= 0.0) {
+        this.checkWinner();
+      }
+    }
+  }
+
+  // check winner
+  checkWinner() {
+    // No pieces left
+    const whitePieces = document.querySelectorAll(".piece-white");
+    const blackPieces = document.querySelectorAll(".piece-black");
+    if (whitePieces.length == 0) {
+      alert("No pieces left Black wins!");
+      location.reload();
+    } else if (blackPieces.length == 0) {
+      alert("No pieces left White wins!");
+      location.reload();
+    }
+    // No moves left
+    if (!this.whiteKing) {
+      if (!this.checkMovesLeftBlack()) {
+        alert("No moves left White wins!");
+        location.reload();
+      }
+    }
+    if (!this.blackKing) {
+      if (!this.checkMovesLeftWhite()) {
+        alert("No moves left Black wins!");
+        location.reload();
+      }
+    }
+  }
+
+  // check for moves left white
+  checkMovesLeftWhite() {
+    let moves = 0;
+    const whitePieces = document.querySelectorAll(".piece-white");
+    whitePieces.forEach((item) => {
+      moves = moves + this.checkPossibleTarget(item).length;
+    });
+    if (moves > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // check for moves left black
+  checkMovesLeftBlack() {
+    let moves = 0;
+    const blackPieces = document.querySelectorAll(".piece-black");
+    blackPieces.forEach((item) => {
+      moves = moves + this.checkPossibleTarget(item).length;
+    });
+    if (moves > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /////////////////////////////////////////////////
 
   // Method to create pieces
   createPieces() {
@@ -112,33 +224,18 @@ class Board {
             const position = document.getElementById(
               movPiece.getAttribute("dropId")
             );
-            // if (position.getAttribute("occupied") == "false") & (posibleSquares ){}{
+
             posibleSquares.forEach((item) => {
               if (item.id == movPiece.getAttribute("dropId")) {
                 position.appendChild(movPiece);
                 position.setAttribute("occupied", "true");
+                this.moved = true;
               }
             });
-            // position.appendChild(movPiece);
-            // }
             // set square occupied to true
             document
               .getElementById(movPiece.getAttribute("dropId"))
               .setAttribute("occupied", "true");
-
-            // check if the piece can promote
-            if (movPiece.classList[1] == "piece-white") {
-              if (movPiece.getAttribute("dropId") < 8) {
-                this.promote(movPiece);
-                movPiece.isKing = true;
-                console.log("is King " + movPiece.isKing);
-              }
-            } else {
-              if (movPiece.getAttribute("dropId") > 55) {
-                movPiece.isKing = true;
-                console.log("is King black " + movPiece.isKing);
-              }
-            }
           } catch (error) {
             const message = document.getElementById("message");
             message.innerHTML = error;
@@ -146,6 +243,7 @@ class Board {
         }
         // remove the dragging class
         e.target.classList.remove("dragging");
+        // remove the dropId attribute
         movPiece.setAttribute("dropId", "false");
         // remove the possible class
         posibleSquares.forEach((item) => {
@@ -162,9 +260,13 @@ class Board {
     // will be used to check if the piece can take another piece
     let taking = [];
     // left corners
-    const leftCorners = [8, 16, 24, 32, 40, 48, 56];
+    const leftCorners = [8, 24, 40, 56];
     // right corners
-    const rightCorners = [7, 15, 23, 31, 39, 47, 55, 63];
+    const rightCorners = [7, 23, 39, 55];
+    // white top corners
+    const whiteTopCorners = [1, 3, 5, 7];
+    // black top corners
+    const blackTopCorners = [56, 58, 60, 62];
     // get piece
     const movPiece = document.querySelector(".dragging");
     if (!movPiece) {
@@ -182,7 +284,23 @@ class Board {
       possibleTargets.push(pieceId - 7);
       possibleTargets.push(pieceId + 7);
       possibleTargets.push(pieceId + 9);
-      // console.log("isKing");
+      // check for borders for King
+      if (leftCorners.includes(pieceId)) {
+        possibleTargets = possibleTargets.filter((item) => item != pieceId - 9);
+        possibleTargets = possibleTargets.filter((item) => item != pieceId + 7);
+      }
+      if (rightCorners.includes(pieceId)) {
+        possibleTargets = possibleTargets.filter((item) => item != pieceId - 7);
+        possibleTargets = possibleTargets.filter((item) => item != pieceId + 9);
+      }
+      if (whiteTopCorners.includes(pieceId)) {
+        possibleTargets = possibleTargets.filter((item) => item != pieceId - 9);
+        possibleTargets = possibleTargets.filter((item) => item != pieceId - 7);
+      }
+      if (blackTopCorners.includes(pieceId)) {
+        possibleTargets = possibleTargets.filter((item) => item != pieceId + 7);
+        possibleTargets = possibleTargets.filter((item) => item != pieceId + 9);
+      }
     } else {
       switch (pieceColor) {
         case "piece-white":
@@ -224,8 +342,9 @@ class Board {
               // check if the next square is occupied
               let target = this.canTake(possibleTargets[i]);
               if (target) {
-                // deal with the taking later
-                taking.push(target);
+                // send the square with the piece to take and the square to move to
+                // taking.push((targetSquare, possibleTargets[i]));
+                taking.push(possibleTargets[i]);
               }
               possibleTargets.splice(i, 1);
               i--;
@@ -241,35 +360,37 @@ class Board {
         }
       }
     }
+
     // check if there is nan
     if (possibleTargets.includes(NaN)) {
       return false;
     }
     // check if there is a taking
     if (taking.length > 0) {
-      return taking;
+      this.takePiece(taking);
+      // possibleTargets = [];
+      // for (let i = 0; i < taking.length; i++) {
+      //   possibleTargets.push(taking[i][1]);
+      // }
+      // return taking;
     }
     return possibleTargets;
   }
 
-  test() {
-    console.log("test");
-  }
-
-  canTake(targetPieceId) {
-    const corners = [
-      1, 3, 5, 7, 8, 24, 40, 56, 23, 39, 55, 62, 60, 58, 56, 3, 5,
-    ];
+  // Method to check if the piece can take another piece
+  canTake(enemySquareId) {
+    // define corners
+    const corners = [1, 3, 5, 7, 8, 24, 40, 56, 58, 60, 62, 55, 39, 23];
     // check if the oposite square is occupied
     const movPiece = document.querySelector(".dragging");
     // test for different directions
     const piecePositionId = parseInt(movPiece.parentNode.id);
     // target piece position
-    if (corners.includes(targetPieceId)) {
+    if (corners.includes(enemySquareId)) {
       return false;
     } else {
-      let relation = targetPieceId - piecePositionId;
-      let opositeSquareId = targetPieceId + relation;
+      let relation = enemySquareId - piecePositionId;
+      let opositeSquareId = enemySquareId + relation;
       const opositeSquare = document.getElementById(opositeSquareId);
       if (opositeSquare.hasChildNodes()) {
         return false;
@@ -278,6 +399,14 @@ class Board {
       }
     }
   }
+  // // method to take a piece
+  // takePiece(taking) {
+  //   // get the piece to be taken
+  //   let pieces = document.querySelectorAll(".piece");
+  //   for (let i = 0; i < taking.length; i++) {
+
+  //   pieces.forEach((piece) => {});
+  // }
 }
 
 // Piece class
@@ -285,7 +414,8 @@ class Piece {
   constructor(color) {
     this.color = color;
     this.isKing = false;
-    this.isTaken = false;
+    this.couldDie = false;
+    this.hasEnemy = false;
     this.piece = document.createElement("div");
     this.piece.className = "piece";
     this.piece.classList.add("piece-" + color);
