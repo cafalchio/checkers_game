@@ -25,13 +25,13 @@ body {
 
 .white {
   pointer-events: none;
-  background-image: url("/assets/images/white_wood.png");
+  background-image: url("../images/white_wood.png");
   background-color: rgb(221, 221, 221);
   background-size: 100%;
 }
 .black {
   /* pointer-events: unset; */
-  background-image: url("/assets/images/dark_wood.png");
+  background-image: url("../images/dark_wood.png");
   background-color: rgb(15, 15, 15);
   background-size: 100%;
 }
@@ -49,14 +49,14 @@ body {
 }
 
 .piece-white {
-  background-image: url("/assets/images/white_piece.png");
+  background-image: url("../images/white_piece.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
   overflow: visible;
   opacity: 1;
 }
 .white-king {
-  background-image: url("/assets/images/white_king.png");
+  background-image: url("../images/white_king.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
   overflow: visible;
@@ -64,7 +64,7 @@ body {
 }
 
 .piece-black {
-  background-image: url("/assets/images/dark_piece.png");
+  background-image: url("../images/dark_piece.png");
   background-color: rgb(77, 114, 9);
   background-size: 108%;
   background-position: center;
@@ -73,7 +73,7 @@ body {
 }
 
 .black-king {
-  background-image: url("/assets/images/dark_king.png");
+  background-image: url("../images/dark_king.png");
   background-color: rgb(77, 114, 9);
   background-size: 108%;
   background-position: center;
@@ -82,7 +82,7 @@ body {
 }
 
 .black.possible {
-  background-image: url("/assets/images/dark_selected_wood.png");
+  background-image: url("../images/dark_selected_wood.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
 }
