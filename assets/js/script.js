@@ -2,8 +2,7 @@ class Board {
   // Method to create the board
   constructor() {
     this.game = document.getElementById("game");
-    this.whitePlay = false;
-    this.blackPlay = true;
+    this.whitePlay = true;
     this.whiteKing = false;
     this.blackKing = false;
     this.needTake = [];
@@ -30,58 +29,68 @@ class Board {
     this.gameControl();
   }
 
-  // Method to control the game
+  // Method to control the game turns
   gameControl() {
     if (this.whitePlay) {
+      console.log("White Move");
+      // freeze black pieces
+      const blackPieces = document.querySelectorAll(".piece-black");
+      blackPieces.forEach((item) => {
+        item.draggable = false;
+        this.checkpossibleMove(item);
+      });
+      console.log("White pieces can take " + this.needTake.length);
+      this.needTake = [];
+      // unfreeze white pieces
+      const whitePieces = document.querySelectorAll(".piece-white");
+      whitePieces.forEach((item) => {
+        item.draggable = true;
+        this.checkpossibleMove(item);
+      });
+      // set next move to black
       this.whitePlay = false;
-      this.blackPlay = true;
-      const whitePieces = document.querySelectorAll(".piece-white");
-      whitePieces.forEach((item) => {
-        item.draggable = false;
-      });
-      const blackPieces = document.querySelectorAll(".piece-black");
-      blackPieces.forEach((item) => {
-        item.draggable = true;
-      });
     } else {
-      this.whitePlay = true;
-      this.blackPlay = false;
+      console.log("Black Move");
+      //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
       whitePieces.forEach((item) => {
-        item.draggable = true;
+        item.draggable = false;
+        this.checkpossibleMove(item);
       });
+      console.log(" Black pieces can take " + this.needTake.length);
+      this.needTake = [];
+      // unfreeze black pieces
       const blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
-        item.draggable = false;
+        item.draggable = true;
+        this.checkpossibleMove(item);
       });
+      // set next move to white
+      this.whitePlay = true;
     }
   }
 
-  // Method to check all pieces that can take another piece
-  checkAllTakes() {
-    const whitePieces = document.querySelectorAll(".piece-white");
-    const blackPieces = document.querySelectorAll(".piece-black");
-    whitePieces.forEach((item) => {
-      const piecePositionId = parseInt(item.parentNode.id);
-      const piecePosition = document.getElementById(piecePositionId);
-      const pieceColor = item.classList[1];
-      const piece = this.get_piece(piecePositionId);
-      const possibleTakes = piece.checkTakes(pieceColor, pieceType);
-      if (possibleTakes.length > 0) {
-        this.needTake.push(piecePositionId);
-      }
-    });
-    blackPieces.forEach((item) => {
-      const piecePositionId = parseInt(item.parentNode.id);
-      const piecePosition = document.getElementById(piecePositionId);
-      const pieceColor = item.classList[1];
-      const piece = this.get_piece(piecePositionId);
-      const possibleTakes = piece.checkTakes(pieceColor, pieceType);
-      if (possibleTakes.length > 0) {
-        this.needTake.push(piecePositionId);
-      }
-    });
-  }
+  // // loop and check if the piece can take another piece
+  // let blackPieces = document.querySelectorAll(".piece-black");
+  // if (this.whitePlay) {
+  //   // check if the piece can take another piece
+  //   blackPieces.forEach((item) => {
+  //     item.classList.remove("dragging");
+  //     this.checkpossibleMove(item);
+  //   });
+  //   console.log(
+  //     "is black " + !this.whitePlay + ", need take? " + this.needTake
+  //   );
+  // } else {
+  //   let whitePieces = document.querySelectorAll(".piece-white");
+  //   whitePieces.forEach((item) => {
+  //     item.classList.remove("dragging");
+  //     this.checkpossibleMove(item);
+  //   });
+  //   console.log(
+  //     "is white? " + !this.whitePlay + ", need take? " + this.needTake
+  //   );
+  // }
 
   // check winner
   checkWinner() {
@@ -110,35 +119,16 @@ class Board {
     }
   }
 
-  // check for moves left white
-  checkMovesLeftWhite() {
-    let moves = 0;
-    const whitePieces = document.querySelectorAll(".piece-white");
-    whitePieces.forEach((item) => {
-      moves = moves + this.checkpossibleMove(item).length;
-    });
-    if (moves > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // check for moves left black
-  checkMovesLeftBlack() {
-    let moves = 0;
-    const blackPieces = document.querySelectorAll(".piece-black");
-    blackPieces.forEach((item) => {
-      moves = moves + this.checkpossibleMove(item).length;
-    });
-    if (moves > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /////////////////////////////////////////////////
+  // checkAllTakes(piece) {
+  //   const whitePieces = document.querySelectorAll(".piece-white");
+  //   whitePieces.forEach((item) => {
+  //     this.checkTake(item);
+  //   });
+  //   const blackPieces = document.querySelectorAll(".piece-black");
+  //   blackPieces.forEach((item) => {
+  //     this.checkTake(item);
+  //   });
+  // }
 
   // Method to create pieces
   createPieces() {
@@ -273,7 +263,7 @@ class Board {
     // black top corners
     const blackTopCorners = [56, 58, 60, 62];
     // get piece
-    const movPiece = document.querySelector(".dragging");
+    let movPiece = document.querySelector(".dragging");
     if (pieceToCheck) {
       movPiece = pieceToCheck;
     }
@@ -315,10 +305,10 @@ class Board {
           possibleMoves.push(pieceId - 9);
           possibleMoves.push(pieceId - 7);
           if (leftCorners.includes(pieceId)) {
-            possibleMoves.shift(); // remove the first element
+            possibleMoves.shift();
           }
           if (rightCorners.includes(pieceId)) {
-            possibleMoves.pop(); // remove the last element
+            possibleMoves.pop();
           }
           break;
         case "piece-black":
@@ -336,22 +326,22 @@ class Board {
     // check for pieces on the way
     if ((possibleMoves.length > 0) & (possibleMoves != null)) {
       for (let i = 0; i < possibleMoves.length + 1; i++) {
-        // try {
         const targetSquare = document.getElementById(possibleMoves[i]);
         try {
           if ((targetSquare != null) & targetSquare.hasChildNodes()) {
             // square has piece of same color
             if (targetSquare.firstChild.classList[1] == pieceColor) {
+              // remove move
               possibleMoves.splice(i, 1);
               i--;
               // if square has piece of different color
             } else if (targetSquare.firstChild.classList[1] != pieceColor) {
               // check if the next square is occupied
-              let target = this.canTake(possibleMoves[i]);
-              if (target) {
+              let targetSquare = this.canTake(possibleMoves[i]);
+              if (targetSquare) {
                 // send the square with the piece to take and the square to move to
-                this.needTake.push((movPiece, targetSquare.firstChild, target));
-                taking.push(target);
+                console.log("added to need take");
+                taking.push(targetSquare);
               }
               possibleMoves.splice(i, 1);
               i--;
@@ -367,7 +357,6 @@ class Board {
         }
       }
     }
-
     // check if there is nan
     if (possibleMoves.includes(NaN)) {
       return false;
@@ -380,13 +369,14 @@ class Board {
   }
 
   // Method to check if the piece can take another piece
-  canTake(enemySquareId) {
+  canTake(enemySquareId, pieceToCheck) {
     // define corners
     const corners = [1, 3, 5, 7, 8, 24, 40, 56, 58, 60, 62, 55, 39, 23];
     // check if the oposite square is occupied
-    const movPiece = document.querySelector(".dragging");
-    // set movpiece need action to true
-    movPiece.needAction = true;
+    let movPiece = document.querySelector(".dragging");
+    if (pieceToCheck) {
+      movPiece = pieceToCheck;
+    }
     // test for different directions
     const piecePositionId = parseInt(movPiece.parentNode.id);
     // target piece position
@@ -399,6 +389,8 @@ class Board {
       if (opositeSquare.hasChildNodes()) {
         return false;
       } else {
+        this.needTake.push(movPiece);
+        console.log("added to need take");
         return opositeSquareId;
       }
     }
@@ -410,8 +402,7 @@ class Piece {
   constructor(color) {
     this.color = color;
     this.isKing = false;
-    this.couldDie = false;
-    this.needAction = false;
+    this.canMove = false;
     this.piece = document.createElement("div");
     this.piece.className = "piece";
     this.piece.classList.add("piece-" + color);
