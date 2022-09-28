@@ -11,6 +11,7 @@ body {
   border-color: rgb(80, 40, 11);
   box-shadow: 2vmin 2vmin 0.4vmin rgb(14, 8, 6);
   aspect-ratio: auto 1 / 1;
+  -webkit-user-drag: none;
 }
 .square {
   display: inline-block;
@@ -51,6 +52,15 @@ body {
   background-image: url("/assets/images/white_piece.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
+  overflow: visible;
+  opacity: 1;
+}
+.white-king {
+  background-image: url("/assets/images/white_king.png");
+  background-color: rgb(167, 61, 61);
+  background-size: 100%;
+  overflow: visible;
+  opacity: 1;
 }
 
 .piece-black {
@@ -58,6 +68,17 @@ body {
   background-color: rgb(77, 114, 9);
   background-size: 108%;
   background-position: center;
+  overflow: visible;
+  opacity: 1;
+}
+
+.black-king {
+  background-image: url("/assets/images/dark_king.png");
+  background-color: rgb(77, 114, 9);
+  background-size: 108%;
+  background-position: center;
+  overflow: visible;
+  opacity: 1;
 }
 
 .black.possible {
