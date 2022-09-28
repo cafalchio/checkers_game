@@ -23,13 +23,13 @@ body {
 }
 
 .white {
-  -webkit-user-drag: none;
+  pointer-events: none;
   background-image: url("/assets/images/white_wood.png");
   background-color: rgb(221, 221, 221);
   background-size: 100%;
 }
 .black {
-  -webkit-user-drag: none;
+  /* pointer-events: unset; */
   background-image: url("/assets/images/dark_wood.png");
   background-color: rgb(15, 15, 15);
   background-size: 100%;
