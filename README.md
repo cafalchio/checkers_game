@@ -1,6 +1,6 @@
 # Checker's Game
 
-#### Author: [Matheus Cafalchio](
+#### Author: Matheus Cafalchio
 
 The Checker's Game is a game that consists of a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move.
 
@@ -16,13 +16,13 @@ This is my first code in javascript, so I had to learn a lot of things. I had to
 
 ## Technologies
 
-      The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
+    The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
 
-      * HTML
-      * CSS
-      * JavaScript
-      * GitHub
-      * GIMP
+    * HTML
+    * CSS
+    * JavaScript
+    * GitHub
+    * GIMP
 
 ## Features
 
@@ -67,7 +67,7 @@ Lighhouse mobile and desktop testing:
 The major concerns were the speed to load the images. The images were reduced both in size and optimizila image compressor. The speed increased but it is still a concern in slow phone connection.
 So images were converted to jpg format and the quality was reduced.
 
-### Unfixed Bugs
+## Unfixed Bugs
 
 - dragging
   Sometimes the user can drag the background, which is not the desired behavior.
