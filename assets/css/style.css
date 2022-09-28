@@ -1,4 +1,5 @@
 body {
+  touch-action: none;
   background-color: #333;
   margin-top: 0;
   margin-left: 0;
