@@ -23,13 +23,15 @@ body {
 }
 
 .white {
-  background-color: rgb(221, 221, 221);
+  pointer-events: none;
   background-image: url("/assets/images/white_wood.png");
+  background-color: rgb(221, 221, 221);
   background-size: 100%;
 }
 .black {
-  background-color: rgb(15, 15, 15);
+  /* pointer-events: unset; */
   background-image: url("/assets/images/dark_wood.png");
+  background-color: rgb(15, 15, 15);
   background-size: 100%;
 }
 .center {
@@ -46,20 +48,20 @@ body {
 }
 
 .piece-white {
-  background-color: rgb(167, 61, 61);
   background-image: url("/assets/images/white_piece.png");
+  background-color: rgb(167, 61, 61);
   background-size: 100%;
 }
 
 .piece-black {
-  background-color: rgb(77, 114, 9);
   background-image: url("/assets/images/dark_piece.png");
+  background-color: rgb(77, 114, 9);
   background-size: 108%;
   background-position: center;
 }
 
 .black.possible {
-  background-color: rgb(167, 61, 61);
   background-image: url("/assets/images/dark_selected_wood.png");
+  background-color: rgb(167, 61, 61);
   background-size: 100%;
 }
