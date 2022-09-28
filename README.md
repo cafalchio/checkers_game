@@ -1,35 +1,49 @@
 # Checker's Game
 
-[]: # Author: [Matheus Cafalchio](
+#### Author: [Matheus Cafalchio](
 
-The website is the display and portifolio of images and a point of easy contact with Julie Hinos, a freelancer photographer.
+The Checker's Game is a game that consists of a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move.
 
-## Code institute MS1 Project Front End
+<!-- responsive image -->
 
-!["Checker's Game"](/assets/images/readme_game_big.png "Checker's Game")
+<!-- Create table of contents -->
+
+## Concepts
+
+The ideia was to make a game that could be played by one player. The player would play against the computer. The computer would be able to play in two different levels: easy and hard. The easy level would be a random move, while the hard level would be a move that would try to capture the most pieces. The game would be played in any browser, and the player would be able to choose the color of the pieces.
+
+This is my first code in javascript, so I had to learn a lot of things. I had to learn how to manipulate the DOM to create the board, how to use classes, how to use event listerners and the javascipt in general. The game logic was the most difficult part, because I had to think about all the game rules and how to implement them in the code.
+
+## Technologies
+
+      The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
+
+      * HTML
+      * CSS
+      * JavaScript
+      * GitHub
+      * GIMP
 
 ## Features
 
-### Existing Features
+- Landing page
+  The landing page is the first page that the user sees when he enters the game. It has a title, a button to start the game and a button to see the rules of the game.
 
-- **Navigation Bar**
+<!-- add image of each feature -->
 
-<!-- ![Carousel](assets/images/readme/landing.png) -->
+- Interactive game
+  The game is played in the browser. The user can choose the color of the pieces and the level of the computer. The user can also choose to play against another player.
 
-In Mobile with another image:
+- Score board
+  The score board is a table that shows the number of pieces that each player has captured.
 
-<!-- ![Mobile](assets/images/readme/carousel_mobile.png) -->
-
-- **About**
--
-- - **The Footer**
-
-<!-- ![Footer](assets/images/readme/footer.png) -->
+- Rules
+  The rules page shows the rules of the game.
 
 ### Features Left to Implement
 
-- Navegable gallery of images where the user click on one image and navigate on all the images from the same category.
-- Whatsapp live conversation with Julie Hinos.
+- The game could be played in two players mode.
+- A timer could be added to the game.
 
 ## Testing
 
@@ -38,7 +52,7 @@ Also, W3C and Jigsaw validation was used to validate the website HTML and CSS.
 
 W3C Validation:
 
-![W3C](assets/images/readme/W3C.png)
+<!-- ![W3C](assets/images/readme/W3C.png)
 
 Jigsaw Validation:
 
@@ -48,19 +62,26 @@ Lighhouse mobile and desktop testing:
 
 ![LightHouse Mobile](assets/images/readme/light_mobile.png)
 
-![LightHouse Desktop](assets/images/readme/light_desktop.png)
+![LightHouse Desktop](assets/images/readme/light_desktop.png) -->
 
 The major concerns were the speed to load the images. The images were reduced both in size and optimizila image compressor. The speed increased but it is still a concern in slow phone connection.
 So images were converted to jpg format and the quality was reduced.
 
 ### Unfixed Bugs
 
-<!-- Could not find a way to make a button to return to the page after openning a full size image. -->
+- dragging
+  Sometimes the user can drag the background, which is not the desired behavior.
 
 ## Deployment
 
--
+- The game was deployed on GitHub pages.
 
 ## Credits
 
--
+- Stack Overflow
+
+## Acknowledgements
+
+- My mentor for saving me from starting in a wrong way, which would make the project impossible to finish.
+- My colleagues for the slack channel.
+- The student tutors for the help.
