@@ -41,6 +41,7 @@ class Board {
       let blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.draggable = false;
+        item.addEventListener("click", this.pieceClick);
         this.checkpossibleMove(item);
       });
       // promote to king
@@ -51,6 +52,7 @@ class Board {
         // unfreeze white pieces
         whitePieces.forEach((item) => {
           item.draggable = true;
+          item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
       }
@@ -92,6 +94,7 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.draggable = true;
+        // add click here to take
       });
       return true;
     } else {
@@ -161,6 +164,50 @@ class Board {
         squares[i].appendChild(wPiece.get_piece(200 + i));
         squares[i].setAttribute("occupied", "true");
       }
+    }
+  }
+
+  // Method to add click event listeners
+  pieceClick(e) {
+    e.preventDefault();
+    if (e.target.draggable) {
+      // avoid another element to be dragged over
+      if (e.target.classList[0] == "piece") {
+        e.target.classList.add("dragging");
+        const possibleMove = board.checkpossibleMove(e.target);
+        if (possibleMove.length > 0) {
+          possibleMove.forEach((item) => {
+            const square = document.getElementById(item);
+            square.classList.add("possible");
+            square.addEventListener("click", board.movePiece);
+          });
+        } else {
+          e.target.classList.remove("dragging");
+        }
+      } else {
+        return false;
+      }
+    }
+  }
+
+  // add square click to possible squares
+  movePiece(e) {
+    if (e.target.classList[2] == "possible") {
+      const piece = document.querySelector(".dragging");
+      const square = document.getElementById(e.target.id);
+      const oldSquare = document.getElementById(piece.parentNode.id);
+      // move piece
+      square.appendChild(piece);
+      piece.classList.remove("dragging");
+      // remove possible class
+      const dragSquares = document.querySelectorAll(".possible");
+      dragSquares.forEach((item) => {
+        item.classList.remove("possible");
+      });
+      // remove occupied from old square
+      oldSquare.setAttribute("occupied", "false");
+      square.setAttribute("occupied", "true");
+      board.gameControl();
     }
   }
 
@@ -400,7 +447,9 @@ class Board {
       if (opositeSquare.hasChildNodes()) {
         return false;
       } else {
+        // create a object to save piece to take and square to move to and piece to move
         this.needTake.push(movPiece);
+
         return opositeSquareId;
       }
     }
