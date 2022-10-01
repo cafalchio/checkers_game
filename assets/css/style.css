@@ -3,6 +3,7 @@ body {
   background-color: #333;
   margin-top: 0;
   margin-left: 0;
+  margin-right: 0;
 }
 
 #game {
@@ -86,4 +87,18 @@ body {
   background-image: url("../images/dark_selected_wood.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
+}
+
+/* Menu */
+
+#center-menu {
+  display: block;
+  margin: auto;
+  text-align: center;
+  padding-top: 20vh;
+}
+
+.menu {
+  border: 10px;
+  border-color: black;
 }
