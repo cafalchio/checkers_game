@@ -2,7 +2,7 @@ class Board {
   // Method to create the board
   constructor() {
     this.game = document.getElementById("game");
-    this.whitePlay = true;
+    this.colorPlay = "piece-white";
     this.whiteKing = false;
     this.blackKing = false;
     this.needTake = [];
@@ -27,7 +27,8 @@ class Board {
   // Method to start the game
   startGame() {
     this.createPieces();
-    this.addEventListeners();
+    this.addDragEndListener();
+    // this.addEventListeners();
     this.gameControl();
   }
 
@@ -37,7 +38,7 @@ class Board {
     // White move
     //////////////////////////////////////////////////////////////
     console.log("White move");
-    if (this.whitePlay) {
+    if (this.colorPlay == "piece-white") {
       // check if white pieces can take
       // freeze black pieces
       let blackPieces = document.querySelectorAll(".piece-black");
@@ -59,7 +60,7 @@ class Board {
         });
       }
       // set next move to black
-      this.whitePlay = false;
+      this.colorPlay = "piece-black";
     } else {
       ////////////////////////////////////////////////////////////
       // Black move
@@ -84,7 +85,7 @@ class Board {
         });
       }
       // set next move to white
-      this.whitePlay = true;
+      this.colorPlay = "piece-white";
     }
   }
 
@@ -187,19 +188,32 @@ class Board {
     }
   }
 
+  // Method to avoid bug of piece being moved to another square
+  addDragEndListener() {
+    document.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+      const oldPossibleMoves = document.querySelectorAll(".possible");
+      if (oldPossibleMoves.length > 0) {
+        oldPossibleMoves.forEach((item) => {
+          item.classList.remove("possible");
+        });
+        console.log("removed old possible moves");
+      }
+    });
+  }
+
   // Method to add click event listeners
   pieceClick(e) {
     /* Method to add click event listeners to the pieces*/
     e.preventDefault();
-
-    const oldPossibleMove = document.querySelectorAll(".possible");
-    if (oldPossibleMove.length > 0) {
-      oldPossibleMove.forEach((item) => {
+    console.log("click");
+    const oldPossibleMoves = document.querySelectorAll(".possible");
+    if (oldPossibleMoves.length > 0) {
+      oldPossibleMoves.forEach((item) => {
         item.classList.remove("possible");
       });
+      console.log("removed old possible moves");
     }
-    // if clicked on a piece
-    // avoid another element to be dragged over
     if ((e.target.classList[0] == "piece") & e.target.draggable) {
       e.target.classList.add("dragging");
       // check for possible moves
@@ -247,6 +261,7 @@ class Board {
       dragSquares.forEach((item) => {
         item.classList.remove("possible");
       });
+
       // remove occupied from old square
       oldSquare.setAttribute("occupied", "false");
       square.setAttribute("occupied", "true");
@@ -255,124 +270,12 @@ class Board {
     }
   }
 
-  // Method to add event listener
-  addEventListeners() {
-    // dragstarted event
-    document.addEventListener("dragstart", (e) => {
-      // avoid another element to be dragged over
-      if (e.target.classList[0] == "piece") {
-        e.target.classList.add("dragging");
-        const possibleMove = this.checkpossibleMove();
-        if (possibleMove.length > 0) {
-          possibleMove.forEach((item) => {
-            const square = document.getElementById(item);
-            square.classList.add("possible");
-          });
-        } else {
-          e.target.classList.remove("dragging");
-        }
-      } else {
-        return false;
-      }
-    });
-
-    // dragover event
-    document.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      // avoid another element to be dragged over
-      if (e.target.classList[0] == "piece") {
-        let posibleSquares;
-        posibleSquares = game.querySelectorAll(".possible");
-        // get the square where the piece is adding dropId
-        posibleSquares.forEach((item) => {
-          item.addEventListener("dragover", () => {
-            const movPiece = document.querySelector(".dragging");
-            if (!movPiece) {
-              return false;
-            }
-            movPiece.setAttribute("dropId", item.id);
-          });
-        });
-      } else {
-        return false;
-      }
-    });
-
-    // on dragend event
-    document.addEventListener("dragend", (e) => {
-      // avoid another element to be dragged over
-      if (e.target.classList[0] != "piece") {
-        return false;
-      }
-      e.preventDefault();
-      let posibleSquares = game.querySelectorAll(".possible");
-      // check if the piece is dropped in a possible square
-      const movPiece = document.querySelector(".dragging");
-      if (!movPiece) {
-        return false;
-      }
-      if (
-        (movPiece.getAttribute("dropId") != "false") &
-        (posibleSquares.length > 0)
-      ) {
-        // set square occupied to false
-        const parentId = movPiece.parentNode.id;
-        document.getElementById(parentId).setAttribute("occupied", "false");
-        // move the piece but check if the square is occupied
-        const position = document.getElementById(
-          movPiece.getAttribute("dropId")
-        );
-
-        posibleSquares.forEach((item) => {
-          if (item.id == movPiece.getAttribute("dropId")) {
-            position.appendChild(movPiece);
-            position.setAttribute("occupied", "true");
-          }
-        });
-        // check if took piece
-        if (this.takeIt.length > 0) {
-          this.takeIt.forEach((item) => {
-            const piece = item[0];
-            const enemySquare = document.getElementById(item[1]);
-            const opositeSquare = document.getElementById(item[2]);
-            if ((piece == movPiece) & (opositeSquare == position)) {
-              // get enemy piece
-              enemySquare.innerHTML = "";
-              enemySquare.setAttribute("occupied", "false");
-            }
-          });
-        }
-        // set square occupied to true
-        const dropId = movPiece.getAttribute("dropId");
-        if (dropId) {
-          try {
-            const square = document.getElementById(dropId);
-            square.setAttribute("occupied", "true");
-            //change state of game
-            this.gameControl();
-          } catch (error) {
-            return false;
-          }
-        }
-
-        // remove the dragging class
-        e.target.classList.remove("dragging");
-        // remove the dropId attribute
-        movPiece.setAttribute("dropId", "false");
-        // remove the possible class
-        posibleSquares.forEach((item) => {
-          item.classList.remove("possible");
-        });
-      }
-    });
-  }
-
   // Method to check possible targets
   checkpossibleMove(pieceToCheck = null) {
     /* This method will check the possible moves for the piece that is being dragged
-    and will return an array with the possible squares 
+    and will return an array with the possible squares
 
-    Inpunt: pieceToCheck = can be a piece or null, when null, 
+    Inpunt: pieceToCheck = can be a piece or null, when null,
     the method will check the piece that is being dragged
 
     Output: array with the possible squares
