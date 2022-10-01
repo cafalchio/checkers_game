@@ -90,6 +90,11 @@ class Board {
 
   // Method to check if there is forced take for the pieces
   checkIfcanTake(pieces) {
+    /* Check if a piece can take another
+    Input (obj): Piece
+
+    Output (boolean): true if piece can take */
+
     this.needTake = [];
     pieces.forEach((item) => {
       this.checkpossibleMove(item);
@@ -97,6 +102,12 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.draggable = true;
+      });
+      // freeze the rest
+      pieces.forEach((item) => {
+        if (!this.needTake.includes(item)) {
+          item.draggable = false;
+        }
       });
       return true;
     } else {
@@ -106,6 +117,10 @@ class Board {
 
   // Promote to king
   promoteToKing(pieces) {
+    /* Change the piece to king if it reaches the end of the board
+    Input (obj): Piece
+    */
+
     pieces.forEach((item) => {
       if (item.classList.contains("piece-white") & (item.parentNode.id < 8)) {
         item.classList.add("white-king");
@@ -122,6 +137,8 @@ class Board {
 
   // check winner
   checkWinner() {
+    /* Check if there is a winner */
+
     // No pieces left
     const whitePieces = document.querySelectorAll(".piece-white");
     const blackPieces = document.querySelectorAll(".piece-black");
@@ -149,7 +166,8 @@ class Board {
 
   // Method to create pieces
   createPieces() {
-    // start place for pieces
+    /* Create the pieces on the board*/
+
     const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
     const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
     // get squares
@@ -171,8 +189,9 @@ class Board {
 
   // Method to add click event listeners
   pieceClick(e) {
+    /* Method to add click event listeners to the pieces*/
     e.preventDefault();
-    // remove highlight
+
     const oldPossibleMove = document.querySelectorAll(".possible");
     if (oldPossibleMove.length > 0) {
       oldPossibleMove.forEach((item) => {
@@ -350,7 +369,15 @@ class Board {
 
   // Method to check possible targets
   checkpossibleMove(pieceToCheck = null) {
-    // will be used to check if the piece can take another piece
+    /* This method will check the possible moves for the piece that is being dragged
+    and will return an array with the possible squares 
+
+    Inpunt: pieceToCheck = can be a piece or null, when null, 
+    the method will check the piece that is being dragged
+
+    Output: array with the possible squares
+    */
+
     let taking = [];
     // left corners
     const leftCorners = [8, 24, 40, 56];
