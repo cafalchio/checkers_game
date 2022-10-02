@@ -37,6 +37,7 @@ class Board {
     // White move
     //////////////////////////////////////////////////////////////
     console.log("White move");
+    this.checkWinner();
     if (this.colorPlay == "piece-white") {
       // check if white pieces can take
       // freeze black pieces
@@ -64,6 +65,7 @@ class Board {
     } else {
       //////////////////////////////////////////////////////////////
       console.log("Black move");
+      this.checkWinner();
       //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
       whitePieces.forEach((item) => {
@@ -151,19 +153,19 @@ class Board {
       alert("No pieces left White wins!");
       location.reload();
     }
-    // No moves left
-    if (!this.whiteKing) {
-      if (!this.checkMovesLeftBlack()) {
-        alert("No moves left White wins!");
-        location.reload();
-      }
-    }
-    if (!this.blackKing) {
-      if (!this.checkMovesLeftWhite()) {
-        alert("No moves left Black wins!");
-        location.reload();
-      }
-    }
+    // // No moves left
+    // if (!this.whiteKing) {
+    //   if (!this.checkMovesLeftBlack()) {
+    //     alert("No moves left White wins!");
+    //     location.reload();
+    //   }
+    // }
+    // if (!this.blackKing) {
+    //   if (!this.checkMovesLeftWhite()) {
+    //     alert("No moves left Black wins!");
+    //     location.reload();
+    //   }
+    // }
   }
 
   // Method to create pieces
@@ -264,13 +266,13 @@ class Board {
             const enemySquare = document.getElementById(enemySquareId);
             enemySquare.innerHTML = "";
             enemySquare.setAttribute("occupied", "false");
-            // piece.classList.remove("unselected");
-          }
-          if (board.checkIfcanTake([piece])) {
-            board.needTake = [];
-            board.takeIt = [];
-            // player can take again
-            board.invertPlayerTurn();
+            // check if can take again
+            if (board.checkIfcanTake([piece])) {
+              board.needTake = [];
+              board.takeIt = [];
+              // player can take again
+              board.invertPlayerTurn();
+            }
           }
         });
       }
