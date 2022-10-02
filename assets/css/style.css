@@ -74,6 +74,10 @@ body {
   opacity: 1;
 }
 
+.unselected {
+  opacity: 0.5;
+}
+
 .black-king {
   background-image: url("../images/dark_king.png");
   background-color: rgb(77, 114, 9);
