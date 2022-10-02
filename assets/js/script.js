@@ -233,13 +233,22 @@ class Board {
     }
   }
 
+  // invert Player turn
+  invertPlayerTurn() {
+    /* Invert the player turn */
+    const colors = ["piece-white", "piece-black"];
+    if (this.colorPlay == colors[0]) {
+      this.colorPlay = colors[1];
+    } else {
+      this.colorPlay = colors[0];
+    }
+  }
+
   // add square click to possible squares
   movePiece(e) {
-    // colorPlay
-    const colors = ["piece-white", "piece-black"];
-
     if (e.target.classList[2] == "possible") {
       const piece = document.querySelector(".dragging");
+      // const pieceId = piece.id;
       const square = document.getElementById(e.target.id);
       const oldSquare = document.getElementById(piece.parentNode.id);
       // move piece
@@ -255,26 +264,13 @@ class Board {
             const enemySquare = document.getElementById(enemySquareId);
             enemySquare.innerHTML = "";
             enemySquare.setAttribute("occupied", "false");
-
-            // check if there is more pieces to take
-            board.takeIt = [];
+            // piece.classList.remove("unselected");
+          }
+          if (board.checkIfcanTake([piece])) {
             board.needTake = [];
-            piece.classList.remove("unselected");
-
-            // const selector = [".piece-black", ".piece-white"];
-            // if (piece.classList.contains("piece-white")) {
-            //   let pieces = document.querySelectorAll(selector[1]);
-            //   if (board.checkIfcanTake(pieces)) {
-            //     console.log("more pieces to take : " + board.needTake);
-            //     console.log("" + board.colorPlay);
-            //     board.colorPlayer = "pWhite";
-            //   }
-            // } else {
-            //   const pieces = document.querySelectorAll(selector[0]);
-            //   if (board.checkIfcanTake(pieces)) {
-            //     console.log("more pieces to take : " + board.needTake);
-            //   }
-            // }
+            board.takeIt = [];
+            // player can take again
+            board.invertPlayerTurn();
           }
         });
       }
@@ -289,17 +285,7 @@ class Board {
       oldSquare.setAttribute("occupied", "false");
       square.setAttribute("occupied", "true");
       console.log("call game control: " + board.colorPlay);
-      // board.invertPieceColor();
       board.gameControl();
-    }
-  }
-
-  // Method to invert colorPlay
-  invertPieceColor() {
-    if (this.colorPlay == "pWhite") {
-      this.colorPlay = "pBlack";
-    } else {
-      this.colorPlay = "pWhite";
     }
   }
 
