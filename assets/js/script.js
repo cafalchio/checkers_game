@@ -6,6 +6,7 @@ class Board {
     this.whiteKing = false;
     this.blackKing = false;
     this.needTake = [];
+    // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
 
     // create squares
@@ -74,20 +75,96 @@ class Board {
       });
       // check if white piece can be promoted
       this.promoteToKing(whitePieces);
+      let played = setTimeout(board.computerMove, 3000);
+      console.log("PC finished to play");
       // deal with taking by freezing all except the ones that can take
-      const blackPieces = document.querySelectorAll(".piece-black");
-      if (!this.checkIfcanTake(blackPieces)) {
-        // unfreeze black pieces
-        this.needTake = [];
-        blackPieces.forEach((item) => {
-          item.draggable = true;
-          item.classList.remove("unselected");
-          this.checkpossibleMove(item);
-        });
-      }
+      // const blackPieces = document.querySelectorAll(".piece-black");
+      // if (!this.checkIfcanTake(blackPieces)) {
+      //   // unfreeze black pieces
+      //   this.needTake = [];
+      //   blackPieces.forEach((item) => {
+      //     item.draggable = true;
+      //     item.classList.remove("unselected");
+      //     this.checkpossibleMove(item);
+      //   });
+      // }
       // set next move to white
-      this.colorPlay = "piece-white";
+      // console.log("finished to play");
+      // this.colorPlay = "piece-white";
     }
+  }
+
+  computerMove() {
+    /* Computer random move */
+    // go over black pieces
+    let piece;
+    let enemySquareId;
+    let oppositeSquare;
+    let enemySquare;
+
+    const blackPieces = document.querySelectorAll(".piece-black");
+    console.log(blackPieces);
+    blackPieces.forEach((item) => {
+      board.checkpossibleMove(item);
+    });
+    // check if one need to take take it
+    if (board.takeIt.length > 0) {
+      board.takeIt.forEach((item) => {
+        // actualPieceId, enemySquareId, opositeSquareId
+        piece = item[0];
+        enemySquareId = item[1];
+        oppositeSquare = document.getElementById(item[2]);
+        enemySquare = document.getElementById(enemySquareId);
+        // take
+        oppositeSquare.appendChild(piece);
+        oppositeSquare.setAttribute("occupied", "true");
+        enemySquare.innerHTML = "";
+        enemySquare.setAttribute("occupied", "false");
+        // check if can take again
+        // need to implement to move to square that takes more pieces
+        if (board.checkIfcanTake([piece])) {
+          board.needTake = [];
+          board.takeIt = [];
+          board.invertPlayerTurn();
+          board.gameControl();
+        }
+        board.invertPlayerTurn();
+        board.gameControl();
+        return -1;
+      });
+    }
+    let allMoves = {};
+    let tempId = -1;
+    let tempMoves = [];
+    // get all black pieces
+    const blacks = document.querySelectorAll(".piece-black");
+    blacks.forEach((item) => {
+      tempId = item.id;
+      console.log("ids " + tempId);
+      tempMoves = board.checkpossibleMove(item);
+      if (tempMoves.length > 0) {
+        allMoves[tempId] = tempMoves;
+      }
+    });
+    console.log("All moves " + allMoves.keys);
+    // get one random move
+    console.log(allMoves);
+    const keys = Object.keys(allMoves);
+    const pieceId = keys[Math.floor(Math.random() * keys.length)];
+    let possibleMoves = allMoves[pieceId];
+    piece = document.getElementById(pieceId);
+    const pieceSquare = piece.parentNode;
+    console.log("possible moves " + possibleMoves);
+    const toSquareId = possibleMoves[0];
+    console.log("to square id " + toSquareId);
+    // add piece to square
+    const toSquare = document.getElementById(toSquareId);
+    pieceSquare.innerHTML = "";
+    pieceSquare.setAttribute("occupied", "true");
+    toSquare.appendChild(piece);
+    toSquare.setAttribute("occupied", "true");
+    board.invertPlayerTurn();
+    board.gameControl();
   }
 
   // Method to check if there is forced take for the pieces
