@@ -94,75 +94,67 @@ class Board {
     }
   }
 
+  // Method to move the black piece automatically and take if possible
   computerMove() {
-    /* Computer random move */
-    // go over black pieces
-    let piece;
-    let enemySquareId;
-    let oppositeSquare;
-    let enemySquare;
-
+    console.log("PC is playing");
+    // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
-    console.log(blackPieces);
     blackPieces.forEach((item) => {
       board.checkpossibleMove(item);
     });
-    // check if one need to take take it
-    if (board.takeIt.length > 0) {
-      board.takeIt.forEach((item) => {
-        // actualPieceId, enemySquareId, opositeSquareId
-        piece = item[0];
-        enemySquareId = item[1];
-        oppositeSquare = document.getElementById(item[2]);
-        enemySquare = document.getElementById(enemySquareId);
-        // take
-        oppositeSquare.appendChild(piece);
-        oppositeSquare.setAttribute("occupied", "true");
-        enemySquare.innerHTML = "";
-        enemySquare.setAttribute("occupied", "false");
-        // check if can take again
-        // need to implement to move to square that takes more pieces
-        if (board.checkIfcanTake([piece])) {
-          board.needTake = [];
-          board.takeIt = [];
-          board.invertPlayerTurn();
-          board.gameControl();
-        }
-        board.invertPlayerTurn();
-        board.gameControl();
-        return -1;
-      });
+    // check if black pieces can take
+    if (board.checkIfcanTake(blackPieces)) {
+      // take a piece
+      board.takePiece();
+    } else {
+      // move a piece
+      board.moveCoputerPiece();
     }
+  }
+
+  // take a piece
+  takePiece() {
+    // get the piece to take
+    const piece = document.getElementById(this.takeIt[0][0]);
+    console.log(piece.id);
+    // get the square where the piece will be taken
+    const enemySquare = document.getElementById(this.takeIt[0][1]);
+    // get the square where the piece will be taken
+    const opositeSquare = document.getElementById(this.takeIt[0][2]);
+    // move the piece
+    opositeSquare.appendChild(piece);
+    opositeSquare.setAttribute("occupied", "true");
+    // remove the enemy piece
+    enemySquare.innerHTML = "";
+    enemySquare.setAttribute("occupied", "false");
+  }
+
+  // Method to move a piece
+  moveCoputerPiece() {
+    /* Move a random  piece to a random square */
     let allMoves = {};
     let tempId = -1;
     let tempMoves = [];
-    // get all black pieces
-    const blacks = document.querySelectorAll(".piece-black");
-    blacks.forEach((item) => {
-      tempId = item.id;
-      console.log("ids " + tempId);
-      tempMoves = board.checkpossibleMove(item);
+    const blackPieces = document.querySelectorAll(".piece-black");
+    // check pieces that can move
+    blackPieces.forEach((item) => {
+      tempMoves = this.checkpossibleMove(item);
       if (tempMoves.length > 0) {
+        tempId = item.id;
         allMoves[tempId] = tempMoves;
       }
     });
-    console.log("All moves " + allMoves.keys);
-    // get one random move
-    console.log(allMoves);
     const keys = Object.keys(allMoves);
-    const pieceId = keys[Math.floor(Math.random() * keys.length)];
+    const pieceId = keys[Math.floor(Math.random() * keys.length)]; //random piece
     let possibleMoves = allMoves[pieceId];
-    piece = document.getElementById(pieceId);
+    const piece = document.getElementById(pieceId);
     const pieceSquare = piece.parentNode;
-    console.log("possible moves " + possibleMoves);
+    // move the piece
     const toSquareId = possibleMoves[0];
-    console.log("to square id " + toSquareId);
-    // add piece to square
     const toSquare = document.getElementById(toSquareId);
-    pieceSquare.innerHTML = "";
-    pieceSquare.setAttribute("occupied", "true");
     toSquare.appendChild(piece);
     toSquare.setAttribute("occupied", "true");
+    pieceSquare.setAttribute("occupied", "false");
     board.invertPlayerTurn();
     board.gameControl();
   }
