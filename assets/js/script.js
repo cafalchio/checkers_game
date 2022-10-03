@@ -75,7 +75,7 @@ class Board {
       });
       // check if white piece can be promoted
       this.promoteToKing(whitePieces);
-      let played = setTimeout(board.computerMove, 3000);
+      let played = setTimeout(board.computerMove, 1600);
       console.log("PC finished to play");
       // deal with taking by freezing all except the ones that can take
       // const blackPieces = document.querySelectorAll(".piece-black");
