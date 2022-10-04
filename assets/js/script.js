@@ -11,7 +11,7 @@ class Board {
     this.pieceTaking = null; //keeps the piece that is taking
     this.turn = 0;
     this.optionHighlight = false;
-    this.optionSound = false;
+    this.optionSound = true;
 
     // create squares
     let color = "white";
@@ -168,6 +168,7 @@ class Board {
       const oldSquare = document.getElementById(piece.parentNode.id);
       // move piece
       square.appendChild(piece);
+      board.playSound("move");
       // check if took piece
       if (board.takeIt.length > 0) {
         for (let i = 0; i < board.takeIt.length; i++) {
@@ -181,6 +182,7 @@ class Board {
             const enemySquare = document.getElementById(enemySquareId);
             enemySquare.innerHTML = "";
             enemySquare.setAttribute("occupied", "false");
+            board.playSound("take");
             // check if can take again
             board.takeIt = [];
             board.needTake = [];
@@ -233,11 +235,6 @@ class Board {
         const blackPieces = document.querySelectorAll(".piece-black");
         blackPieces.forEach((item) => {
           board.checkpossibleMove(item);
-          let i;
-          while (i < 400) {
-            //force a delay
-            i++;
-          }
         });
       }
     } else {
@@ -271,6 +268,7 @@ class Board {
           piece.parentNode.innerHTML = "";
           oppositeSquare.appendChild(piece);
           enemySquare.innerHTML = "";
+          board.playSound("take");
           enemySquare.setAttribute("occupied", "false");
           oppositeSquare.setAttribute("occupied", "true");
           return true;
@@ -288,6 +286,7 @@ class Board {
         piece.parentNode.innerHTML = "";
         oppositeSquare.appendChild(piece);
         enemySquare.innerHTML = "";
+        board.playSound("take");
         enemySquare.setAttribute("occupied", "false");
         oppositeSquare.setAttribute("occupied", "true");
         return true;
@@ -321,6 +320,7 @@ class Board {
     toSquare.setAttribute("occupied", "true");
     pieceSquare.setAttribute("occupied", "false");
     pieceSquare.innerHTML = "";
+    board.playSound("move");
   }
 
   // Method to check if there is forced take for the pieces
@@ -403,6 +403,24 @@ class Board {
     //     location.reload();
     //   }
     // }
+  }
+
+  // play sound
+  playSound(soundType) {
+    /* Play sound */
+    const moveSound = new Audio("assets/audio/move-self.mp3");
+    const takeSound = new Audio("assets/audio/capture.mp3");
+    const notify = new Audio("assets/audio/notify.mp3");
+
+    if (this.optionSound) {
+      if (soundType == "move") {
+        moveSound.play();
+      } else if (soundType == "take") {
+        takeSound.play();
+      } else if (soundType == "notify") {
+        notify.play();
+      }
+    }
   }
 
   // invert Player turn
@@ -589,6 +607,17 @@ class Piece {
   }
 }
 
+class Menu {
+  constructor() {
+    this.menu = document.createElement("div");
+    this.menu.className = "menu";
+  }
+  get_menu() {
+    return this.menu;
+  }
+}
+
 // create board
 const board = new Board();
+board.playSound();
 board.startGame();
