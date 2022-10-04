@@ -8,8 +8,10 @@ class Board {
     this.needTake = []; // save pieces that need to take
     // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
-    this.taking = false;
+    this.pieceTaking = null; //keeps the piece that is taking
     this.turn = 0;
+    this.optionHighlight = false;
+    this.optionSound = false;
 
     // create squares
     let color = "white";
@@ -59,13 +61,19 @@ class Board {
         // unfreeze white pieces
         whitePieces.forEach((item) => {
           item.draggable = true;
-          item.classList.remove("unselected");
+          // item.classList.remove("unselected");
           item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
+      } else if (this.checkIfcanTake(whitePieces)) {
+        // freeze white pieces
+        whitePieces.forEach((item) => {
+          this.checkpossibleMove(item);
+        });
+        this.colorPlay = "piece-white";
+      } else {
+        this.colorPlay = "piece-black";
       }
-      // set next move to black
-      // this.colorPlay = "piece-black";
     } else {
       //////////////////////////////////////////////////////////////
       this.checkWinner();
@@ -80,11 +88,12 @@ class Board {
       const blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.draggable = true;
-        item.classList.remove("unselected");
+        // item.classList.remove("unselected");
         this.checkpossibleMove(item);
       });
-      let played = setTimeout(board.computerMove, 1600);
+      let _ = setTimeout(board.computerMove, 1600);
     }
+    board.pieceTaking = null;
     console.log(
       "=================================================== " + this.turn
     );
@@ -92,6 +101,8 @@ class Board {
 
   // Method to move the black piece automatically and take if possible
   computerMove() {
+    board.takeIt = [];
+    board.needTake = [];
     console.log("PC is playing");
     // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
@@ -103,19 +114,24 @@ class Board {
       while (board.checkIfcanTake(blackPieces)) {
         // take a piece
         board.takePiece();
-        board.takePiece();
         board.takeIt = [];
-        board.canTake = false;
+        board.needTake = [];
         // get all black pieces
         const blackPieces = document.querySelectorAll(".piece-black");
         blackPieces.forEach((item) => {
           board.checkpossibleMove(item);
+          let i;
+          while (i < 400) {
+            //force a delay
+            i++;
+          }
         });
       }
     } else {
       // move a piece
       board.moveCoputerPiece();
     }
+    this.pieceTaking = null;
     board.invertPlayerTurn();
     console.log("color inverted by Computer Move " + board.colorPlay);
     board.gameControl();
@@ -128,23 +144,42 @@ class Board {
     let piece;
     let enemySquare;
     let oppositeSquare;
-    // board.takeIt.forEach((item) => {
-    for (let i = 0; i < board.takeIt.length; i++) {
-      group = board.takeIt[i];
-      piece = group[0];
-      enemySquare = document.getElementById(group[1]);
-      oppositeSquare = document.getElementById(group[2]);
-      // move the piece
-      piece.parentNode.innerHTML = "";
-      oppositeSquare.appendChild(piece);
-      enemySquare.innerHTML = "";
-      enemySquare.setAttribute("occupied", "false");
-      oppositeSquare.setAttribute("occupied", "true");
-      break;
+
+    // if it is retaking
+    if (board.pieceTaking != null) {
+      console.log("RETAKING");
+      for (let i = 0; i < board.takeIt.length; i++) {
+        group = board.takeIt[i];
+        if (group[0] == this.pieceTaking) {
+          piece = group[0];
+          enemySquare = document.getElementById(group[1]);
+          oppositeSquare = document.getElementById(group[2]);
+          // move the piece
+          piece.parentNode.innerHTML = "";
+          oppositeSquare.appendChild(piece);
+          enemySquare.innerHTML = "";
+          enemySquare.setAttribute("occupied", "false");
+          oppositeSquare.setAttribute("occupied", "true");
+          return true;
+        }
+      }
+    } else {
+      // if it is the first time
+      for (let i = 0; i < board.takeIt.length; i++) {
+        group = board.takeIt[i];
+        piece = group[0];
+        this.pieceTaking = piece;
+        enemySquare = document.getElementById(group[1]);
+        oppositeSquare = document.getElementById(group[2]);
+        // move the piece
+        piece.parentNode.innerHTML = "";
+        oppositeSquare.appendChild(piece);
+        enemySquare.innerHTML = "";
+        enemySquare.setAttribute("occupied", "false");
+        oppositeSquare.setAttribute("occupied", "true");
+        return true;
+      }
     }
-    // board.invertPlayerTurn();
-    // console.log("color inverted by PC " + board.colorPlay);
-    this.taking = true;
   }
 
   // Method to move a piece
@@ -189,13 +224,17 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.draggable = true;
-        item.classList.remove("unselected");
+        if (item.classList.contains("piece-white") & this.optionHighlight) {
+          item.classList.remove("unselected");
+        }
       });
       // freeze the rest
       pieces.forEach((item) => {
         if (!this.needTake.includes(item)) {
           item.draggable = false;
-          item.classList.add("unselected");
+          if (item.classList.contains("piece-white") & this.optionHighlight) {
+            item.classList.add("unselected");
+          }
         }
       });
       return true;
