@@ -65,16 +65,9 @@ class Board {
           item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
-      } else if (this.checkIfcanTake(whitePieces)) {
-        // freeze white pieces
-        whitePieces.forEach((item) => {
-          this.checkpossibleMove(item);
-        });
-        this.colorPlay = "piece-white";
-      } else {
-        this.colorPlay = "piece-black";
       }
-    } else {
+      // this.invertPlayerTurn();
+    } else if (this.colorPlay == "piece-black") {
       //////////////////////////////////////////////////////////////
       this.checkWinner();
       //freeze white pieces
@@ -97,6 +90,126 @@ class Board {
     console.log(
       "=================================================== " + this.turn
     );
+  }
+
+  // Method to create pieces
+  createPieces() {
+    /* Create the pieces on the board*/
+
+    const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
+    const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
+    // get squares
+    const squares = document.querySelectorAll(".square");
+    // create pieces
+    for (let i = 0; i < 64; i++) {
+      const bPiece = new Piece("black");
+      const wPiece = new Piece("white");
+      if (blackPieces.includes(i)) {
+        squares[i].appendChild(bPiece.get_piece(100 + i));
+        squares[i].setAttribute("occupied", "true");
+      }
+      if (whitePieces.includes(i)) {
+        squares[i].appendChild(wPiece.get_piece(200 + i));
+        squares[i].setAttribute("occupied", "true");
+      }
+    }
+  }
+
+  // Method to avoid bug of piece being moved to another square
+  removeDragging() {
+    document.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+      const oldPossibleMoves = document.querySelectorAll(".possible");
+      if (oldPossibleMoves.length > 0) {
+        oldPossibleMoves.forEach((item) => {
+          item.classList.remove("possible");
+        });
+      }
+    });
+  }
+
+  // Method to add click event listeners
+  pieceClick(e) {
+    /* Method to add click event listeners to the pieces*/
+    const dragging = document.querySelectorAll(".dragging");
+    dragging.forEach((item) => {
+      item.classList.remove("dragging");
+    });
+    const oldPossibleMoves = document.querySelectorAll(".possible");
+    if (oldPossibleMoves.length > 0) {
+      oldPossibleMoves.forEach((item) => {
+        item.classList.remove("possible");
+      });
+    }
+    if ((e.target.classList[0] == "piece") & e.target.draggable) {
+      e.target.classList.add("dragging");
+      // check for possible moves
+      const possibleMove = board.checkpossibleMove(e.target);
+      if (possibleMove.length > 0) {
+        possibleMove.forEach((item) => {
+          const square = document.getElementById(item);
+          square.classList.add("possible");
+          square.addEventListener("click", board.movePiece);
+        });
+      } else {
+        e.target.classList.remove("dragging");
+      }
+    } else {
+      return false;
+    }
+  }
+
+  // add square click to possible squares
+  movePiece(e) {
+    if (e.target.classList[2] == "possible") {
+      const piece = document.querySelector(".dragging");
+      // const pieceId = piece.id;
+      const square = document.getElementById(e.target.id);
+      const oldSquare = document.getElementById(piece.parentNode.id);
+      // move piece
+      square.appendChild(piece);
+      // check if took piece
+      if (board.takeIt.length > 0) {
+        for (let i = 0; i < board.takeIt.length; i++) {
+          let item = board.takeIt[i];
+          // board.takeIt.forEach((item) => {
+          const movPiece = item[0];
+          const enemySquareId = item[1];
+          const opositeSquare = document.getElementById(item[2]);
+          if ((movPiece == piece) & (opositeSquare == square)) {
+            // remove enemy piece
+            const enemySquare = document.getElementById(enemySquareId);
+            enemySquare.innerHTML = "";
+            enemySquare.setAttribute("occupied", "false");
+            // check if can take again
+            board.takeIt = [];
+            board.needTake = [];
+            //get white pieces
+            if (board.checkIfcanTake([piece])) {
+              console.log("White can take again!!");
+              board.needTake = [];
+              board.takeIt = [];
+              // player can take again
+              board.invertPlayerTurn();
+              console.log("color inverted User " + board.colorPlay);
+              break;
+            }
+          }
+        }
+      }
+      piece.classList.remove("dragging");
+      // remove possible class
+      const dragSquares = document.querySelectorAll(".possible");
+      dragSquares.forEach((item) => {
+        item.classList.remove("possible");
+      });
+      // remove occupied from old square
+      oldSquare.setAttribute("occupied", "false");
+      square.setAttribute("occupied", "true");
+      board.invertPlayerTurn();
+      console.log("color inverted User " + board.colorPlay);
+      board.gameControl();
+    }
   }
 
   // Method to move the black piece automatically and take if possible
@@ -292,73 +405,6 @@ class Board {
     // }
   }
 
-  // Method to create pieces
-  createPieces() {
-    /* Create the pieces on the board*/
-
-    const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
-    const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
-    // get squares
-    const squares = document.querySelectorAll(".square");
-    // create pieces
-    for (let i = 0; i < 64; i++) {
-      const bPiece = new Piece("black");
-      const wPiece = new Piece("white");
-      if (blackPieces.includes(i)) {
-        squares[i].appendChild(bPiece.get_piece(100 + i));
-        squares[i].setAttribute("occupied", "true");
-      }
-      if (whitePieces.includes(i)) {
-        squares[i].appendChild(wPiece.get_piece(200 + i));
-        squares[i].setAttribute("occupied", "true");
-      }
-    }
-  }
-
-  // Method to avoid bug of piece being moved to another square
-  removeDragging() {
-    document.addEventListener("dragstart", (event) => {
-      event.preventDefault();
-      const oldPossibleMoves = document.querySelectorAll(".possible");
-      if (oldPossibleMoves.length > 0) {
-        oldPossibleMoves.forEach((item) => {
-          item.classList.remove("possible");
-        });
-      }
-    });
-  }
-
-  // Method to add click event listeners
-  pieceClick(e) {
-    /* Method to add click event listeners to the pieces*/
-    const dragging = document.querySelectorAll(".dragging");
-    dragging.forEach((item) => {
-      item.classList.remove("dragging");
-    });
-    const oldPossibleMoves = document.querySelectorAll(".possible");
-    if (oldPossibleMoves.length > 0) {
-      oldPossibleMoves.forEach((item) => {
-        item.classList.remove("possible");
-      });
-    }
-    if ((e.target.classList[0] == "piece") & e.target.draggable) {
-      e.target.classList.add("dragging");
-      // check for possible moves
-      const possibleMove = board.checkpossibleMove(e.target);
-      if (possibleMove.length > 0) {
-        possibleMove.forEach((item) => {
-          const square = document.getElementById(item);
-          square.classList.add("possible");
-          square.addEventListener("click", board.movePiece);
-        });
-      } else {
-        e.target.classList.remove("dragging");
-      }
-    } else {
-      return false;
-    }
-  }
-
   // invert Player turn
   invertPlayerTurn() {
     /* Invert the player turn */
@@ -367,51 +413,6 @@ class Board {
       this.colorPlay = colors[1];
     } else {
       this.colorPlay = colors[0];
-    }
-  }
-
-  // add square click to possible squares
-  movePiece(e) {
-    if (e.target.classList[2] == "possible") {
-      const piece = document.querySelector(".dragging");
-      // const pieceId = piece.id;
-      const square = document.getElementById(e.target.id);
-      const oldSquare = document.getElementById(piece.parentNode.id);
-      // move piece
-      square.appendChild(piece);
-      // check if took piece
-      if (board.takeIt.length > 0) {
-        board.takeIt.forEach((item) => {
-          const movPiece = item[0];
-          const enemySquareId = item[1];
-          const opositeSquare = document.getElementById(item[2]);
-          if ((movPiece == piece) & (opositeSquare == square)) {
-            // remove enemy piece
-            const enemySquare = document.getElementById(enemySquareId);
-            enemySquare.innerHTML = "";
-            enemySquare.setAttribute("occupied", "false");
-            // check if can take again
-            if (board.checkIfcanTake([piece])) {
-              board.needTake = [];
-              board.takeIt = [];
-              // player can take again
-            }
-          }
-        });
-      }
-      piece.classList.remove("dragging");
-      // remove possible class
-      const dragSquares = document.querySelectorAll(".possible");
-      dragSquares.forEach((item) => {
-        item.classList.remove("possible");
-      });
-
-      // remove occupied from old square
-      oldSquare.setAttribute("occupied", "false");
-      square.setAttribute("occupied", "true");
-      board.invertPlayerTurn();
-      console.log("color inverted User " + board.colorPlay);
-      board.gameControl();
     }
   }
 
