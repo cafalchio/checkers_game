@@ -210,6 +210,7 @@ class Board {
       square.setAttribute("occupied", "true");
       board.invertPlayerTurn();
       console.log("color inverted User " + board.colorPlay);
+      this.pieceTaking = null;
       board.gameControl();
     }
   }
@@ -261,9 +262,6 @@ class Board {
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
-          const sleep = (time = 100) => {
-            return new Promise((resolve) => setTimeout(resolve, time));
-          };
           piece = group[0];
           enemySquare = document.getElementById(group[1]);
           oppositeSquare = document.getElementById(group[2]);
@@ -612,15 +610,40 @@ class Piece {
 
 class Menu {
   constructor() {
-    this.menu = document.createElement("div");
-    this.menu.className = "menu";
+    this.game = document.getElementById("game");
   }
-  get_menu() {
-    return this.menu;
+  createElements() {
+    this.game.style.border = "0px";
+    this.outer = document.createElement("div").classList.add("outer");
+    this.playButton = document
+      .createElement("div")
+      .classList.add("option-play");
+    this.playButton.innerHTML = "test";
+    this.optionsButton = document
+      .createElement("div")
+      .classList.add("option-options");
+    this.rulesButton = document
+      .createElement("div")
+      .classList.add("option-rules");
+    this.aboutButton = document
+      .createElement("div")
+      .classList.add("option-about");
+
+    this.outer.appendChild(this.playButton);
+    this.outer.appendChild(this.optionsButton);
+    this.outer.appendChild(this.rulesButton);
+    this.outer.appendChild(this.aboutButton);
+    this.game.appendChild(this.outer);
+  }
+  deleteMenu() {
+    this.game.innerHTML = "";
   }
 }
 
+// game menu
+const menu = new Menu();
+menu.createElements();
 // create board
-const board = new Board();
-board.playSound();
-board.startGame();
+// const board = new Board();
+// board.playSound();
+// board.startGame();
