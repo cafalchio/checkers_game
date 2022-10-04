@@ -235,11 +235,6 @@ class Board {
         const blackPieces = document.querySelectorAll(".piece-black");
         blackPieces.forEach((item) => {
           board.checkpossibleMove(item);
-          let i;
-          while (i < 400) {
-            //force a delay
-            i++;
-          }
         });
       }
     } else {
@@ -416,9 +411,7 @@ class Board {
     const moveSound = new Audio("assets/audio/move-self.mp3");
     const takeSound = new Audio("assets/audio/capture.mp3");
     const notify = new Audio("assets/audio/notify.mp3");
-    moveSound.volume = 1;
-    takeSound.volume = 1;
-    notify.volume = 1;
+
     if (this.optionSound) {
       if (soundType == "move") {
         moveSound.play();
@@ -611,6 +604,16 @@ class Piece {
   get_piece(id) {
     this.piece.id = id;
     return this.piece;
+  }
+}
+
+class Menu {
+  constructor() {
+    this.menu = document.createElement("div");
+    this.menu.className = "menu";
+  }
+  get_menu() {
+    return this.menu;
   }
 }
 
