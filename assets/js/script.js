@@ -641,9 +641,8 @@ class Menu {
 }
 
 // game menu
-const menu = new Menu();
-menu.createElements();
+// const menu = new Menu();
+// menu.createElements();
 // create board
-// const board = new Board();
-// board.playSound();
-// board.startGame();
+const board = new Board();
+board.startGame();
