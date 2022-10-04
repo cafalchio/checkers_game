@@ -261,6 +261,9 @@ class Board {
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
+          const sleep = (time = 100) => {
+            return new Promise((resolve) => setTimeout(resolve, time));
+          };
           piece = group[0];
           enemySquare = document.getElementById(group[1]);
           oppositeSquare = document.getElementById(group[2]);
