@@ -12,6 +12,7 @@ class Board {
     this.turn = 0;
     this.optionHighlight = false;
     this.optionSound = true;
+    this.menuIsOpen = true;
 
     // create squares
     let color = "white";
@@ -589,6 +590,61 @@ class Board {
       }
     }
   }
+
+  // Method to create initial menu
+  createMenu() {
+    // create menu
+    const menu = document.createElement("div");
+    menu.id = "menu";
+    menu.classList.add("menu");
+    menu.innerHTML = `
+    <div class="menu-item" id="new-game">Play Now!</div>
+    <div class="menu-item" id="options">Options</div>
+    <div class="menu-item" id="rules">Rules</div>
+    <div class="menu-item" id="results">Results</div>
+    <div class="menu-item" id="hide">Hide Me!</div>
+    `;
+    // display menu on top of the board
+    this.game.appendChild(menu);
+
+    // add event listeners
+    document.getElementById("new-game").addEventListener("click", () => {
+      board.hiddenMenu();
+      this.menuIsOpen = false;
+      board.startGame();
+    });
+    document.getElementById("options").addEventListener("click", () => {
+      this.options();
+    });
+    document.getElementById("rules").addEventListener("click", () => {
+      this.rules();
+    });
+    document.getElementById("results").addEventListener("click", () => {
+      this.about();
+    });
+    document.getElementById("hide").addEventListener("click", () => {
+      board.hiddenMenu();
+      this.menuIsOpen = false;
+    });
+  }
+
+  hiddenMenu() {
+    const smallMenu = document.createElement("div");
+    smallMenu.classList.add("menu-hidden");
+    this.game.appendChild(smallMenu);
+    this.game.removeChild(document.getElementById("menu"));
+    smallMenu.innerHTML = `<`;
+
+    smallMenu.addEventListener("click", () => {
+      if (!board.menuIsOpen) {
+        board.createMenu();
+        board.menuIsOpen = true;
+      } else if (board.menuIsOpen) {
+        this.hiddenMenu();
+        board.menuIsOpen = false;
+      }
+    });
+  }
 }
 
 // Piece class
@@ -608,41 +664,10 @@ class Piece {
   }
 }
 
-class Menu {
-  constructor() {
-    this.game = document.getElementById("game");
-  }
-  createElements() {
-    this.game.style.border = "0px";
-    this.outer = document.createElement("div").classList.add("outer");
-    this.playButton = document
-      .createElement("div")
-      .classList.add("option-play");
-    this.playButton.innerHTML = "test";
-    this.optionsButton = document
-      .createElement("div")
-      .classList.add("option-options");
-    this.rulesButton = document
-      .createElement("div")
-      .classList.add("option-rules");
-    this.aboutButton = document
-      .createElement("div")
-      .classList.add("option-about");
-
-    this.outer.appendChild(this.playButton);
-    this.outer.appendChild(this.optionsButton);
-    this.outer.appendChild(this.rulesButton);
-    this.outer.appendChild(this.aboutButton);
-    this.game.appendChild(this.outer);
-  }
-  deleteMenu() {
-    this.game.innerHTML = "";
-  }
-}
-
 // game menu
-// const menu = new Menu();
 // menu.createElements();
 // create board
 const board = new Board();
-board.startGame();
+board.createMenu();
+// board.hiddenMenu();
+// board.startGame();
