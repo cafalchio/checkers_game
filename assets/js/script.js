@@ -5,9 +5,13 @@ class Board {
     this.colorPlay = "piece-white";
     this.whiteKing = false;
     this.blackKing = false;
-    this.needTake = [];
+    this.needTake = []; // save pieces that need to take
     // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
+    this.pieceTaking = null; //keeps the piece that is taking
+    this.turn = 0;
+    this.optionHighlight = false;
+    this.optionSound = false;
 
     // create squares
     let color = "white";
@@ -34,10 +38,11 @@ class Board {
 
   // Method to control the game turns
   gameControl() {
+    console.log("Game control: " + this.colorPlay);
+    this.turn += 1;
     //////////////////////////////////////////////////////////////
     // White move
     //////////////////////////////////////////////////////////////
-    console.log("White move");
     this.checkWinner();
     if (this.colorPlay == "piece-white") {
       // check if white pieces can take
@@ -56,16 +61,21 @@ class Board {
         // unfreeze white pieces
         whitePieces.forEach((item) => {
           item.draggable = true;
-          item.classList.remove("unselected");
+          // item.classList.remove("unselected");
           item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
+      } else if (this.checkIfcanTake(whitePieces)) {
+        // freeze white pieces
+        whitePieces.forEach((item) => {
+          this.checkpossibleMove(item);
+        });
+        this.colorPlay = "piece-white";
+      } else {
+        this.colorPlay = "piece-black";
       }
-      // set next move to black
-      this.colorPlay = "piece-black";
     } else {
       //////////////////////////////////////////////////////////////
-      console.log("Black move");
       this.checkWinner();
       //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
@@ -75,27 +85,24 @@ class Board {
       });
       // check if white piece can be promoted
       this.promoteToKing(whitePieces);
-      let played = setTimeout(board.computerMove, 1600);
-      console.log("PC finished to play");
-      // deal with taking by freezing all except the ones that can take
-      // const blackPieces = document.querySelectorAll(".piece-black");
-      // if (!this.checkIfcanTake(blackPieces)) {
-      //   // unfreeze black pieces
-      //   this.needTake = [];
-      //   blackPieces.forEach((item) => {
-      //     item.draggable = true;
-      //     item.classList.remove("unselected");
-      //     this.checkpossibleMove(item);
-      //   });
-      // }
-      // set next move to white
-      // console.log("finished to play");
-      // this.colorPlay = "piece-white";
+      const blackPieces = document.querySelectorAll(".piece-black");
+      blackPieces.forEach((item) => {
+        item.draggable = true;
+        // item.classList.remove("unselected");
+        this.checkpossibleMove(item);
+      });
+      let _ = setTimeout(board.computerMove, 1600);
     }
+    board.pieceTaking = null;
+    console.log(
+      "=================================================== " + this.turn
+    );
   }
 
   // Method to move the black piece automatically and take if possible
   computerMove() {
+    board.takeIt = [];
+    board.needTake = [];
     console.log("PC is playing");
     // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
@@ -104,34 +111,79 @@ class Board {
     });
     // check if black pieces can take
     if (board.checkIfcanTake(blackPieces)) {
-      // take a piece
-      board.takePiece();
+      while (board.checkIfcanTake(blackPieces)) {
+        // take a piece
+        board.takePiece();
+        board.takeIt = [];
+        board.needTake = [];
+        // get all black pieces
+        const blackPieces = document.querySelectorAll(".piece-black");
+        blackPieces.forEach((item) => {
+          board.checkpossibleMove(item);
+          let i;
+          while (i < 400) {
+            //force a delay
+            i++;
+          }
+        });
+      }
     } else {
       // move a piece
       board.moveCoputerPiece();
     }
+    this.pieceTaking = null;
+    board.invertPlayerTurn();
+    console.log("color inverted by Computer Move " + board.colorPlay);
+    board.gameControl();
   }
 
   // take a piece
   takePiece() {
-    // get the piece to take
-    const piece = document.getElementById(this.takeIt[0][0]);
-    console.log(piece.id);
-    // get the square where the piece will be taken
-    const enemySquare = document.getElementById(this.takeIt[0][1]);
-    // get the square where the piece will be taken
-    const opositeSquare = document.getElementById(this.takeIt[0][2]);
-    // move the piece
-    opositeSquare.appendChild(piece);
-    opositeSquare.setAttribute("occupied", "true");
-    // remove the enemy piece
-    enemySquare.innerHTML = "";
-    enemySquare.setAttribute("occupied", "false");
+    /* Take a piece */
+    let group;
+    let piece;
+    let enemySquare;
+    let oppositeSquare;
+
+    // if it is retaking
+    if (board.pieceTaking != null) {
+      console.log("RETAKING");
+      for (let i = 0; i < board.takeIt.length; i++) {
+        group = board.takeIt[i];
+        if (group[0] == this.pieceTaking) {
+          piece = group[0];
+          enemySquare = document.getElementById(group[1]);
+          oppositeSquare = document.getElementById(group[2]);
+          // move the piece
+          piece.parentNode.innerHTML = "";
+          oppositeSquare.appendChild(piece);
+          enemySquare.innerHTML = "";
+          enemySquare.setAttribute("occupied", "false");
+          oppositeSquare.setAttribute("occupied", "true");
+          return true;
+        }
+      }
+    } else {
+      // if it is the first time
+      for (let i = 0; i < board.takeIt.length; i++) {
+        group = board.takeIt[i];
+        piece = group[0];
+        this.pieceTaking = piece;
+        enemySquare = document.getElementById(group[1]);
+        oppositeSquare = document.getElementById(group[2]);
+        // move the piece
+        piece.parentNode.innerHTML = "";
+        oppositeSquare.appendChild(piece);
+        enemySquare.innerHTML = "";
+        enemySquare.setAttribute("occupied", "false");
+        oppositeSquare.setAttribute("occupied", "true");
+        return true;
+      }
+    }
   }
 
   // Method to move a piece
   moveCoputerPiece() {
-    /* Move a random  piece to a random square */
     let allMoves = {};
     let tempId = -1;
     let tempMoves = [];
@@ -155,8 +207,7 @@ class Board {
     toSquare.appendChild(piece);
     toSquare.setAttribute("occupied", "true");
     pieceSquare.setAttribute("occupied", "false");
-    board.invertPlayerTurn();
-    board.gameControl();
+    pieceSquare.innerHTML = "";
   }
 
   // Method to check if there is forced take for the pieces
@@ -173,13 +224,17 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.draggable = true;
-        item.classList.remove("unselected");
+        if (item.classList.contains("piece-white") & this.optionHighlight) {
+          item.classList.remove("unselected");
+        }
       });
       // freeze the rest
       pieces.forEach((item) => {
         if (!this.needTake.includes(item)) {
           item.draggable = false;
-          item.classList.add("unselected");
+          if (item.classList.contains("piece-white") & this.optionHighlight) {
+            item.classList.add("unselected");
+          }
         }
       });
       return true;
@@ -340,7 +395,6 @@ class Board {
               board.needTake = [];
               board.takeIt = [];
               // player can take again
-              board.invertPlayerTurn();
             }
           }
         });
@@ -355,7 +409,8 @@ class Board {
       // remove occupied from old square
       oldSquare.setAttribute("occupied", "false");
       square.setAttribute("occupied", "true");
-      console.log("call game control: " + board.colorPlay);
+      board.invertPlayerTurn();
+      console.log("color inverted User " + board.colorPlay);
       board.gameControl();
     }
   }
