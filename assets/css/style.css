@@ -4,6 +4,7 @@ body {
   margin-top: 0;
   margin-left: 0;
   margin-right: 0;
+  z-index: 0;
 }
 
 #game {
@@ -14,6 +15,7 @@ body {
   box-shadow: 2vmin 2vmin 0.4vmin rgb(14, 8, 6);
   aspect-ratio: auto 1 / 1;
   -webkit-user-drag: none;
+  z-index: 1;
 }
 .square {
   display: inline-block;
@@ -23,6 +25,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 .white {
@@ -30,14 +33,16 @@ body {
   background-image: url("../images/white_wood.png");
   background-color: rgb(221, 221, 221);
   background-size: 100%;
+  z-index: 1;
 }
 .black {
   /* pointer-events: unset; */
   background-image: url("../images/dark_wood.png");
   background-color: rgb(15, 15, 15);
   background-size: 100%;
+  z-index: 1;
 }
-.center {
+#center {
   display: block;
   margin: auto;
   text-align: center;
@@ -48,6 +53,7 @@ body {
   width: max(17px, 7.5vmin);
   height: max(17px, 7.5vmin);
   box-shadow: 0.8vmin 0.8vmin 0.3vmin rgb(20, 11, 7);
+  z-index: 1;
 }
 
 .piece-white {
@@ -56,6 +62,7 @@ body {
   background-size: 100%;
   overflow: visible;
   opacity: 1;
+  z-index: 1;
 }
 .white-king {
   background-image: url("../images/white_king.png");
@@ -63,6 +70,7 @@ body {
   background-size: 100%;
   overflow: visible;
   opacity: 1;
+  z-index: 1;
 }
 
 .piece-black {
@@ -72,10 +80,12 @@ body {
   background-position: center;
   overflow: visible;
   opacity: 1;
+  z-index: 1;
 }
 
 .unselected {
   opacity: 0.5;
+  z-index: 1;
 }
 
 .black-king {
@@ -85,24 +95,80 @@ body {
   background-position: center;
   overflow: visible;
   opacity: 1;
+  z-index: 1;
 }
 
 .black.possible {
   background-image: url("../images/dark_selected_wood.png");
   background-color: rgb(167, 61, 61);
   background-size: 100%;
+  z-index: 1;
 }
 
 /* Menu */
 
-#center-menu {
-  display: block;
-  margin: auto;
-  text-align: center;
-  padding-top: 20vh;
+.menu {
+  margin: 0;
+  margin-left: 20vmin;
+  margin-top: 10vmin;
+  width: max(120px, 40vmin);
+  height: max(160px, 60vmin);
+  border: 1px solid rgb(255, 255, 255);
+  box-shadow: 0.8vmin 0.8vmin 1.2vmin black;
+  background-color: rgb(155, 91, 46);
+  z-index: 2;
+  opacity: 0.8;
+  filter: alpha(opacity=90);
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
 }
 
-.menu {
-  border: 10px;
-  border-color: black;
+.menu-hidden {
+  margin-left: 82.5vmin;
+  margin-top: -2vmin;
+  width: max(12px, 4vmin);
+  height: max(12px, 4vmin);
+  border: 1px solid rgb(255, 255, 255);
+  box-shadow: 0.8vmin 0.8vmin 1.2vmin black;
+  background-color: rgb(80, 40, 11);
+  cursor: pointer;
+  position: absolute;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 3.1vmin;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  z-index: 2;
+}
+
+.menu-item {
+  margin: 0;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  letter-spacing: 0.2rem;
+  margin-top: 2vmin;
+  font-size: 5vmin;
+  color: #ffffff;
+  z-index: 2;
+}
+.menu-item:hover {
+  font-size: 5.25vmin;
+  letter-spacing: 0.25rem;
+}
+#new-game {
+  margin-top: 5vmin;
+}
+#options {
+  margin-top: 5vmin;
+}
+
+#rules {
+  margin-top: 5vmin;
+}
+
+#results {
+  margin-top: 5vmin;
+}
+
+#hide {
+  margin-top: 5vmin;
 }
