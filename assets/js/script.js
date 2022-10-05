@@ -600,9 +600,8 @@ class Board {
     menu.id = "menu";
     menu.classList.add("menu");
     menu.innerHTML = `
-    
     <div id="close-menu"><i class="far fa-times-circle"></i></div>
-    <div class="menu-item" id="new-game">Play Now!</div>
+    <div class="menu-item" id="new-game">New Game!</div>
     <div class="menu-item" id="options">Options</div>
     <div class="menu-item" id="rules">Rules</div>
     <div class="menu-item" id="results">Results</div>
@@ -625,13 +624,13 @@ class Board {
       }
     });
     document.getElementById("options").addEventListener("click", () => {
-      this.options();
+      board.options();
     });
     document.getElementById("rules").addEventListener("click", () => {
-      this.rules();
+      board.rules();
     });
     document.getElementById("results").addEventListener("click", () => {
-      this.about();
+      board.about();
     });
   }
   //Hidden menu method
@@ -652,8 +651,31 @@ class Board {
       }
     });
   }
-}
 
+  // Menu options
+  options() {
+    //deleto new game, rules and results, coloco o options no lugar de new game
+    const menu = document.getElementById("menu");
+    menu.innerHTML = `
+    <div id="close-menu"><i class="far fa-times-circle"></i></div>
+    <div class="menu-item" id="options">Options</div>
+    <div class="submenu" id="sound">Sound On/Off
+    <label class="switch " id="highlight">
+    <input type="checkbox" checked>
+    <span class="slider round"></span>
+    </label></div>
+    <div class="submenu" id="highlight">Show Piece Take 
+    <label class="switch" id="sound">
+    <input type="checkbox" checked>
+    <span class="slider round"></span>
+    </label></div>
+    `;
+  }
+  // Menu rules
+  rules() {}
+  // Menu results
+  results() {}
+}
 // Piece class to create pieces
 class Piece {
   constructor(color) {
