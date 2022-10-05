@@ -743,6 +743,7 @@ class Board {
     menu.style.display = "flex";
     menu.style.flexDirection = "column";
     menu.style.fit;
+    menu.style.overflow = "scroll";
     menu.style.color = "white";
     menu.innerHTML = `<div id="close-menu"><i class="far fa-times-circle"></i></div>
                     <div class="menu-item" id="options">Rules</div>
