@@ -142,19 +142,16 @@ body {
 }
 
 .menu-hidden {
-  margin-left: 82.5vmin;
-  margin-top: -2vmin;
+  margin-left: 83.5vmin;
+  margin-top: -2.5vmin;
   text-align: justify;
   width: max(12px, 4vmin);
   height: max(12px, 4vmin);
-  border: 1px solid rgb(255, 255, 255);
-  box-shadow: 0.8vmin 0.8vmin 1.2vmin black;
-  background-color: rgb(80, 40, 11);
   cursor: pointer;
   position: absolute;
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 3.1vmin;
-  color: rgb(255, 255, 255);
+  /* font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; */
+  font-size: 4.5vmin;
+  color: rgb(155, 91, 46);
   text-align: center;
   z-index: 2;
 }

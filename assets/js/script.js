@@ -610,18 +610,19 @@ class Board {
     this.game.appendChild(menu);
 
     document.getElementById("close-menu").addEventListener("click", () => {
-      if ((this.isPlaying = true)) {
-        this.isPlaying = false;
-      }
       board.hiddenMenu();
       this.menuIsOpen = false;
-      board.startGame();
     });
-
     document.getElementById("new-game").addEventListener("click", () => {
-      board.hiddenMenu();
-      this.menuIsOpen = false;
-      board.startGame();
+      if (board.isPlaying == true) {
+        board.hiddenMenu();
+        board.menuIsOpen = false;
+      } else {
+        board.startGame();
+        board.isPlaying = true;
+        board.menuIsOpen = false;
+        board.hiddenMenu();
+      }
     });
     document.getElementById("options").addEventListener("click", () => {
       this.options();
@@ -632,10 +633,6 @@ class Board {
     document.getElementById("results").addEventListener("click", () => {
       this.about();
     });
-    document.getElementById("hide").addEventListener("click", () => {
-      board.hiddenMenu();
-      this.menuIsOpen = false;
-    });
   }
   //Hidden menu method
   hiddenMenu() {
@@ -643,7 +640,7 @@ class Board {
     smallMenu.classList.add("menu-hidden");
     this.game.appendChild(smallMenu);
     this.game.removeChild(document.getElementById("menu"));
-    smallMenu.innerHTML = `<`;
+    smallMenu.innerHTML = `<i class="fa fa-cog" aria-hidden="true"></i>`;
 
     smallMenu.addEventListener("click", () => {
       if (!board.menuIsOpen) {
