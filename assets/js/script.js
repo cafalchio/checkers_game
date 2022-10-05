@@ -1,3 +1,4 @@
+//Board class that create and command the game
 class Board {
   // Method to create the board
   constructor() {
@@ -13,6 +14,7 @@ class Board {
     this.optionHighlight = false;
     this.optionSound = true;
     this.menuIsOpen = true;
+    this.isPlaying = false;
 
     // create squares
     let color = "white";
@@ -142,7 +144,7 @@ class Board {
         item.classList.remove("possible");
       });
     }
-    if ((e.target.classList[0] == "piece") & e.target.draggable) {
+    if (e.target.classList[0] == "piece" && e.target.draggable) {
       e.target.classList.add("dragging");
       // check for possible moves
       const possibleMove = board.checkpossibleMove(e.target);
@@ -178,7 +180,7 @@ class Board {
           const movPiece = item[0];
           const enemySquareId = item[1];
           const opositeSquare = document.getElementById(item[2]);
-          if ((movPiece == piece) & (opositeSquare == square)) {
+          if (movPiece == piece && opositeSquare == square) {
             // remove enemy piece
             const enemySquare = document.getElementById(enemySquareId);
             enemySquare.innerHTML = "";
@@ -339,7 +341,7 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.draggable = true;
-        if (item.classList.contains("piece-white") & this.optionHighlight) {
+        if (item.classList.contains("piece-white") && this.optionHighlight) {
           item.classList.remove("unselected");
         }
       });
@@ -347,7 +349,7 @@ class Board {
       pieces.forEach((item) => {
         if (!this.needTake.includes(item)) {
           item.draggable = false;
-          if (item.classList.contains("piece-white") & this.optionHighlight) {
+          if (item.classList.contains("piece-white") && this.optionHighlight) {
             item.classList.add("unselected");
           }
         }
@@ -365,12 +367,12 @@ class Board {
     */
 
     pieces.forEach((item) => {
-      if (item.classList.contains("piece-white") & (item.parentNode.id < 8)) {
+      if (item.classList.contains("piece-white") && item.parentNode.id < 8) {
         item.classList.add("white-king");
         item.isKing = true;
       } else if (
-        item.classList.contains("piece-black") &
-        (item.parentNode.id > 55)
+        item.classList.contains("piece-black") &&
+        item.parentNode.id > 55
       ) {
         item.classList.add("black-king");
         item.isKing = true;
@@ -518,11 +520,11 @@ class Board {
       }
     }
     // check for pieces on the way
-    if ((possibleMoves.length > 0) & (possibleMoves != null)) {
+    if (possibleMoves.length > 0 && possibleMoves != null) {
       for (let i = 0; i < possibleMoves.length + 1; i++) {
         const targetSquare = document.getElementById(possibleMoves[i]);
         try {
-          if ((targetSquare != null) & targetSquare.hasChildNodes()) {
+          if (targetSquare != null && targetSquare.hasChildNodes()) {
             // square has piece of same color
             if (targetSquare.firstChild.classList[1] == pieceColor) {
               // remove move
@@ -593,25 +595,34 @@ class Board {
 
   // Method to create initial menu
   createMenu() {
-    // create menu
+    /* Create menu */
     const menu = document.createElement("div");
     menu.id = "menu";
     menu.classList.add("menu");
     menu.innerHTML = `
+    
+    <div id="close-menu"><i class="far fa-times-circle"></i></div>
     <div class="menu-item" id="new-game">Play Now!</div>
     <div class="menu-item" id="options">Options</div>
     <div class="menu-item" id="rules">Rules</div>
     <div class="menu-item" id="results">Results</div>
-    <div class="menu-item" id="hide">Hide Me!</div>
     `;
-    // display menu on top of the board
     this.game.appendChild(menu);
 
-    // add event listeners
-    document.getElementById("new-game").addEventListener("click", () => {
+    document.getElementById("close-menu").addEventListener("click", () => {
       board.hiddenMenu();
       this.menuIsOpen = false;
-      board.startGame();
+    });
+    document.getElementById("new-game").addEventListener("click", () => {
+      if (board.isPlaying == true) {
+        board.hiddenMenu();
+        board.menuIsOpen = false;
+      } else {
+        board.startGame();
+        board.isPlaying = true;
+        board.menuIsOpen = false;
+        board.hiddenMenu();
+      }
     });
     document.getElementById("options").addEventListener("click", () => {
       this.options();
@@ -622,18 +633,14 @@ class Board {
     document.getElementById("results").addEventListener("click", () => {
       this.about();
     });
-    document.getElementById("hide").addEventListener("click", () => {
-      board.hiddenMenu();
-      this.menuIsOpen = false;
-    });
   }
-
+  //Hidden menu method
   hiddenMenu() {
     const smallMenu = document.createElement("div");
     smallMenu.classList.add("menu-hidden");
     this.game.appendChild(smallMenu);
     this.game.removeChild(document.getElementById("menu"));
-    smallMenu.innerHTML = `<`;
+    smallMenu.innerHTML = `<i class="fa fa-cog" aria-hidden="true"></i>`;
 
     smallMenu.addEventListener("click", () => {
       if (!board.menuIsOpen) {
@@ -647,7 +654,7 @@ class Board {
   }
 }
 
-// Piece class
+// Piece class to create pieces
 class Piece {
   constructor(color) {
     this.color = color;
@@ -664,9 +671,7 @@ class Piece {
   }
 }
 
-// game menu
-// menu.createElements();
-// create board
+// Game menu
 const board = new Board();
 board.createMenu();
 // board.hiddenMenu();
