@@ -750,16 +750,16 @@ class Board {
                     <p>Simple move:</p> 
                     <p>Moving a piece Just one square to the front, diagonally to an adjacent unoccupied dark square.</p> 
                       <p>Jump (take an opponent piece):</p> <p>Junping over an opponent's piece, to an empty square immediately to the opposite square (forward only).
-                      Jumping is always mandatory: if a player has the option to jump, they must take it. If there are more pieces to be taken, they have to be taken
-                      Multiple jumps are mandadory if they can be made.
-                      Multiple jumps are possible, if after one jump, another piece is immediately eligible to be jumped by the moved piece—even if that jump is in a 
+                      Jumping is always mandatory: if a player has the option to jump, they must take it. If there are more pieces to be taken, they have to be taken.
+                      Multiple jumps are mandatory if they can be made.
+                      Multiple jumps are possible if, after one jump, another piece is immediately eligible to be jumped by the moving piece—even if that jump is in a 
                       different diagonal direction.Kings</p> 
                       <p>King:</p> 
-                      <p>If a piece moves into the last row, it gains the ability to move both forward and backwards. One square per turn.</p>
+                      <p>If a piece moves into the last row, it gains the ability to move both forward and backward. One square per turn.</p>
                       <p>End of game</p> 
                       <p>A player wins by capturing all of the opponent's pieces or by leaving the opponent with no legal move. 
                       The game is a draw if neither side can force a win.
-                      A draw will also occour if there are 30 moves with just king movements and no taking.</p>
+                      A draw will also occur if there are 30 moves with just king movements and no taking.</p>
                       <div class="submenu" id="back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
