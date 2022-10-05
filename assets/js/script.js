@@ -10,6 +10,10 @@ class Board {
     // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
     this.pieceTaking = null; //keeps the piece that is taking
+    this.moveSound = new Audio("assets/audio/move-self.mp3");
+    this.takeSound = new Audio("assets/audio/capture.mp3");
+    this.notify = new Audio("assets/audio/notify.mp3");
+    this.menu = new Audio("assets/audio/menu.mp3");
     this.turn = 0;
     this.optionHighlight = false;
     this.optionSound = true;
@@ -412,17 +416,15 @@ class Board {
   // play sound
   playSound(soundType) {
     /* Play sound */
-    const moveSound = new Audio("assets/audio/move-self.mp3");
-    const takeSound = new Audio("assets/audio/capture.mp3");
-    const notify = new Audio("assets/audio/notify.mp3");
-
     if (this.optionSound) {
       if (soundType == "move") {
-        moveSound.play();
+        this.moveSound.play();
       } else if (soundType == "take") {
-        takeSound.play();
+        this.takeSound.play();
+      } else if (soundType == "menu") {
+        this.menu.play();
       } else if (soundType == "notify") {
-        notify.play();
+        this.notify.play();
       }
     }
   }
@@ -611,8 +613,10 @@ class Board {
     document.getElementById("close-menu").addEventListener("click", () => {
       board.hiddenMenu();
       this.menuIsOpen = false;
+      this.playSound("menu");
     });
     document.getElementById("new-game").addEventListener("click", () => {
+      this.playSound("menu");
       if (board.isPlaying == true) {
         board.hiddenMenu();
         board.menuIsOpen = false;
@@ -624,12 +628,15 @@ class Board {
       }
     });
     document.getElementById("options").addEventListener("click", () => {
+      this.playSound("menu");
       board.options();
     });
     document.getElementById("rules").addEventListener("click", () => {
+      this.playSound("menu");
       board.rules();
     });
     document.getElementById("results").addEventListener("click", () => {
+      this.playSound("menu");
       board.about();
     });
   }
@@ -642,6 +649,7 @@ class Board {
     smallMenu.innerHTML = `<i class="fa fa-cog" aria-hidden="true"></i>`;
 
     smallMenu.addEventListener("click", () => {
+      this.playSound("menu");
       if (!board.menuIsOpen) {
         board.createMenu();
         board.menuIsOpen = true;
@@ -654,27 +662,92 @@ class Board {
 
   // Menu options
   options() {
-    //deleto new game, rules and results, coloco o options no lugar de new game
     const menu = document.getElementById("menu");
     menu.innerHTML = `
     <div id="close-menu"><i class="far fa-times-circle"></i></div>
     <div class="menu-item" id="options">Options</div>
-    <div class="submenu" id="sound">Sound On/Off
-    <label class="switch " id="highlight">
-    <input type="checkbox" checked>
-    <span class="slider round"></span>
-    </label></div>
-    <div class="submenu" id="highlight">Show Piece Take 
-    <label class="switch" id="sound">
-    <input type="checkbox" checked>
-    <span class="slider round"></span>
-    </label></div>
     `;
+    if (board.optionSound) {
+      console.log("board options on " + board.optionSound);
+      menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>  
+                        <label class="switch" id="sound-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                        </label></div>`;
+    } else {
+      console.log("board options off " + board.optionSound);
+      menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>
+                        <label class="switch" id="sound-switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                        </label></div>`;
+    }
+    if (!board.optionHighlight) {
+      menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take   
+                          <label class="switch" id="highlight-switch">
+                          <input type="checkbox" checked>
+                          <span class="slider round"></span>
+                          </label></div>`;
+    } else {
+      menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take   
+                          <label class="switch" id="highlight-switch">
+                          <input type="checkbox">
+                          <span class="slider round"></span>
+                          </label></div>`;
+    }
+    menu.innerHTML += `<div class="submenu" id="back"><i class="fa fa-backward" aria-hidden="true"></i>
+                       </div>`;
+
+    //check if sound switch is off
+    const switchSound = document.getElementById("sound-switch");
+    switchSound.addEventListener("change", () => {
+      // if (!switchSound.checked) {
+      if (board.optionSound) {
+        board.optionSound = false;
+      }
+      // board.optionSound = false;
+      // console.log("sound off " + board.optionSound);
+      else {
+        board.optionSound = true;
+        console.log("sound on " + board.optionSound);
+      }
+      board.playSound("menu");
+    });
+
+    const switchHighlight = document.getElementById("highlight-switch");
+    switchHighlight.addEventListener("change", () => {
+      if (!switchHighlight.checked) {
+        board.optionHighlight = false;
+        console.log("higlight " + board.optionHighlight);
+      } else {
+        board.optionHighlight = true;
+        console.log("highlight " + board.optionHighlight);
+      }
+      board.playSound("menu");
+    });
+
+    // add event listeners
+    document.getElementById("close-menu").addEventListener("click", () => {
+      board.hiddenMenu();
+      this.menuIsOpen = false;
+      this.playSound("menu");
+    });
+
+    document.getElementById("back").addEventListener("click", () => {
+      this.playSound("menu");
+      this.clearMenu();
+      this.createMenu();
+    });
   }
   // Menu rules
   rules() {}
   // Menu results
   results() {}
+
+  clearMenu() {
+    const game = document.getElementById("menu");
+    game.remove();
+  }
 }
 // Piece class to create pieces
 class Piece {
