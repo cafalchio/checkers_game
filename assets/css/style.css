@@ -124,12 +124,11 @@ body {
 
 #close-menu {
   margin: 0 auto;
-  margin-left: 34.5vmin;
+  margin-left: 2vmin;
   margin-top: 1.8vmin;
   cursor: pointer;
   position: absolute;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  font-size: 2.7vmin;
+  font-size: max(15px, 2.7vmin);
   color: rgb(255, 255, 255);
   user-select: none;
   text-decoration: none;
@@ -137,7 +136,7 @@ body {
 }
 
 #close-menu:hover {
-  font-size: 3vmin;
+  font-size: max(20px, 3vmin);
   color: rgb(0, 0, 0);
 }
 
@@ -149,7 +148,6 @@ body {
   height: max(12px, 4vmin);
   cursor: pointer;
   position: absolute;
-  /* font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; */
   font-size: 4.5vmin;
   color: rgb(155, 91, 46);
   text-align: center;
@@ -162,27 +160,113 @@ body {
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   letter-spacing: 0.2rem;
   margin-top: 2vmin;
-  font-size: 5vmin;
+  font-size: max(5px, 5vmin);
   color: #ffffff;
   text-shadow: 0.8vmin 0.8vmin 1.2vmin black;
   user-select: none;
   z-index: 2;
 }
 .menu-item:hover {
-  font-size: 5.25vmin;
+  font-size: max(12px, 5.25vmin);
   letter-spacing: 0.4rem;
 }
 #new-game {
-  margin-top: 7vmin;
+  /* margin-top: 7vmin; */
+  margin-top: max(35px, 7vmin);
 }
 #options {
-  margin-top: 5vmin;
+  /* margin-top: 5vmin; */
+  margin-top: max(10px, 5vmin);
 }
 
 #rules {
-  margin-top: 5vmin;
+  /* margin-top: 5vmin; */
+  margin-top: max(10px, 5vmin);
 }
 
 #results {
-  margin-top: 5vmin;
+  /* margin-top: 5vmin; */
+  margin-top: max(10px, 5vmin);
+}
+
+.submenu {
+  position: relative;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  text-shadow: 0.8vmin 0.8vmin 1.2vmin black;
+  font-size: max(5px, 3vmin);
+  color: #ffffff;
+  user-select: none;
+  z-index: 2;
+}
+
+#sound {
+  margin-top: max(10px, 5vmin);
+}
+
+#highlight {
+  margin-top: max(10px, 5vmin);
+}
+
+/* Switch from w3Schools.com */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 6vmin;
+  height: 3.4vmin;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 2.6vmin;
+  width: 2.6vmin;
+  left: 0.4vmin;
+  bottom: 0.4vmin;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(2.6vmin);
+  -ms-transform: translateX(2.6vmin);
+  transform: translateX(2.6vmin);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
