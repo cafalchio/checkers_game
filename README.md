@@ -1,6 +1,6 @@
 # Checker's Game
 
-#### Author: Matheus Cafalchio
+## Introduction
 
 The Checker's Game is a game that consists of a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move. There are many variations of the game. The rules implemented in this project are based on the international rules but using a 8x8 board.
 The game code was developed in javascript and the interface was developed in HTML and CSS.
@@ -9,16 +9,43 @@ The game code was developed in javascript and the interface was developed in HTM
 
 ![Responsive Game](assets/images/responsive.png)
 
-- [Checker's Game](#checker-s-game) - [Author: Matheus Cafalchio](#author--matheus-cafalchio)
+## Table of Contents
+
+- [Checker's Game](#checkers-game)
+  - [Introduction](#introduction)
+  - [Table of Contents](#table-of-contents)
+  - [UX](#ux)
+      - [Strategy](#strategy)
   - [Concepts](#concepts)
   - [Technologies](#technologies)
   - [Features](#features)
-    - [Features Left to Implement](#features-left-to-implement)
   - [Testing](#testing)
   - [Unfixed Bugs](#unfixed-bugs)
+  - [Features Left to Implement](#features-left-to-implement)
   - [Deployment](#deployment)
   - [Credits](#credits)
   - [Acknowledgements](#acknowledgements)
+
+* [Unfixed Bugs](#unfixed-bugs)
+
+- [Deployment](#deployment)
+- [Credits](#credits)
+- [Acknowledgements](#acknowledgements)
+
+## UX
+
+#### Strategy
+
+- Site goals
+
+  - The main goal of the site is to provide a fun and interactive game for the user to play.
+  - To have a pleasant wood theme that is easy to use and navigate.
+  - To have a responsive design that is easy to use on any device.
+  - With a intuituve menu that is easy to use and navigate.
+
+- User goals
+  - The user goals are to have a fun and interactive game to play.
+  - The user can play the game on any device.
 
 ## Concepts
 
