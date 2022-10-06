@@ -101,34 +101,35 @@ Also, W3C and Jigsaw validation was used to validate the website HTML and CSS.
 
 W3C Validation:
 
-[W3C](assets/images/readme/W3C.png) -->
+[W3C](assets/images/W3C.png) -->
 
 Jigsaw Validation:
 
-![Jigsaw](assets/images/readme/jigsaw.png)
+![Jigsaw](assets/images/jigsaw.png)
 
 Jshint validator was used to validate the JavaScript code.
 
-![Jshint](assets/images/readme/javascript_test.png)
+![Jshint](assets/images/javascript_test.png)
 
 One warning here but was part of the implementation of the game.
 Functions declared within loops referencing an outer scoped variable may lead to confusing semantics.
 
 Lighhouse mobile and desktop testing:
 
-![LightHouse Mobile](assets/images/readme/light_mobile.png)
+![LightHouse Mobile](assets/images/light_mobile.png)
 
-![LightHouse Desktop](assets/images/readme/light_desktop.png)
+![LightHouse Desktop](assets/images/light_desktop.png)
 
 ## Unfixed Bugs
 
-- dragging
-  Sometimes the user can drag the background, which is not the desired behavior.
+-
 
 ## Features Left to Implement
 
-- The game could be played in two players mode.
-- A timer could be added to the game.
+- The computer player is not very smart, it only makes random moves. It would be nice to implement a more intelligent computer player.
+- A timer to limit the time of each player.
+- I would like to implement a smoother animation for the pieces moving.
+- In the future, it would be nice to implement a multiplayer mode.
 
 ## Deployment
 
@@ -137,9 +138,14 @@ Lighhouse mobile and desktop testing:
 ## Credits
 
 - Stack Overflow
+- Guido, my mentor
+- w3Schools
+- This channel that teaches cheker's https://www.youtube.com/watch?v=WD3NTNQElew
+- developer.mozilla.org (where I passed most of my time)
 
 ## Acknowledgements
 
 - My mentor for saving me from starting in a wrong way, which would make the project impossible to finish.
 - My colleagues for the slack channel.
-- The student tutors for the help.
+- The tutors for the help.
+- My last hackathon team which tested the game and gave great feedbacks
