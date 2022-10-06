@@ -1,4 +1,5 @@
 //Board class that create and command the game
+/*jshint esversion: 6 */
 class Board {
   // Method to create the board
   constructor() {
@@ -95,7 +96,7 @@ class Board {
         // item.classList.remove("unselected");
         this.checkpossibleMove(item);
       });
-      let _ = setTimeout(board.computerMove, 1600);
+      setTimeout(board.computerMove, 1600);
     }
     board.pieceTaking = null;
     console.log(
