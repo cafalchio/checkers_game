@@ -7,9 +7,20 @@ The game code was developed in javascript and the interface was developed in HTM
 
 <a href="https://cafalchio.github.io/checkers_game/" rel="nofolow">Visit and play the live version of the game here</a>
 
-<!-- responsive image -->
+![Responsive Game](https://github.com/cafalchio/checkers_game/blob/main/responsive.png?raw=true)
 
-<!-- Create table of contents -->
+- [Checker's Game](#checker-s-game) - [Author: Matheus Cafalchio](#author--matheus-cafalchio)
+  - [Concepts](#concepts)
+  - [Technologies](#technologies)
+  - [Features](#features)
+    - [Features Left to Implement](#features-left-to-implement)
+  - [Testing](#testing)
+  - [Unfixed Bugs](#unfixed-bugs)
+  - [Deployment](#deployment)
+  - [Credits](#credits)
+  - [Acknowledgements](#acknowledgements)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Concepts
 
@@ -19,7 +30,7 @@ This is my first code in javascript, so I had to learn a lot of things. I had to
 
 ## Technologies
 
-    The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
+The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
 
     * HTML
     * CSS
