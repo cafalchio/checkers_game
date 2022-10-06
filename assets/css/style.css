@@ -15,6 +15,10 @@ p {
   margin-right: 10px;
 }
 
+.text-g {
+  font-size: 18px;
+}
+
 #game {
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto auto auto auto;
@@ -168,7 +172,7 @@ p {
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   letter-spacing: 0.2rem;
   margin-top: 2vmin;
-  font-size: max(5px, 5vmin);
+  font-size: max(10px, 5vmin);
   color: #ffffff;
   text-shadow: 0.8vmin 0.8vmin 1.2vmin black;
   user-select: none;
@@ -201,7 +205,7 @@ p {
   position: relative;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   text-shadow: 0.8vmin 0.8vmin 1.2vmin black;
-  font-size: max(5px, 3vmin);
+  font-size: max(6px, 3.5vmin);
   color: #ffffff;
   user-select: none;
   z-index: 2;
@@ -290,4 +294,39 @@ input:checked + .slider:before {
 
 .space {
   margin-right: 2vmin;
+}
+
+/* Rules window */
+
+.menu-rules {
+  text-align: center;
+  text-shadow: #333 0.1em 0.1em 0.2em;
+  text-justify: inter-word;
+  user-select: none;
+  color: white;
+  overflow: scroll;
+}
+
+.rules-back {
+  position: relative;
+  margin-top: max(10px, 5vmin);
+}
+
+#rules-back:hover {
+  font-size: max(20px, 3vmin);
+  color: rgb(0, 0, 0);
+}
+
+.new-page:hover {
+  margin-top: max(10px, 5vmin);
+}
+
+.menu-item:hover {
+  letter-spacing: 0.2rem;
+  font-size: max(5px, 5vmin);
+}
+
+/* Results window */
+.results {
+  text-align: center;
 }
