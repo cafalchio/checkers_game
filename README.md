@@ -8,6 +8,7 @@ The game code was developed in javascript and the interface was developed in HTM
 <a href="https://cafalchio.github.io/checkers_game/" rel="nofolow">Visit and play the live version of the game here</a>
 
 ![Responsive Game](assets/images/responsive.png)
+The game can be played on any device, including small mobile phones as smaller as (250 x 300 px).
 
 ## Table of Contents
 
@@ -16,21 +17,19 @@ The game code was developed in javascript and the interface was developed in HTM
   - [Table of Contents](#table-of-contents)
   - [UX](#ux)
       - [Strategy](#strategy)
-  - [Concepts](#concepts)
   - [Technologies](#technologies)
   - [Features](#features)
+    - [Main Page](#main-page)
+    - [Options Menu](#options-menu)
+    - [Rules Menu](#rules-menu)
+    - [Results Menu](#results-menu)
+    - [Game](#game)
   - [Testing](#testing)
   - [Unfixed Bugs](#unfixed-bugs)
   - [Features Left to Implement](#features-left-to-implement)
   - [Deployment](#deployment)
   - [Credits](#credits)
   - [Acknowledgements](#acknowledgements)
-
-* [Unfixed Bugs](#unfixed-bugs)
-
-- [Deployment](#deployment)
-- [Credits](#credits)
-- [Acknowledgements](#acknowledgements)
 
 ## UX
 
@@ -47,12 +46,6 @@ The game code was developed in javascript and the interface was developed in HTM
   - The user goals are to have a fun and interactive game to play.
   - The user can play the game on any device.
 
-## Concepts
-
-The ideia was to make a game that could be played by one player. The player would play against the computer. The computer would be able to play in two different levels: easy and hard. The easy level would be a random move, while the hard level would be a move that would try to capture the most pieces. The game would be played in any browser, and the player would be able to choose the color of the pieces.
-
-This is my first code in javascript, so I had to learn a lot of things. I had to learn how to manipulate the DOM to create the board, how to use classes, how to use event listerners and the javascipt in general. The game logic was the most difficult part, because I had to think about all the game rules and how to implement them in the code.
-
 ## Technologies
 
 The technologies used in this project were HTML, CSS and JavaScript. The HTML was used to create the structure of the page, the CSS was used to style the page and the JavaScript was used to make the entire game work.
@@ -64,6 +57,32 @@ The technologies used in this project were HTML, CSS and JavaScript. The HTML wa
     * GIMP
 
 ## Features
+
+### Main Page
+
+![Game menu](assets/images/main_menu.png)
+
+The main page is the first page that the user sees when they visit the site. It has four buttons, one to start the game, one to see the rules, one to see the options and one to see the results. Once the player has started the game, the the Start Game button will be replaced by a button to restart the game.
+
+![Restart Game](assets/images/restart_game.png)
+
+### Options Menu
+
+The options menu allows the user to change the game settings. The user can change the sound On/Off and the higlight On/Off. The highlight is the highlight of the possible moves of the selected piece. The sound is the sound of the pieces moving and the sound of the pieces being captured.
+
+![Options menu](assets/images/options_menu.png)
+
+### Rules Menu
+
+![Rules menu](assets/images/rules_menu.png)
+
+### Results Menu
+
+![Results menu](assets/images/results_menu.png)
+
+### Game
+
+![Game](assets/images/game.png)
 
 - Landing page
   The landing page is the first page that the user sees when he enters the game. It has a title, a button to start the game and a button to see the rules of the game.

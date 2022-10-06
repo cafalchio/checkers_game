@@ -9,14 +9,14 @@ body {
 p {
   color: white;
   font-family: "Arial";
-  font-size: 16px;
+  font-size: max(2.4vmin, 15px);
   text-align: left;
   margin-left: 10px;
   margin-right: 10px;
 }
 
 .text-g {
-  font-size: 18px;
+  font-size: max(3vmin, 18px);
 }
 
 #game {
@@ -293,7 +293,11 @@ input:checked + .slider:before {
 }
 
 .space {
-  margin-right: 2vmin;
+  margin-right: 4vmin;
+}
+
+.space-s {
+  margin-right: 1.3vmin;
 }
 
 /* Rules window */
