@@ -20,9 +20,9 @@ class Board {
     this.menuIsOpen = true;
     this.isPlaying = false;
 
-    //set scores
-    localStorage.setItem("computerScore", 0);
-    localStorage.setItem("playerScore", 0);
+    // get storage
+    this.optionSound = localStorage.getItem("optionSound");
+    this.optionHighlight = localStorage.getItem("optionHighlight");
 
     // create squares
     let color = "white";
@@ -420,6 +420,7 @@ class Board {
   // play sound
   playSound(soundType) {
     /* Play sound */
+    console.log(localStorage.getItem("sound"));
     if (this.optionSound) {
       if (soundType == "move") {
         this.moveSound.play();
@@ -598,222 +599,6 @@ class Board {
       }
     }
   }
-
-  // // Method to create initial menu
-  // createMenu() {
-  //   /* Create menu */
-  //   const menu = document.createElement("div");
-  //   menu.id = "menu";
-  //   menu.classList.add("menu");
-  //   menu.innerHTML = `
-  //   <div id="close-menu"><i class="far fa-times-circle"></i></div>
-  //   <div class="menu-item" id="new-game">New Game!</div>
-  //   <div class="menu-item" id="options">Options</div>
-  //   <div class="menu-item" id="rules">Rules</div>
-  //   <div class="menu-item" id="results">Results</div>
-  //   `;
-  //   this.game.appendChild(menu);
-
-  //   document.getElementById("close-menu").addEventListener("click", () => {
-  //     board.hiddenMenu();
-  //     this.menuIsOpen = false;
-  //     this.playSound("menu");
-  //   });
-  //   document.getElementById("new-game").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     if (board.isPlaying == true) {
-  //       board.hiddenMenu();
-  //       board.menuIsOpen = false;
-  //       // Implement a question to be sure that wants to restart the game !!!
-  //     } else {
-  //       board.startGame();
-  //       board.isPlaying = true;
-  //       board.menuIsOpen = false;
-  //       board.hiddenMenu();
-  //     }
-  //   });
-  //   document.getElementById("options").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     board.options();
-  //   });
-  //   document.getElementById("rules").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     board.rules();
-  //   });
-  //   document.getElementById("results").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     board.results();
-  //   });
-  // }
-  // //Hidden menu method
-  // hiddenMenu() {
-  //   const smallMenu = document.createElement("div");
-  //   smallMenu.classList.add("menu-hidden");
-  //   this.game.appendChild(smallMenu);
-  //   this.game.removeChild(document.getElementById("menu"));
-  //   smallMenu.innerHTML = `<i class="fa fa-cog" aria-hidden="true"></i>`;
-
-  //   smallMenu.addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     if (!board.menuIsOpen) {
-  //       board.createMenu();
-  //       board.menuIsOpen = true;
-  //     } else if (board.menuIsOpen) {
-  //       this.hiddenMenu();
-  //       board.menuIsOpen = false;
-  //     }
-  //   });
-  // }
-
-  // // Menu options
-  // options() {
-  //   const menu = document.getElementById("menu");
-  //   menu.innerHTML = `
-  //   <div id="close-menu"><i class="far fa-times-circle"></i></div>
-  //   <div class="menu-item" id="options">Options</div>
-  //   `;
-  //   if (board.optionSound) {
-  //     console.log("board options on " + board.optionSound);
-  //     menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>
-  //                       <label class="switch" id="sound-switch">
-  //                       <input type="checkbox" checked>
-  //                       <span class="slider round"></span>
-  //                       </label></div>`;
-  //   } else {
-  //     console.log("board options off " + board.optionSound);
-  //     menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>
-  //                       <label class="switch" id="sound-switch">
-  //                       <input type="checkbox">
-  //                       <span class="slider round"></span>
-  //                       </label></div>`;
-  //   }
-  //   if (!board.optionHighlight) {
-  //     menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take
-  //                         <label class="switch" id="highlight-switch">
-  //                         <input type="checkbox" checked>
-  //                         <span class="slider round"></span>
-  //                         </label></div>`;
-  //   } else {
-  //     menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take
-  //                         <label class="switch" id="highlight-switch">
-  //                         <input type="checkbox">
-  //                         <span class="slider round"></span>
-  //                         </label></div>`;
-  //   }
-  //   menu.innerHTML += `<div class="submenu" id="back"><i class="fa fa-backward" aria-hidden="true"></i>
-  //                      </div>`;
-
-  //   //check if sound switch is off
-  //   const switchSound = document.getElementById("sound-switch");
-  //   switchSound.addEventListener("change", () => {
-  //     // if (!switchSound.checked) {
-  //     if (board.optionSound) {
-  //       board.optionSound = false;
-  //     } else {
-  //       board.optionSound = true;
-  //       console.log("sound on " + board.optionSound);
-  //     }
-  //     board.playSound("menu");
-  //   });
-
-  //   const switchHighlight = document.getElementById("highlight-switch");
-  //   switchHighlight.addEventListener("change", () => {
-  //     if (board.optionHighlight) {
-  //       board.optionHighlight = false;
-  //     } else {
-  //       board.optionHighlight = true;
-  //     }
-  //     board.playSound("menu");
-  //   });
-
-  //   // add event listeners
-  //   document.getElementById("close-menu").addEventListener("click", () => {
-  //     board.hiddenMenu();
-  //     this.menuIsOpen = false;
-  //     this.playSound("menu");
-  //   });
-
-  //   document.getElementById("back").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     this.clearMenu();
-  //     this.createMenu();
-  //   });
-  // }
-  // // Menu rules
-  // rules() {
-  //   const menu = document.getElementById("menu");
-  //   menu.classList.add("menu-rules");
-  //   menu.innerHTML = `
-  //   <div id="close-menu"><i class="far fa-times-circle"></i></div>
-  //   <div class="menu-item new-page" id="options">Rules</div>
-  //   <p class="text-g">Simple move:</p>
-  //   <p>Moving a piece one square to the front, diagonally to an adjacent
-  //   unoccupied dark square.</p>
-  //   <p class="text-g">Jump (take an opponent piece):</p><p>Jumping over an opponent's piece,
-  //   to an empty square immediately to the opposite square (forward only).
-  //   Jumping is always mandatory: if a player has the option to jump, they must take it.
-  //   If there are more pieces to be taken, they have to be taken.
-  //   Multiple jumps are mandatory if they can be made.
-  //   Multiple jumps are possible if, after one jump, another piece is immediately eligible to
-  //   be jumped by the moving piece, even if that jump is in a
-  //   different diagonal direction.
-  //   Kings</p><p class="text-g">King:</p>
-  //   <p>If a piece moves into the last row, it gains the ability to move both forward and
-  //   backward. One square per turn.</p>
-  //   <p class="text-g">End of game</p>
-  //   <p>A player wins by capturing all of the opponent's pieces or by leaving the opponent
-  //   with no legal move.
-  //   The game is a draw if neither side can force a win.
-  //   A draw will also occur after 30 moves made just by jungs without piece taking.</p>
-  //   <div class="submenu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
-
-  //   // add event listeners
-  //   document.getElementById("close-menu").addEventListener("click", () => {
-  //     board.hiddenMenu();
-  //     this.menuIsOpen = false;
-  //     this.playSound("menu");
-  //   });
-
-  //   document.getElementById("rules-back").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     this.clearMenu();
-  //     this.createMenu();
-  //   });
-  // }
-
-  // // Menu results
-  // results() {
-  //   const menu = document.getElementById("menu");
-  //   menu.classList.add("menu");
-  //   menu.innerHTML = `
-  //   <div id="close-menu"><i class="far fa-times-circle"></i></div>
-  //   <div class="menu-item new-page" id="results">Results</div>`;
-  //   // add scores
-  //   let plyerScore = localStorage.getItem("playerScore");
-  //   let computerScore = localStorage.getItem("computerScore");
-  //   menu.innerHTML += `<p class="submenu results">Player</p>`;
-  //   menu.innerHTML += `<p class="submenu results">${plyerScore}</p>`;
-  //   menu.innerHTML += `<p class="submenu results">Computer</p>`;
-  //   menu.innerHTML += `<p class="submenu results">${computerScore}</p>`;
-  //   menu.innerHTML += `<div class="submenu results" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
-  //   // add event listeners
-  //   document.getElementById("close-menu").addEventListener("click", () => {
-  //     board.hiddenMenu();
-  //     this.menuIsOpen = false;
-  //     this.playSound("menu");
-  //   });
-
-  //   document.getElementById("rules-back").addEventListener("click", () => {
-  //     this.playSound("menu");
-  //     this.clearMenu();
-  //     this.createMenu();
-  //   });
-  // }
-
-  // clearMenu() {
-  //   const game = document.getElementById("menu");
-  //   game.remove();
-  // }
 }
 
 // Piece class to create pieces
@@ -833,6 +618,8 @@ class Piece {
   }
 }
 
+// Menu class
+
 class Menu {
   // Method to create initial menu
   createMenu() {
@@ -840,25 +627,28 @@ class Menu {
     const menu = document.createElement("div");
     menu.id = "menu";
     menu.classList.add("menu");
-    menu.innerHTML = `
-    <div id="close-menu"><i class="far fa-times-circle"></i></div>
-    <div class="menu-item" id="new-game">New Game!</div>
-    <div class="menu-item" id="options">Options</div>
-    <div class="menu-item" id="rules">Rules</div>
-    <div class="menu-item" id="results">Results</div>
-    `;
+    menu.innerHTML = `<div id="close-menu"><i class="far fa-times-circle"></i></div>`;
+    if (board.isPlaying) {
+      menu.innerHTML += `<div class="menu-item" id="new-game">Reset Game!</div>`;
+    } else {
+      menu.innerHTML += `<div class="menu-item" id="new-game">Start Game!</div>`;
+    }
+    menu.innerHTML += `
+        <div class="menu-item" id="options">Options</div>
+        <div class="menu-item" id="rules">Rules</div>
+        <div class="menu-item" id="results">Results</div>`;
     board.game.appendChild(menu);
 
     document.getElementById("close-menu").addEventListener("click", () => {
       this.hiddenMenu();
-      this.menuIsOpen = false;
+      board.menuIsOpen = false;
       board.playSound("menu");
     });
     document.getElementById("new-game").addEventListener("click", () => {
       board.playSound("menu");
       if (board.isPlaying == true) {
         this.hiddenMenu();
-        board.menuIsOpen = false;
+        location.reload();
         // Implement a question to be sure that wants to restart the game !!!
       } else {
         board.startGame();
