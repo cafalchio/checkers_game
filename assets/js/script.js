@@ -21,7 +21,12 @@ class Board {
     this.menuIsOpen = true;
     this.isPlaying = false;
 
-    // get storage
+    if (localStorage.getItem("whiteScore") == null) {
+      localStorage.setItem(color + "Score", "0");
+    }
+    if (localStorage.getItem("blackScore") == null) {
+      localStorage.setItem(color + "Score", "0");
+    }
     // this.optionSound = localStorage.getItem("optionSound");
     // this.optionHighlight = localStorage.getItem("optionHighlight");
 
@@ -394,13 +399,6 @@ class Board {
       score = parseInt(score) + 1;
       localStorage.setItem(color + "Score", String(score));
       console.log("set score " + localStorage.getItem(color + "Score"));
-    }
-
-    if (localStorage.getItem("whiteScore") == null) {
-      localStorage.setItem(color + "Score", "0");
-    }
-    if (localStorage.getItem("blackScore") == null) {
-      localStorage.setItem(color + "Score", "0");
     }
   }
 
