@@ -7,7 +7,7 @@ The game code was developed in javascript and the interface was developed in HTM
 
 <a href="https://cafalchio.github.io/checkers_game/" rel="nofolow">Visit and play the live version of the game here</a>
 
-![Responsive Game](https://github.com/cafalchio/checkers_game/blob/main/responsive.png?raw=true)
+<img scr = "/assets/images/responsive.png" alt="Responsive Game!">
 
 - [Checker's Game](#checker-s-game) - [Author: Matheus Cafalchio](#author--matheus-cafalchio)
   - [Concepts](#concepts)
@@ -19,8 +19,6 @@ The game code was developed in javascript and the interface was developed in HTM
   - [Deployment](#deployment)
   - [Credits](#credits)
   - [Acknowledgements](#acknowledgements)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Concepts
 
@@ -54,11 +52,6 @@ The technologies used in this project were HTML, CSS and JavaScript. The HTML wa
 - Rules
   The rules page shows the rules of the game.
 
-### Features Left to Implement
-
-- The game could be played in two players mode.
-- A timer could be added to the game.
-
 ## Testing
 
 The website was tested on a desktop computer and a mobile phone.
@@ -85,6 +78,11 @@ So images were converted to jpg format and the quality was reduced.
 
 - dragging
   Sometimes the user can drag the background, which is not the desired behavior.
+
+## Features Left to Implement
+
+- The game could be played in two players mode.
+- A timer could be added to the game.
 
 ## Deployment
 
