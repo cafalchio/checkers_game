@@ -22,10 +22,10 @@ class Board {
     this.isPlaying = false;
 
     if (localStorage.getItem("whiteScore") == null) {
-      localStorage.setItem(color + "Score", "0");
+      localStorage.setItem("whiteScore", "0");
     }
     if (localStorage.getItem("blackScore") == null) {
-      localStorage.setItem(color + "Score", "0");
+      localStorage.setItem("blackScore", "0");
     }
     // this.optionSound = localStorage.getItem("optionSound");
     // this.optionHighlight = localStorage.getItem("optionHighlight");
