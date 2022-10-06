@@ -60,9 +60,11 @@ The technologies used in this project were HTML, CSS and JavaScript. The HTML wa
 
 ### Main Page
 
+The main page is the first page that the user sees when they visit the site. It has four buttons, one to start the game, one to see the rules, one to see the options and one to see the results.
+
 ![Game menu](assets/images/main_menu.png)
 
-The main page is the first page that the user sees when they visit the site. It has four buttons, one to start the game, one to see the rules, one to see the options and one to see the results. Once the player has started the game, the the Start Game button will be replaced by a button to restart the game.
+Once the player has started the game, the the Start Game button will be replaced by a button to restart the game.
 All menus pages have a button to return to the main page and a button to close the menu.
 
 ![Restart Game](assets/images/reset_game.png)
