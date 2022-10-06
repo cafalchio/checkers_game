@@ -713,13 +713,13 @@ class Menu {
                         </label></div>`;
     }
     if (!board.optionHighlight) {
-      menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take   
+      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Highlight Move</span>
                           <label class="switch" id="highlight-switch">
                           <input type="checkbox" checked>
                           <span class="slider round"></span>
                           </label></div>`;
     } else {
-      menu.innerHTML += `<div class="submenu" id="highlight">Show Piece Take   
+      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Highlight Move</span>
                           <label class="switch" id="highlight-switch">
                           <input type="checkbox">
                           <span class="slider round"></span>
