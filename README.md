@@ -63,6 +63,7 @@ The technologies used in this project were HTML, CSS and JavaScript. The HTML wa
 ![Game menu](assets/images/main_menu.png)
 
 The main page is the first page that the user sees when they visit the site. It has four buttons, one to start the game, one to see the rules, one to see the options and one to see the results. Once the player has started the game, the the Start Game button will be replaced by a button to restart the game.
+All menus pages have a button to return to the main page and a button to close the menu.
 
 ![Restart Game](assets/images/reset_game.png)
 
@@ -74,29 +75,22 @@ The options menu allows the user to change the game settings. The user can chang
 
 ### Rules Menu
 
+The rules menu shows the rules of the game. The rules are based on the international rules but using a 8x8 board. The text can be scrolled up and down.
+
 ![Rules menu](assets/images/rules_menu.png)
 
 ### Results Menu
+
+The results menu shows the results of the game. The results are the number of games won by the player and the number of games won by the computer. The results are saved in the local storage of the browser.
 
 ![Results menu](assets/images/results_menu.png)
 
 ### Game
 
-![Game](assets/images/game.png)
+The game page is where the game will be played, it has a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move.
+Once in the Game, the user can go back to the menu using the small cog icon in the top right corner of the screen.
 
-- Landing page
-  The landing page is the first page that the user sees when he enters the game. It has a title, a button to start the game and a button to see the rules of the game.
-
-<!-- add image of each feature -->
-
-- Interactive game
-  The game is played in the browser. The user can choose the color of the pieces and the level of the computer. The user can also choose to play against another player.
-
-- Score board
-  The score board is a table that shows the number of pieces that each player has captured.
-
-- Rules
-  The rules page shows the rules of the game.
+![Game](assets/images/game_play.png)
 
 ## Testing
 
@@ -105,20 +99,24 @@ Also, W3C and Jigsaw validation was used to validate the website HTML and CSS.
 
 W3C Validation:
 
-<!-- ![W3C](assets/images/readme/W3C.png)
+[W3C](assets/images/readme/W3C.png) -->
 
 Jigsaw Validation:
 
 ![Jigsaw](assets/images/readme/jigsaw.png)
 
+Jshint validator was used to validate the JavaScript code.
+
+![Jshint](assets/images/readme/javascript_test.png)
+
+One warning here but was part of the implementation of the game.
+Functions declared within loops referencing an outer scoped variable may lead to confusing semantics.
+
 Lighhouse mobile and desktop testing:
 
 ![LightHouse Mobile](assets/images/readme/light_mobile.png)
 
-![LightHouse Desktop](assets/images/readme/light_desktop.png) -->
-
-The major concerns were the speed to load the images. The images were reduced both in size and optimizila image compressor. The speed increased but it is still a concern in slow phone connection.
-So images were converted to jpg format and the quality was reduced.
+![LightHouse Desktop](assets/images/readme/light_desktop.png)
 
 ## Unfixed Bugs
 
