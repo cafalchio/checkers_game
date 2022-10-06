@@ -116,9 +116,9 @@ Functions declared within loops referencing an outer scoped variable may lead to
 
 Lighhouse mobile and desktop testing:
 
-![LightHouse Mobile](assets/images/light_mobile.png)
+![LightHouse Mobile](assets/images/lighthouse_mobile.png)
 
-![LightHouse Desktop](assets/images/light_desktop.png)
+![LightHouse Desktop](assets/images/lighthouse_desktop.png)
 
 ## Unfixed Bugs
 
