@@ -31,13 +31,16 @@ p {
 }
 .square {
   display: inline-block;
-  /* width: 10vmin; */
   width: max(30px, 10vmin);
   aspect-ratio: auto 1 / 1;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1;
+}
+
+.square:hover {
+  filter: brightness(1.12);
 }
 
 .white {
@@ -48,9 +51,8 @@ p {
   z-index: 1;
 }
 .black {
-  /* pointer-events: unset; */
   background-image: url("../images/dark_wood.png");
-  background-color: rgb(15, 15, 15);
+  background-color: rgb(245, 241, 14);
   background-size: 100%;
   z-index: 1;
 }
@@ -76,6 +78,11 @@ p {
   opacity: 1;
   z-index: 1;
 }
+
+.piece-white:hover {
+  filter: brightness(1.2);
+}
+
 .white-king {
   background-image: url("../images/white_king.png");
   background-color: rgb(167, 61, 61);
@@ -96,7 +103,7 @@ p {
 }
 
 .unselected {
-  opacity: 0.5;
+  opacity: 0.8;
   z-index: 1;
 }
 
@@ -198,7 +205,7 @@ p {
 
 #results {
   /* margin-top: 5vmin; */
-  margin-top: max(10px, 5vmin);
+  margin-top: max(12px, 6vmin);
 }
 
 .submenu {
@@ -222,6 +229,7 @@ p {
 
 #back {
   margin-top: max(15px, 10vmin);
+  cursor: pointer;
 }
 #back:hover {
   font-size: max(20px, 3vmin);
@@ -314,11 +322,13 @@ input:checked + .slider:before {
 .rules-back {
   position: relative;
   margin-top: max(10px, 5vmin);
+  cursor: pointer;
 }
 
 #rules-back:hover {
   font-size: max(20px, 3vmin);
   color: rgb(0, 0, 0);
+  cursor: pointer;
 }
 
 .new-page:hover {
@@ -331,6 +341,16 @@ input:checked + .slider:before {
 }
 
 /* Results window */
-.results {
+.results-menu {
   text-align: center;
+  position: relative;
+  margin-top: max(10px, 5.2vmin);
+}
+
+#reset-score {
+  cursor: pointer;
+}
+
+#reset-score:hover {
+  color: black;
 }
