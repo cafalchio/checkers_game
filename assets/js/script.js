@@ -22,8 +22,8 @@ class Board {
     this.isPlaying = false;
 
     // get storage
-    this.optionSound = localStorage.getItem("optionSound");
-    this.optionHighlight = localStorage.getItem("optionHighlight");
+    // this.optionSound = localStorage.getItem("optionSound");
+    // this.optionHighlight = localStorage.getItem("optionHighlight");
 
     // create squares
     let color = "white";
@@ -37,66 +37,61 @@ class Board {
       newDiv.classList.add(color);
       newDiv.id = i;
       newDiv.setAttribute("occupied", "false");
-      // newDiv.innerHTML = i; // for debug
       this.game.appendChild(newDiv);
     }
   }
   // Method to start the game
   startGame() {
     this.createPieces();
-    this.removeDragging();
+    this.removeMoving();
     this.gameControl();
   }
 
   // Method to control the game turns
   gameControl() {
     console.log("Game control: " + this.colorPlay);
+
     this.turn += 1;
-    //////////////////////////////////////////////////////////////
-    // White move
-    //////////////////////////////////////////////////////////////
-    this.checkWinner();
     if (this.colorPlay == "piece-white") {
       // check if white pieces can take
       // freeze black pieces
       let blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
-        item.draggable = false;
+        item.movable = false;
         item.addEventListener("click", this.pieceClick);
         this.checkpossibleMove(item);
       });
-      // promote to king
       this.promoteToKing(blackPieces);
+      this.checkWinner();
+
       // check if white pieces can take
       let whitePieces = document.querySelectorAll(".piece-white");
       if (!this.checkIfcanTake(whitePieces)) {
         // unfreeze white pieces
         whitePieces.forEach((item) => {
-          item.draggable = true;
-          // item.classList.remove("unselected");
+          item.movable = true;
+          item.classList.remove("unselected");
           item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
       }
-      // this.invertPlayerTurn();
     } else if (this.colorPlay == "piece-black") {
-      //////////////////////////////////////////////////////////////
-      this.checkWinner();
       //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
       whitePieces.forEach((item) => {
-        item.draggable = false;
+        item.movable = false;
         this.checkpossibleMove(item);
       });
-      // check if white piece can be promoted
       this.promoteToKing(whitePieces);
+      this.checkWinner();
       const blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
-        item.draggable = true;
-        // item.classList.remove("unselected");
+        item.movable = false;
         this.checkpossibleMove(item);
       });
-      setTimeout(board.computerMove, 1600);
+      //random to computer move, sound more
+      let timeMove = Math.random() * 1000 + 1000;
+      setTimeout(board.computerMove, timeMove);
     }
     board.pieceTaking = null;
     console.log(
@@ -107,7 +102,6 @@ class Board {
   // Method to create pieces
   createPieces() {
     /* Create the pieces on the board*/
-
     const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
     const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
     // get squares
@@ -128,8 +122,8 @@ class Board {
   }
 
   // Method to avoid bug of piece being moved to another square
-  removeDragging() {
-    document.addEventListener("dragstart", (event) => {
+  removeMoving() {
+    document.addEventListener("movestart", (event) => {
       event.preventDefault();
       const oldPossibleMoves = document.querySelectorAll(".possible");
       if (oldPossibleMoves.length > 0) {
@@ -143,9 +137,9 @@ class Board {
   // Method to add click event listeners
   pieceClick(e) {
     /* Method to add click event listeners to the pieces*/
-    const dragging = document.querySelectorAll(".dragging");
-    dragging.forEach((item) => {
-      item.classList.remove("dragging");
+    const moving = document.querySelectorAll(".moving");
+    moving.forEach((item) => {
+      item.classList.remove("moving");
     });
     const oldPossibleMoves = document.querySelectorAll(".possible");
     if (oldPossibleMoves.length > 0) {
@@ -153,8 +147,8 @@ class Board {
         item.classList.remove("possible");
       });
     }
-    if (e.target.classList[0] == "piece" && e.target.draggable) {
-      e.target.classList.add("dragging");
+    if (e.target.classList[0] == "piece" && e.target.movable) {
+      e.target.classList.add("moving");
       // check for possible moves
       const possibleMove = board.checkpossibleMove(e.target);
       if (possibleMove.length > 0) {
@@ -164,7 +158,7 @@ class Board {
           square.addEventListener("click", board.movePiece);
         });
       } else {
-        e.target.classList.remove("dragging");
+        e.target.classList.remove("moving");
       }
     } else {
       return false;
@@ -174,7 +168,7 @@ class Board {
   // add square click to possible squares
   movePiece(e) {
     if (e.target.classList[2] == "possible") {
-      const piece = document.querySelector(".dragging");
+      const piece = document.querySelector(".moving");
       // const pieceId = piece.id;
       const square = document.getElementById(e.target.id);
       const oldSquare = document.getElementById(piece.parentNode.id);
@@ -211,7 +205,7 @@ class Board {
           }
         }
       }
-      piece.classList.remove("dragging");
+      piece.classList.remove("moving");
       // remove possible class
       const dragSquares = document.querySelectorAll(".possible");
       dragSquares.forEach((item) => {
@@ -245,7 +239,6 @@ class Board {
         board.takeIt = [];
         board.needTake = [];
         // get all black pieces
-        const blackPieces = document.querySelectorAll(".piece-black");
         blackPieces.forEach((item) => {
           board.checkpossibleMove(item);
         });
@@ -270,7 +263,7 @@ class Board {
 
     // if it is retaking
     if (board.pieceTaking != null) {
-      console.log("RETAKING");
+      console.log("RETAKING"); // need to use the same piece as before.
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
@@ -349,7 +342,7 @@ class Board {
     });
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
-        item.draggable = true;
+        item.movable = true;
         if (item.classList.contains("piece-white") && this.optionHighlight) {
           item.classList.remove("unselected");
         }
@@ -357,7 +350,7 @@ class Board {
       // freeze the rest
       pieces.forEach((item) => {
         if (!this.needTake.includes(item)) {
-          item.draggable = false;
+          item.movable = false;
           if (item.classList.contains("piece-white") && this.optionHighlight) {
             item.classList.add("unselected");
           }
@@ -389,39 +382,67 @@ class Board {
     });
   }
 
+  updateScore(color) {
+    /* Update the score
+    Input (str): Color of the piece
+    */
+
+    let score = localStorage.getItem(color + "Score");
+    if (score == null) {
+      score = 0;
+    } else {
+      score = parseInt(score) + 1;
+      localStorage.setItem(color + "Score", String(score));
+      console.log("set score " + localStorage.getItem(color + "Score"));
+    }
+
+    if (localStorage.getItem("whiteScore") == null) {
+      localStorage.setItem(color + "Score", "0");
+    }
+    if (localStorage.getItem("blackScore") == null) {
+      localStorage.setItem(color + "Score", "0");
+    }
+  }
+
   // check winner
   checkWinner() {
     /* Check if there is a winner */
+    let whitePiecesLeft = 0;
+    let blackPiecesLeft = 0;
 
     // No pieces left
     const whitePieces = document.querySelectorAll(".piece-white");
     const blackPieces = document.querySelectorAll(".piece-black");
     if (whitePieces.length == 0) {
       alert("No pieces left Black wins!");
+      this.updateScore("black");
       location.reload();
     } else if (blackPieces.length == 0) {
-      alert("No pieces left White wins!");
+      alert("Congratulations!!!!\nNo pieces left White wins!");
+      this.updateScore("white");
       location.reload();
     }
-    // // No moves left
-    // if (!this.whiteKing) {
-    //   if (!this.checkMovesLeftBlack()) {
-    //     alert("No moves left White wins!");
-    //     location.reload();
-    //   }
-    // }
-    // if (!this.blackKing) {
-    //   if (!this.checkMovesLeftWhite()) {
-    //     alert("No moves left Black wins!");
-    //     location.reload();
-    //   }
-    // }
+    whitePieces.forEach((item) => {
+      whitePiecesLeft += this.checkpossibleMove(item).length;
+    });
+    if (whitePiecesLeft == 0) {
+      alert("No moves left Black wins!");
+      this.updateScore("black");
+      location.reload();
+    }
+    blackPieces.forEach((item) => {
+      blackPiecesLeft += this.checkpossibleMove(item).length;
+    });
+    if (blackPiecesLeft == 0) {
+      alert("Congratulations!!!!\nNo moves left White wins!");
+      this.updateScore("white");
+      location.reload();
+    }
   }
 
   // play sound
   playSound(soundType) {
     /* Play sound */
-    console.log(localStorage.getItem("sound"));
     if (this.optionSound) {
       if (soundType == "move") {
         this.moveSound.play();
@@ -467,7 +488,7 @@ class Board {
     // black top corners
     const blackTopCorners = [56, 58, 60, 62];
     // get piece
-    let movPiece = document.querySelector(".dragging");
+    let movPiece = document.querySelector(".moving");
     if (pieceToCheck) {
       movPiece = pieceToCheck;
     }
@@ -576,7 +597,7 @@ class Board {
     // define corners
     const corners = [1, 3, 5, 7, 8, 24, 40, 56, 58, 60, 62, 55, 39, 23];
     // check if the oposite square is occupied
-    let movPiece = document.querySelector(".dragging");
+    let movPiece = document.querySelector(".moving");
     if (pieceToCheck) {
       movPiece = pieceToCheck;
     }
@@ -610,7 +631,7 @@ class Piece {
     this.piece = document.createElement("div");
     this.piece.className = "piece";
     this.piece.classList.add("piece-" + color);
-    // this.piece.draggable = true;
+    // this.piece.movable = true;
   }
   // create a new piece
   get_piece(id) {
@@ -815,13 +836,12 @@ class Menu {
     <div id="close-menu"><i class="far fa-times-circle"></i></div>
     <div class="menu-item new-page" id="results">Results</div>`;
     // add scores
-    let plyerScore = localStorage.getItem("playerScore");
-    let computerScore = localStorage.getItem("computerScore");
-    menu.innerHTML += `<p class="submenu results">Player</p>`;
-    menu.innerHTML += `<p class="submenu results">${plyerScore}</p>`;
-    menu.innerHTML += `<p class="submenu results">Computer</p>`;
-    menu.innerHTML += `<p class="submenu results">${computerScore}</p>`;
-    menu.innerHTML += `<div class="submenu results" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
+    let plyerScore = localStorage.getItem("whiteScore");
+    let computerScore = localStorage.getItem("blackScore");
+    menu.innerHTML += `<p class="submenu results-menu">Player  ${plyerScore}</p>`;
+    menu.innerHTML += `<p class="submenu results-menu">Computer ${computerScore}</p>`;
+    menu.innerHTML += `<div class="submenu results-menu" id="reset-score">Reset Score</div>`;
+    menu.innerHTML += `<div class="submenu results-menu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
       this.hiddenMenu();
@@ -833,6 +853,15 @@ class Menu {
       board.playSound("menu");
       this.clearMenu();
       this.createMenu();
+    });
+
+    document.getElementById("reset-score").addEventListener("click", () => {
+      localStorage.setItem("whiteScore", 0);
+      localStorage.setItem("blackScore", 0);
+      document.getElementById("reset-score").style.color = "grey";
+      board.playSound("menu");
+      document.getElementById("reset-score").style.color = "white";
+      console.log("reset score");
     });
   }
 
