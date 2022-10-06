@@ -7,7 +7,7 @@ The game code was developed in javascript and the interface was developed in HTM
 
 <a href="https://cafalchio.github.io/checkers_game/" rel="nofolow">Visit and play the live version of the game here</a>
 
-<img scr = "https://github.com/cafalchio/checkers_game/blob/master/assets/images/responsive.png?raw=true" alt="Responsive Game">
+<img scr ="/cafalchio/checkers-game/raw/main/assets/images/responsive.png" alt="Responsive Game" style="max-width: 100%">
 
 - [Checker's Game](#checker-s-game) - [Author: Matheus Cafalchio](#author--matheus-cafalchio)
   - [Concepts](#concepts)
