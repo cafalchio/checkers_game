@@ -20,6 +20,10 @@ class Board {
     this.menuIsOpen = true;
     this.isPlaying = false;
 
+    //set scores
+    localStorage.setItem("computerScore", 0);
+    localStorage.setItem("playerScore", 0);
+
     // create squares
     let color = "white";
     for (let i = 0; i < 64; i++) {
@@ -620,6 +624,7 @@ class Board {
       if (board.isPlaying == true) {
         board.hiddenMenu();
         board.menuIsOpen = false;
+        // Implement a question to be sure that wants to restart the game !!!
       } else {
         board.startGame();
         board.isPlaying = true;
@@ -637,7 +642,7 @@ class Board {
     });
     document.getElementById("results").addEventListener("click", () => {
       this.playSound("menu");
-      board.about();
+      board.results();
     });
   }
   //Hidden menu method
@@ -737,31 +742,31 @@ class Board {
   // Menu rules
   rules() {
     const menu = document.getElementById("menu");
-    menu.style.width = "max(240px, 80vmin)";
-    menu.style.height = "fit-content";
-    menu.style.marginLeft = "0vmin";
-    menu.style.display = "flex";
-    menu.style.flexDirection = "column";
-    menu.style.fit;
-    menu.style.userSelect = "none";
-    menu.style.overflow = "scroll";
-    menu.style.color = "white";
-    menu.innerHTML = `<div id="close-menu"><i class="far fa-times-circle"></i></div>
-                    <div class="menu-item" id="options">Rules</div>
-                    <p>Simple move:</p> 
-                    <p>Moving a piece Just one square to the front, diagonally to an adjacent unoccupied dark square.</p> 
-                      <p>Jump (take an opponent piece):</p> <p>Junping over an opponent's piece, to an empty square immediately to the opposite square (forward only).
-                      Jumping is always mandatory: if a player has the option to jump, they must take it. If there are more pieces to be taken, they have to be taken.
-                      Multiple jumps are mandatory if they can be made.
-                      Multiple jumps are possible if, after one jump, another piece is immediately eligible to be jumped by the moving piece—even if that jump is in a 
-                      different diagonal direction.Kings</p> 
-                      <p>King:</p> 
-                      <p>If a piece moves into the last row, it gains the ability to move both forward and backward. One square per turn.</p>
-                      <p>End of game</p> 
-                      <p>A player wins by capturing all of the opponent's pieces or by leaving the opponent with no legal move. 
-                      The game is a draw if neither side can force a win.
-                      A draw will also occur if there are 30 moves with just king movements and no taking.</p>
-                      <div class="submenu" id="back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
+    menu.classList.add("menu-rules");
+    menu.innerHTML = `
+    <div id="close-menu"><i class="far fa-times-circle"></i></div>
+    <div class="menu-item new-page" id="options">Rules</div>
+    <p class="text-g">Simple move:</p> 
+    <p>Moving a piece one square to the front, diagonally to an adjacent 
+    unoccupied dark square.</p> 
+    <p class="text-g">Jump (take an opponent piece):</p><p>Jumping over an opponent's piece, 
+    to an empty square immediately to the opposite square (forward only).
+    Jumping is always mandatory: if a player has the option to jump, they must take it. 
+    If there are more pieces to be taken, they have to be taken.
+    Multiple jumps are mandatory if they can be made.
+    Multiple jumps are possible if, after one jump, another piece is immediately eligible to 
+    be jumped by the moving piece, even if that jump is in a 
+    different diagonal direction.
+    Kings</p><p class="text-g">King:</p> 
+    <p>If a piece moves into the last row, it gains the ability to move both forward and 
+    backward. One square per turn.</p>
+    <p class="text-g">End of game</p> 
+    <p>A player wins by capturing all of the opponent's pieces or by leaving the opponent 
+    with no legal move. 
+    The game is a draw if neither side can force a win.
+    A draw will also occur after 30 moves made just by jungs without piece taking.</p>
+    <div class="submenu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
+
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
       board.hiddenMenu();
@@ -769,21 +774,50 @@ class Board {
       this.playSound("menu");
     });
 
-    document.getElementById("back").addEventListener("click", () => {
+    document.getElementById("rules-back").addEventListener("click", () => {
+      this.playSound("menu");
+      this.clearMenu();
+      this.createMenu();
+    });
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Menu results
+  results() {
+    const menu = document.getElementById("menu");
+    menu.classList.add("menu");
+    menu.innerHTML = `
+    <div id="close-menu"><i class="far fa-times-circle"></i></div>
+    <div class="menu-item new-page" id="results">Results</div>`;
+    // add scores
+    let plyerScore = localStorage.getItem("playerScore");
+    let computerScore = localStorage.getItem("computerScore");
+    menu.innerHTML += `<p class="submenu results">Player</p>`;
+    menu.innerHTML += `<p class="submenu results">${plyerScore}</p>`;
+    menu.innerHTML += `<p class="submenu results">Computer</p>`;
+    menu.innerHTML += `<p class="submenu results">${computerScore}</p>`;
+    menu.innerHTML += `<div class="submenu results" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
+    // add event listeners
+    document.getElementById("close-menu").addEventListener("click", () => {
+      board.hiddenMenu();
+      this.menuIsOpen = false;
+      this.playSound("menu");
+    });
+
+    document.getElementById("rules-back").addEventListener("click", () => {
       this.playSound("menu");
       this.clearMenu();
       this.createMenu();
     });
   }
 
-  // Menu results
-  results() {}
-
   clearMenu() {
     const game = document.getElementById("menu");
     game.remove();
   }
 }
+
 // Piece class to create pieces
 class Piece {
   constructor(color) {
