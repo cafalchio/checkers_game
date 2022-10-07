@@ -173,13 +173,14 @@ class Board {
   // add square click to possible squares
   movePiece(e) {
     if (e.target.classList[2] == "possible") {
+      board.playSound("move");
       const piece = document.querySelector(".moving");
       // const pieceId = piece.id;
       const square = document.getElementById(e.target.id);
       const oldSquare = document.getElementById(piece.parentNode.id);
       // move piece
       square.appendChild(piece);
-      board.playSound("move");
+
       // check if took piece
       if (board.takeIt.length > 0) {
         for (let i = 0; i < board.takeIt.length; i++) {
@@ -272,6 +273,7 @@ class Board {
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
+          board.playSound("take");
           piece = group[0];
           enemySquare = document.getElementById(group[1]);
           oppositeSquare = document.getElementById(group[2]);
@@ -279,7 +281,6 @@ class Board {
           piece.parentNode.innerHTML = "";
           oppositeSquare.appendChild(piece);
           enemySquare.innerHTML = "";
-          board.playSound("take");
           enemySquare.setAttribute("occupied", "false");
           oppositeSquare.setAttribute("occupied", "true");
           return true;
@@ -288,6 +289,7 @@ class Board {
     } else {
       // if it is the first time
       for (let i = 0; i < board.takeIt.length; i++) {
+        board.playSound("take");
         group = board.takeIt[i];
         piece = group[0];
         this.pieceTaking = piece;
@@ -297,7 +299,6 @@ class Board {
         piece.parentNode.innerHTML = "";
         oppositeSquare.appendChild(piece);
         enemySquare.innerHTML = "";
-        board.playSound("take");
         enemySquare.setAttribute("occupied", "false");
         oppositeSquare.setAttribute("occupied", "true");
         return true;
@@ -313,6 +314,7 @@ class Board {
     const blackPieces = document.querySelectorAll(".piece-black");
     // check pieces that can move
     blackPieces.forEach((item) => {
+      board.playSound("move");
       tempMoves = this.checkpossibleMove(item);
       if (tempMoves.length > 0) {
         tempId = item.id;
@@ -331,7 +333,6 @@ class Board {
     toSquare.setAttribute("occupied", "true");
     pieceSquare.setAttribute("occupied", "false");
     pieceSquare.innerHTML = "";
-    board.playSound("move");
   }
 
   // Method to check if there is forced take for the pieces
@@ -411,30 +412,33 @@ class Board {
     // No pieces left
     const whitePieces = document.querySelectorAll(".piece-white");
     const blackPieces = document.querySelectorAll(".piece-black");
+    whitePieces.forEach((item) => {
+      whitePiecesLeft += this.checkpossibleMove(item).length;
+    });
+    blackPieces.forEach((item) => {
+      blackPiecesLeft += this.checkpossibleMove(item).length;
+    });
+
     if (whitePieces.length == 0) {
       alert("No pieces left Black wins!");
       this.updateScore("black");
       location.reload();
+      return -1;
     } else if (blackPieces.length == 0) {
       alert("Congratulations!!!!\nNo pieces left White wins!");
       this.updateScore("white");
       location.reload();
-    }
-    whitePieces.forEach((item) => {
-      whitePiecesLeft += this.checkpossibleMove(item).length;
-    });
-    if (whitePiecesLeft == 0) {
+      return -1;
+    } else if (whitePiecesLeft == 0) {
       alert("No moves left Black wins!");
       this.updateScore("black");
       location.reload();
-    }
-    blackPieces.forEach((item) => {
-      blackPiecesLeft += this.checkpossibleMove(item).length;
-    });
-    if (blackPiecesLeft == 0) {
+      return -1;
+    } else if (blackPiecesLeft == 0) {
       alert("Congratulations!!!!\nNo moves left White wins!");
       this.updateScore("white");
       location.reload();
+      return -1;
     }
   }
 
@@ -660,9 +664,9 @@ class Menu {
     board.game.appendChild(menu);
 
     document.getElementById("close-menu").addEventListener("click", () => {
+      board.playSound("menu");
       this.hiddenMenu();
       board.menuIsOpen = false;
-      board.playSound("menu");
     });
     document.getElementById("new-game").addEventListener("click", () => {
       board.playSound("menu");
@@ -763,19 +767,19 @@ class Menu {
 
     const switchHighlight = document.getElementById("highlight-switch");
     switchHighlight.addEventListener("change", () => {
+      board.playSound("menu");
       if (board.optionHighlight) {
         board.optionHighlight = false;
       } else {
         board.optionHighlight = true;
       }
-      board.playSound("menu");
     });
 
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
+      board.playSound("menu");
       this.hiddenMenu();
       board.menuIsOpen = false;
-      board.playSound("menu");
     });
 
     document.getElementById("back").addEventListener("click", () => {
@@ -814,9 +818,9 @@ class Menu {
 
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
+      board.playSound("menu");
       this.hiddenMenu();
       board.menuIsOpen = false;
-      board.playSound("menu");
     });
 
     document.getElementById("rules-back").addEventListener("click", () => {
@@ -836,15 +840,15 @@ class Menu {
     // add scores
     let plyerScore = localStorage.getItem("whiteScore");
     let computerScore = localStorage.getItem("blackScore");
-    menu.innerHTML += `<p class="submenu results-menu">Player  ${plyerScore}</p>`;
-    menu.innerHTML += `<p class="submenu results-menu">Computer ${computerScore}</p>`;
+    menu.innerHTML += `<p class="submenu results-menu" id="player-score">Player  ${plyerScore}</p>`;
+    menu.innerHTML += `<p class="submenu results-menu" id="player-score">Computer ${computerScore}</p>`;
     menu.innerHTML += `<div class="submenu results-menu" id="reset-score">Reset Score</div>`;
     menu.innerHTML += `<div class="submenu results-menu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
+      board.playSound("menu");
       this.hiddenMenu();
       board.menuIsOpen = false;
-      board.playSound("menu");
     });
 
     document.getElementById("rules-back").addEventListener("click", () => {
@@ -854,12 +858,11 @@ class Menu {
     });
 
     document.getElementById("reset-score").addEventListener("click", () => {
+      board.playSound("menu");
       localStorage.setItem("whiteScore", 0);
       localStorage.setItem("blackScore", 0);
-      document.getElementById("reset-score").style.color = "grey";
-      board.playSound("menu");
-      document.getElementById("reset-score").style.color = "white";
-      console.log("reset score");
+      document.getElementById("player-score").innerHTML = "Player 0";
+      document.getElementById("computer-score").innerHTML = "Computer 0";
     });
   }
 
