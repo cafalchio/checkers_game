@@ -6,19 +6,13 @@ body {
   margin-right: 0;
   z-index: 0;
 }
-p {
-  color: white;
-  font-family: "Arial";
-  font-size: max(2.4vmin, 15px);
-  text-align: left;
-  margin-left: 10px;
-  margin-right: 10px;
+#center {
+  display: block;
+  margin: auto;
+  text-align: center;
+  padding-top: 5vh;
 }
-
-.text-g {
-  font-size: max(3vmin, 18px);
-}
-
+/* entire game */
 #game {
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto auto auto auto;
@@ -29,6 +23,7 @@ p {
   -webkit-user-drag: none;
   z-index: 1;
 }
+/* game square */
 .square {
   display: inline-block;
   width: max(30px, 10vmin);
@@ -38,30 +33,27 @@ p {
   align-items: center;
   z-index: 1;
 }
-
+/* game square hover highlight */
 .square:hover {
   filter: brightness(1.12);
 }
 
+/* white square */
 .white {
   pointer-events: none;
   background-image: url("../images/white_wood.png");
-  background-color: rgb(221, 221, 221);
+  /* background-color: rgb(221, 221, 221); */
   background-size: 100%;
   z-index: 1;
 }
+/* black square */
 .black {
   background-image: url("../images/dark_wood.png");
-  background-color: rgb(245, 241, 14);
+  background-color: rgb(0, 0, 0);
   background-size: 100%;
   z-index: 1;
 }
-#center {
-  display: block;
-  margin: auto;
-  text-align: center;
-  padding-top: 5vh;
-}
+/* all pieces */
 .piece {
   border-radius: 50%;
   width: max(17px, 7.5vmin);
@@ -77,10 +69,6 @@ p {
   overflow: visible;
   opacity: 1;
   z-index: 1;
-}
-
-.piece-white:hover {
-  filter: brightness(1.2);
 }
 
 .white-king {
@@ -102,11 +90,6 @@ p {
   z-index: 1;
 }
 
-.unselected {
-  opacity: 0.8;
-  z-index: 1;
-}
-
 .black-king {
   background-image: url("../images/dark_king.png");
   background-color: rgb(77, 114, 9);
@@ -116,7 +99,17 @@ p {
   opacity: 1;
   z-index: 1;
 }
+/* hightlight piece on hover */
+.piece-white:hover {
+  filter: brightness(1.1);
+}
+/* highlight piece that needs to take */
+.highlight {
+  filter: brightness(1.23);
+  filter: saturate(1.5);
+}
 
+/* highlight square for move */
 .black.possible {
   background-image: url("../images/dark_selected_wood.png");
   background-color: rgb(167, 61, 61);
@@ -140,7 +133,6 @@ p {
   border-radius: 5vmin;
   z-index: 2;
 }
-
 #close-menu {
   margin: 0 auto;
   margin-left: 2vmin;
@@ -153,12 +145,10 @@ p {
   text-decoration: none;
   z-index: 3;
 }
-
 #close-menu:hover {
   font-size: max(20px, 3vmin);
   color: rgb(0, 0, 0);
 }
-
 .menu-hidden {
   margin-left: 83.5vmin;
   margin-top: -2.5vmin;
@@ -172,7 +162,6 @@ p {
   text-align: center;
   z-index: 2;
 }
-
 .menu-item {
   margin: 0;
   cursor: pointer;
@@ -237,21 +226,18 @@ p {
 }
 
 /* Switch from w3Schools.com */
-
 .switch {
   position: relative;
   display: inline-block;
   width: 6vmin;
   height: 3.4vmin;
 }
-
 /* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 /* The slider */
 .slider {
   position: absolute;
@@ -264,7 +250,6 @@ p {
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -276,40 +261,33 @@ p {
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
-
 input:checked + .slider {
   background-color: #2196f3;
 }
-
 input:focus + .slider {
   box-shadow: 0 0 1px #2196f3;
 }
-
 input:checked + .slider:before {
   -webkit-transform: translateX(2.6vmin);
   -ms-transform: translateX(2.6vmin);
   transform: translateX(2.6vmin);
 }
-
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
 }
-
 .slider.round:before {
   border-radius: 50%;
 }
-
 .space {
-  margin-right: 4vmin;
+  margin-right: 6.1vmin;
 }
-
+/* Space between text and option sliders */
 .space-s {
   margin-right: 1.3vmin;
 }
 
 /* Rules window */
-
 .menu-rules {
   text-align: center;
   text-shadow: #333 0.1em 0.1em 0.2em;
@@ -339,6 +317,19 @@ input:checked + .slider:before {
   letter-spacing: 0.2rem;
   font-size: max(5px, 5vmin);
 }
+/* rules paragraph normal */
+p {
+  color: white;
+  font-family: "Arial";
+  font-size: max(2.4vmin, 15px);
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+/* rules paragraph topics */
+.text-g {
+  font-size: max(3vmin, 18px);
+}
 
 /* Results window */
 .results-menu {
@@ -346,11 +337,9 @@ input:checked + .slider:before {
   position: relative;
   margin-top: max(10px, 5.2vmin);
 }
-
 #reset-score {
   cursor: pointer;
 }
-
 #reset-score:hover {
   color: black;
 }

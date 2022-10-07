@@ -11,24 +11,22 @@ class Board {
     // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
     this.pieceTaking = null; //keeps the piece that is taking
-    this.moveSound = new Audio("assets/audio/move-self.mp3");
+    this.moveSound = new Audio("assets/audio/move.mp3");
     this.takeSound = new Audio("assets/audio/capture.mp3");
-    this.notify = new Audio("assets/audio/notify.mp3");
     this.menu = new Audio("assets/audio/menu.mp3");
     this.turn = 0;
-    this.optionHighlight = false;
+    this.optionHighlight = true;
     this.optionSound = true;
     this.menuIsOpen = true;
     this.isPlaying = false;
 
+    // prepare for score saving
     if (localStorage.getItem("whiteScore") == null) {
       localStorage.setItem("whiteScore", "0");
     }
     if (localStorage.getItem("blackScore") == null) {
       localStorage.setItem("blackScore", "0");
     }
-    // this.optionSound = localStorage.getItem("optionSound");
-    // this.optionHighlight = localStorage.getItem("optionHighlight");
 
     // create squares
     let color = "white";
@@ -64,7 +62,6 @@ class Board {
       blackPieces.forEach((item) => {
         item.movable = false;
         item.addEventListener("click", this.pieceClick);
-        this.checkpossibleMove(item);
       });
       this.promoteToKing(blackPieces);
       this.checkWinner();
@@ -75,17 +72,21 @@ class Board {
         // unfreeze white pieces
         whitePieces.forEach((item) => {
           item.movable = true;
-          item.classList.remove("unselected");
           item.addEventListener("click", this.pieceClick);
           this.checkpossibleMove(item);
         });
       }
     } else if (this.colorPlay == "piece-black") {
+      // remove highlight from white pieces
+      let highlightPieces = document.querySelectorAll(".highlight");
+      highlightPieces.forEach((item) => {
+        item.classList.remove("highlight");
+      });
+
       //freeze white pieces
       const whitePieces = document.querySelectorAll(".piece-white");
       whitePieces.forEach((item) => {
         item.movable = false;
-        this.checkpossibleMove(item);
       });
       this.promoteToKing(whitePieces);
       this.checkWinner();
@@ -172,29 +173,28 @@ class Board {
 
   // add square click to possible squares
   movePiece(e) {
+    /* Method to move the piece to the square*/
+
     if (e.target.classList[2] == "possible") {
       board.playSound("move");
       const piece = document.querySelector(".moving");
-      // const pieceId = piece.id;
       const square = document.getElementById(e.target.id);
       const oldSquare = document.getElementById(piece.parentNode.id);
       // move piece
       square.appendChild(piece);
-
       // check if took piece
       if (board.takeIt.length > 0) {
         for (let i = 0; i < board.takeIt.length; i++) {
           let item = board.takeIt[i];
-          // board.takeIt.forEach((item) => {
           const movPiece = item[0];
           const enemySquareId = item[1];
           const opositeSquare = document.getElementById(item[2]);
           if (movPiece == piece && opositeSquare == square) {
+            board.playSound("take");
             // remove enemy piece
             const enemySquare = document.getElementById(enemySquareId);
             enemySquare.innerHTML = "";
             enemySquare.setAttribute("occupied", "false");
-            board.playSound("take");
             // check if can take again
             board.takeIt = [];
             board.needTake = [];
@@ -229,14 +229,12 @@ class Board {
 
   // Method to move the black piece automatically and take if possible
   computerMove() {
+    /* Method to move the black piece automatically and take if possible*/
     board.takeIt = [];
     board.needTake = [];
     console.log("PC is playing");
     // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
-    blackPieces.forEach((item) => {
-      board.checkpossibleMove(item);
-    });
     // check if black pieces can take
     if (board.checkIfcanTake(blackPieces)) {
       while (board.checkIfcanTake(blackPieces)) {
@@ -244,10 +242,6 @@ class Board {
         board.takePiece();
         board.takeIt = [];
         board.needTake = [];
-        // get all black pieces
-        blackPieces.forEach((item) => {
-          board.checkpossibleMove(item);
-        });
       }
     } else {
       // move a piece
@@ -261,15 +255,13 @@ class Board {
 
   // take a piece
   takePiece() {
-    /* Take a piece */
+    /* Method to take a piece */
     let group;
     let piece;
     let enemySquare;
     let oppositeSquare;
-
     // if it is retaking
     if (board.pieceTaking != null) {
-      console.log("RETAKING"); // need to use the same piece as before.
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
@@ -308,6 +300,7 @@ class Board {
 
   // Method to move a piece
   moveCoputerPiece() {
+    /* Method to move a piece */
     let allMoves = {};
     let tempId = -1;
     let tempMoves = [];
@@ -337,8 +330,8 @@ class Board {
 
   // Method to check if there is forced take for the pieces
   checkIfcanTake(pieces) {
-    /* Check if a piece can take another
-    Input (obj): Piece
+    /* Check if any piece can take another
+    Input (arr(obj)): Pieces
 
     Output (boolean): true if piece can take */
 
@@ -349,17 +342,14 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.movable = true;
-        if (item.classList.contains("piece-white") && this.optionHighlight) {
-          item.classList.remove("unselected");
+        if (this.optionHighlight && item.classList.contains("piece-white")) {
+          item.classList.add("highlight");
         }
       });
       // freeze the rest
       pieces.forEach((item) => {
         if (!this.needTake.includes(item)) {
           item.movable = false;
-          if (item.classList.contains("piece-white") && this.optionHighlight) {
-            item.classList.add("unselected");
-          }
         }
       });
       return true;
@@ -420,22 +410,22 @@ class Board {
     });
 
     if (whitePieces.length == 0) {
-      alert("No pieces left Black wins!");
+      alert("No pieces left, Black wins!");
       this.updateScore("black");
       location.reload();
       return -1;
     } else if (blackPieces.length == 0) {
-      alert("Congratulations!!!!\nNo pieces left White wins!");
+      alert("Congratulations!!!!\n\nNo pieces left White wins!");
       this.updateScore("white");
       location.reload();
       return -1;
     } else if (whitePiecesLeft == 0) {
-      alert("No moves left Black wins!");
+      alert("No moves left, Black wins!");
       this.updateScore("black");
       location.reload();
       return -1;
     } else if (blackPiecesLeft == 0) {
-      alert("Congratulations!!!!\nNo moves left White wins!");
+      alert("Congratulations!!!!\n\nNo moves left White wins!");
       this.updateScore("white");
       location.reload();
       return -1;
@@ -471,13 +461,14 @@ class Board {
 
   // Method to check possible targets
   checkpossibleMove(pieceToCheck = null) {
-    /* This method will check the possible moves for the piece that is being dragged
+    /* This method will check the possible moves for the piece that is being moved
     and will return an array with the possible squares
 
     Inpunt: pieceToCheck = can be a piece or null, when null,
-    the method will check the piece that is being dragged
+    the method will check the piece that is being moved
 
-    Output: array with the possible squares
+    Output: returns an array of possible squares or array of squares to take a piece
+    or an empty array if there is no possible move.
     */
 
     let taking = [];
@@ -633,7 +624,6 @@ class Piece {
     this.piece = document.createElement("div");
     this.piece.className = "piece";
     this.piece.classList.add("piece-" + color);
-    // this.piece.movable = true;
   }
   // create a new piece
   get_piece(id) {
@@ -643,9 +633,9 @@ class Piece {
 }
 
 // Menu class
-
 class Menu {
-  // Method to create initial menu
+  /* Menu class to create the menu and the buttons */
+
   createMenu() {
     /* Create menu */
     const menu = document.createElement("div");
@@ -673,7 +663,6 @@ class Menu {
       if (board.isPlaying == true) {
         this.hiddenMenu();
         location.reload();
-        // Implement a question to be sure that wants to restart the game !!!
       } else {
         board.startGame();
         board.isPlaying = true;
@@ -736,14 +725,14 @@ class Menu {
                         <span class="slider round"></span>
                         </label></div>`;
     }
-    if (!board.optionHighlight) {
-      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Highlight Move</span>
+    if (board.optionHighlight) {
+      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Forced Highlight  </span>
                           <label class="switch" id="highlight-switch">
                           <input type="checkbox" checked>
                           <span class="slider round"></span>
                           </label></div>`;
     } else {
-      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Highlight Move</span>
+      menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Forced Highlight</span>
                           <label class="switch" id="highlight-switch">
                           <input type="checkbox">
                           <span class="slider round"></span>
@@ -755,7 +744,6 @@ class Menu {
     //check if sound switch is off
     const switchSound = document.getElementById("sound-switch");
     switchSound.addEventListener("change", () => {
-      // if (!switchSound.checked) {
       if (board.optionSound) {
         board.optionSound = false;
       } else {
@@ -841,7 +829,7 @@ class Menu {
     let plyerScore = localStorage.getItem("whiteScore");
     let computerScore = localStorage.getItem("blackScore");
     menu.innerHTML += `<p class="submenu results-menu" id="player-score">Player  ${plyerScore}</p>`;
-    menu.innerHTML += `<p class="submenu results-menu" id="player-score">Computer ${computerScore}</p>`;
+    menu.innerHTML += `<p class="submenu results-menu" id="computer-score">Computer  ${computerScore}</p>`;
     menu.innerHTML += `<div class="submenu results-menu" id="reset-score">Reset Score</div>`;
     menu.innerHTML += `<div class="submenu results-menu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
     // add event listeners
