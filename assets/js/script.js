@@ -68,7 +68,7 @@ class Board {
       this.promoteToKing(blackPieces);
       setTimeout(() => {
         this.checkWinner();
-      }, 800);
+      }, 1000);
 
       // check if white pieces can take
       let whitePieces = document.querySelectorAll(".piece-white");
@@ -97,7 +97,7 @@ class Board {
       this.promoteToKing(whitePieces);
       setTimeout(() => {
         this.checkWinner();
-      }, 800);
+      }, 1000);
       const blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.movable = false;
@@ -435,7 +435,7 @@ class Board {
       location.reload();
       return -1;
     } else if (blackPieces.length == 0) {
-      alert("Congratulations!!!!\n\nNo pieces left White wins!");
+      alert("Congratulations!!!!\n\nNo pieces left, White wins!");
       this.updateScore("white");
       location.reload();
       return -1;
@@ -445,7 +445,7 @@ class Board {
       location.reload();
       return -1;
     } else if (blackPiecesLeft == 0) {
-      alert("Congratulations!!!!\n\nNo moves left White wins!");
+      alert("Congratulations!!!!\n\nNo moves left, White wins!");
       this.updateScore("white");
       location.reload();
       return -1;
