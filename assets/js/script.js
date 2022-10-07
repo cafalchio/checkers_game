@@ -45,6 +45,7 @@ class Board {
   }
   // Method to start the game
   startGame() {
+    /* Start the game*/
     this.createPieces();
     this.removeMoving();
     this.gameControl();
@@ -52,10 +53,11 @@ class Board {
 
   // Method to control the game turns
   gameControl() {
-    console.log("Game control: " + this.colorPlay);
-
+    /* Method to control the game turns*/
     this.turn += 1;
     if (this.colorPlay == "piece-white") {
+      const message = document.getElementById("messages");
+      message.innerHTML = "White's turn";
       // check if white pieces can take
       // freeze black pieces
       let blackPieces = document.querySelectorAll(".piece-black");
@@ -77,6 +79,8 @@ class Board {
         });
       }
     } else if (this.colorPlay == "piece-black") {
+      const message = document.getElementById("messages");
+      message.innerHTML = "";
       // remove highlight from white pieces
       let highlightPieces = document.querySelectorAll(".highlight");
       highlightPieces.forEach((item) => {
@@ -100,9 +104,6 @@ class Board {
       setTimeout(board.computerMove, timeMove);
     }
     board.pieceTaking = null;
-    console.log(
-      "=================================================== " + this.turn
-    );
   }
 
   // Method to create pieces
@@ -193,6 +194,13 @@ class Board {
             board.playSound("take");
             // remove enemy piece
             const enemySquare = document.getElementById(enemySquareId);
+            // add piece board score
+            let whiteCapture = document.getElementById("removedw");
+            const outPiece = enemySquare.firstChild;
+            outPiece.classList.remove("piece-black");
+            outPiece.classList.add("piece-out-black");
+            whiteCapture.appendChild(outPiece);
+            // remove from board
             enemySquare.innerHTML = "";
             enemySquare.setAttribute("occupied", "false");
             // check if can take again
@@ -205,7 +213,6 @@ class Board {
               board.takeIt = [];
               // player can take again
               board.invertPlayerTurn();
-              console.log("color inverted User " + board.colorPlay);
               break;
             }
           }
@@ -221,7 +228,6 @@ class Board {
       oldSquare.setAttribute("occupied", "false");
       square.setAttribute("occupied", "true");
       board.invertPlayerTurn();
-      console.log("color inverted User " + board.colorPlay);
       this.pieceTaking = null;
       board.gameControl();
     }
@@ -232,7 +238,6 @@ class Board {
     /* Method to move the black piece automatically and take if possible*/
     board.takeIt = [];
     board.needTake = [];
-    console.log("PC is playing");
     // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
     // check if black pieces can take
@@ -245,7 +250,7 @@ class Board {
       }
     } else {
       // move a piece
-      board.moveCoputerPiece();
+      board.moveComputerPiece();
     }
     this.pieceTaking = null;
     board.invertPlayerTurn();
@@ -269,10 +274,18 @@ class Board {
           piece = group[0];
           enemySquare = document.getElementById(group[1]);
           oppositeSquare = document.getElementById(group[2]);
-          // move the piece
           piece.parentNode.innerHTML = "";
           oppositeSquare.appendChild(piece);
+          // add piece to removed
+          let blackCapture = document.getElementById("removedb");
+          const outPiece = enemySquare.firstChild;
+          outPiece.classList.remove("piece-white");
+          outPiece.classList.add("piece-out-white");
+          blackCapture.appendChild(outPiece);
+          console.log("Piece taken to out");
+          // remove from board
           enemySquare.innerHTML = "";
+          console.log("Piece taken from board");
           enemySquare.setAttribute("occupied", "false");
           oppositeSquare.setAttribute("occupied", "true");
           return true;
@@ -287,6 +300,12 @@ class Board {
         this.pieceTaking = piece;
         enemySquare = document.getElementById(group[1]);
         oppositeSquare = document.getElementById(group[2]);
+        // add piece to removed
+        let blackCapture = document.getElementById("removedb");
+        const outPiece = enemySquare.firstChild;
+        outPiece.classList.remove("piece-white");
+        outPiece.classList.add("piece-out-white");
+        blackCapture.appendChild(outPiece);
         // move the piece
         piece.parentNode.innerHTML = "";
         oppositeSquare.appendChild(piece);
@@ -299,7 +318,7 @@ class Board {
   }
 
   // Method to move a piece
-  moveCoputerPiece() {
+  moveComputerPiece() {
     /* Method to move a piece */
     let allMoves = {};
     let tempId = -1;
