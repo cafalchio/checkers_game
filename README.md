@@ -122,14 +122,16 @@ Lighhouse mobile and desktop testing:
 
 ## Unfixed Bugs
 
--
+- Based on the checkers rules, the player needs to capture as many pieces as possible. The game is not programmed to do that neither to check if the player is taking the best possible move. The game is programmed to force a take.
+
+- The computer is not programmed to take the best possible move. The computer is programmed to take a random piece.
 
 ## Features Left to Implement
 
-- The computer player is not very smart, it only makes random moves. It would be nice to implement a more intelligent computer player.
+- Implement a better AI for the computer.
 - A timer to limit the time of each player.
-- I would like to implement a smoother animation for the pieces moving.
-- In the future, it would be nice to implement a multiplayer mode.
+- A smoother animation for the pieces moving.
+- In the future, a multiplayer mode.
 
 ## Deployment
 
