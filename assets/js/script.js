@@ -66,7 +66,9 @@ class Board {
         item.addEventListener("click", this.pieceClick);
       });
       this.promoteToKing(blackPieces);
-      this.checkWinner();
+      setTimeout(() => {
+        this.checkWinner();
+      }, 800);
 
       // check if white pieces can take
       let whitePieces = document.querySelectorAll(".piece-white");
@@ -93,14 +95,16 @@ class Board {
         item.movable = false;
       });
       this.promoteToKing(whitePieces);
-      this.checkWinner();
+      setTimeout(() => {
+        this.checkWinner();
+      }, 800);
       const blackPieces = document.querySelectorAll(".piece-black");
       blackPieces.forEach((item) => {
         item.movable = false;
         this.checkpossibleMove(item);
       });
       //random to computer move, sound more
-      let timeMove = Math.random() * 1000 + 1000;
+      let timeMove = Math.random() * 2000 + 1200;
       setTimeout(board.computerMove, timeMove);
     }
     board.pieceTaking = null;
@@ -208,7 +212,6 @@ class Board {
             board.needTake = [];
             //get white pieces
             if (board.checkIfcanTake([piece])) {
-              console.log("White can take again!!");
               board.needTake = [];
               board.takeIt = [];
               // player can take again
@@ -256,7 +259,6 @@ class Board {
     }
     this.pieceTaking = null;
     board.invertPlayerTurn();
-    console.log("color inverted by Computer Move " + board.colorPlay);
     board.gameControl();
   }
 
@@ -284,10 +286,8 @@ class Board {
           outPiece.classList.remove("piece-white");
           outPiece.classList.add("piece-out-white");
           blackCapture.appendChild(outPiece);
-          console.log("Piece taken to out");
           // remove from board
           enemySquare.innerHTML = "";
-          console.log("Piece taken from board");
           enemySquare.setAttribute("occupied", "false");
           oppositeSquare.setAttribute("occupied", "true");
           return true;
@@ -410,7 +410,6 @@ class Board {
     } else {
       score = parseInt(score) + 1;
       localStorage.setItem(color + "Score", String(score));
-      console.log("set score " + localStorage.getItem(color + "Score"));
     }
   }
 
@@ -732,14 +731,12 @@ class Menu {
     <div class="menu-item" id="options">Options</div>
     `;
     if (board.optionSound) {
-      console.log("board options on " + board.optionSound);
       menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>  
                         <label class="switch" id="sound-switch">
                         <input type="checkbox" checked>
                         <span class="slider round"></span>
                         </label></div>`;
     } else {
-      console.log("board options off " + board.optionSound);
       menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>
                         <label class="switch" id="sound-switch">
                         <input type="checkbox">
@@ -769,7 +766,6 @@ class Menu {
         board.optionSound = false;
       } else {
         board.optionSound = true;
-        console.log("sound on " + board.optionSound);
       }
       board.playSound("menu");
     });
