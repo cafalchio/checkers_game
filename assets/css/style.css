@@ -18,11 +18,24 @@ body {
   grid-template-columns: auto auto auto auto auto auto auto auto;
   border: 2vmin solid;
   border-color: rgb(80, 40, 11);
-  box-shadow: 2vmin 2vmin 0.4vmin rgb(14, 8, 6);
+  box-shadow: 1vmin 1vmin 0.4vmin rgb(14, 8, 6);
   aspect-ratio: auto 1 / 1;
   -webkit-user-drag: none;
   z-index: 1;
 }
+
+/* messages */
+#messages {
+  display: block;
+  text-align: center;
+  padding-right: 75vmin;
+  margin-left: 5vmin;
+  padding-top: 2vh;
+  font-size: 2vmin;
+  color: rgb(156, 92, 45);
+  z-index: 2;
+}
+
 /* game square */
 .square {
   display: inline-block;
@@ -342,4 +355,45 @@ p {
 }
 #reset-score:hover {
   color: black;
+}
+/* styles for taken pieces */
+
+.piece-out-white {
+  background-image: url("../images/white_piece.png");
+  background-color: #333;
+  background-position: center;
+  border-radius: 50%;
+  background-size: 110%;
+  width: max(10px, 3.5vmin);
+  height: max(10px, 3.5vmin);
+  box-shadow: none;
+  margin-top: 20%;
+  z-index: 3;
+}
+
+.piece-out-black {
+  background-image: url("../images/dark_piece.png");
+  background-color: #333;
+  background-position: center;
+  border-radius: 50%;
+  background-size: 120%;
+  width: max(10px, 3.5vmin);
+  height: max(10px, 3.5vmin);
+  box-shadow: none;
+  margin-top: 20%;
+  z-index: 3;
+}
+
+#removedw {
+  display: inline;
+  width: 3vmin;
+  display: inline-grid;
+  position: relative;
+}
+
+#removedb {
+  display: inline;
+  position: relative;
+  width: 3vmin;
+  display: inline-grid;
 }
