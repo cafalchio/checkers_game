@@ -28,10 +28,11 @@ body {
 #messages {
   display: block;
   text-align: center;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   padding-right: 75vmin;
-  margin-left: 5vmin;
+  margin-left: 7vmin;
   padding-top: 2vh;
-  font-size: 2vmin;
+  font-size: 3vmin;
   color: rgb(156, 92, 45);
   z-index: 2;
 }
@@ -112,10 +113,7 @@ body {
   opacity: 1;
   z-index: 1;
 }
-/* hightlight piece on hover */
-.piece-white:hover {
-  filter: brightness(1.1);
-}
+
 /* highlight piece that needs to take */
 .highlight {
   filter: brightness(1.23);
@@ -179,7 +177,7 @@ body {
   margin: 0;
   cursor: pointer;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  letter-spacing: 0.2rem;
+  /* letter-spacing: 0.2rem; */
   margin-top: 2vmin;
   font-size: max(10px, 5vmin);
   color: #ffffff;
@@ -188,8 +186,8 @@ body {
   z-index: 2;
 }
 .menu-item:hover {
-  font-size: max(12px, 5.25vmin);
-  letter-spacing: 0.4rem;
+  font-size: max(11px, 5vmin);
+  letter-spacing: 0.1rem;
 }
 #new-game {
   /* margin-top: 7vmin; */
@@ -326,10 +324,6 @@ input:checked + .slider:before {
   margin-top: max(10px, 5vmin);
 }
 
-.menu-item:hover {
-  letter-spacing: 0.2rem;
-  font-size: max(5px, 5vmin);
-}
 /* rules paragraph normal */
 p {
   color: white;
@@ -364,8 +358,8 @@ p {
   background-position: center;
   border-radius: 50%;
   background-size: 110%;
-  width: max(10px, 3.5vmin);
-  height: max(10px, 3.5vmin);
+  width: max(10px, 5vmin);
+  height: max(10px, 5vmin);
   box-shadow: none;
   margin-top: 20%;
   z-index: 3;
@@ -377,8 +371,8 @@ p {
   background-position: center;
   border-radius: 50%;
   background-size: 120%;
-  width: max(10px, 3.5vmin);
-  height: max(10px, 3.5vmin);
+  width: max(10px, 5vmin);
+  height: max(10px, 5vmin);
   box-shadow: none;
   margin-top: 20%;
   z-index: 3;
@@ -386,7 +380,7 @@ p {
 
 #removedw {
   display: inline;
-  width: 3vmin;
+  width: 4.8vmin;
   display: inline-grid;
   position: relative;
 }
@@ -394,6 +388,6 @@ p {
 #removedb {
   display: inline;
   position: relative;
-  width: 3vmin;
+  width: 4.8vmin;
   display: inline-grid;
 }
