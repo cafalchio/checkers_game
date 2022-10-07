@@ -238,15 +238,17 @@ class Board {
     /* Method to move the black piece automatically and take if possible*/
     board.takeIt = [];
     board.needTake = [];
+    let whiteCounter = 0;
     // get all black pieces
     const blackPieces = document.querySelectorAll(".piece-black");
     // check if black pieces can take
     if (board.checkIfcanTake(blackPieces)) {
-      while (board.checkIfcanTake(blackPieces)) {
+      while (board.checkIfcanTake(blackPieces) || whiteCounter > 5) {
         // take a piece
         board.takePiece();
         board.takeIt = [];
         board.needTake = [];
+        whiteCounter++;
       }
     } else {
       // move a piece
