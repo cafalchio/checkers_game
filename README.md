@@ -126,6 +126,8 @@ Lighhouse mobile and desktop testing:
 
 - The computer is not programmed to take the best possible move. The computer is programmed to take a random piece.
 
+- It was reported to crash in Android, but I was not able to reproduce the error.
+
 ## Features Left to Implement
 
 - Implement a better AI for the computer.
