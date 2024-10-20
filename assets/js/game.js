@@ -1,9 +1,18 @@
-//Board class that create and command the game
-/*jshint esversion: 6 */
+import Piece from "./piece.js";
+import playSound from "./sounds.js";
+
+
+localStorage.setItem('sound', true);
+let isPlaying = false;
+let menuIsOpen = true;
+let optionHighlight = true;
+let game = document.getElementById("game");
+
+
+
 class Board {
-  // Method to create the board
+
   constructor() {
-    this.game = document.getElementById("game");
     this.colorPlay = "piece-white";
     this.whiteKing = false;
     this.blackKing = false;
@@ -11,15 +20,8 @@ class Board {
     // takeIt info to take a piece: actualPieceId, enemySquareId, opositeSquareId
     this.takeIt = [];
     this.pieceTaking = null; //keeps the piece that is taking
-    this.moveSound = new Audio("assets/audio/move.mp3");
-    this.takeSound = new Audio("assets/audio/capture.mp3");
-    this.menu = new Audio("assets/audio/menu.mp3");
     this.turn = 0;
-    this.optionHighlight = true;
-    this.optionSound = true;
-    this.menuIsOpen = true;
-    this.isPlaying = false;
-
+ 
     // prepare for score saving
     if (localStorage.getItem("whiteScore") == null) {
       localStorage.setItem("whiteScore", "0");
@@ -40,7 +42,7 @@ class Board {
       newDiv.classList.add(color);
       newDiv.id = i;
       newDiv.setAttribute("occupied", "false");
-      this.game.appendChild(newDiv);
+      game.appendChild(newDiv);
     }
   }
   // Method to start the game
@@ -181,7 +183,7 @@ class Board {
     /* Method to move the piece to the square*/
 
     if (e.target.classList[2] == "possible") {
-      board.playSound("move");
+      playSound("move");
       const piece = document.querySelector(".moving");
       const square = document.getElementById(e.target.id);
       const oldSquare = document.getElementById(piece.parentNode.id);
@@ -195,7 +197,7 @@ class Board {
           const enemySquareId = item[1];
           const opositeSquare = document.getElementById(item[2]);
           if (movPiece == piece && opositeSquare == square) {
-            board.playSound("take");
+            playSound("take");
             // remove enemy piece
             const enemySquare = document.getElementById(enemySquareId);
             // add piece board score
@@ -274,7 +276,7 @@ class Board {
       for (let i = 0; i < board.takeIt.length; i++) {
         group = board.takeIt[i];
         if (group[0] == this.pieceTaking) {
-          board.playSound("take");
+          playSound("take");
           piece = group[0];
           enemySquare = document.getElementById(group[1]);
           oppositeSquare = document.getElementById(group[2]);
@@ -296,7 +298,7 @@ class Board {
     } else {
       // if it is the first time
       for (let i = 0; i < board.takeIt.length; i++) {
-        board.playSound("take");
+        playSound("take");
         group = board.takeIt[i];
         piece = group[0];
         this.pieceTaking = piece;
@@ -328,7 +330,7 @@ class Board {
     const blackPieces = document.querySelectorAll(".piece-black");
     // check pieces that can move
     blackPieces.forEach((item) => {
-      board.playSound("move");
+      playSound("move");
       tempMoves = this.checkpossibleMove(item);
       if (tempMoves.length > 0) {
         tempId = item.id;
@@ -363,7 +365,7 @@ class Board {
     if (this.needTake.length > 0) {
       this.needTake.forEach((item) => {
         item.movable = true;
-        if (this.optionHighlight && item.classList.contains("piece-white")) {
+        if (optionHighlight && item.classList.contains("piece-white")) {
           item.classList.add("highlight");
         }
       });
@@ -452,21 +454,7 @@ class Board {
     }
   }
 
-  // play sound
-  playSound(soundType) {
-    /* Play sound */
-    if (this.optionSound) {
-      if (soundType == "move") {
-        this.moveSound.play();
-      } else if (soundType == "take") {
-        this.takeSound.play();
-      } else if (soundType == "menu") {
-        this.menu.play();
-      } else if (soundType == "notify") {
-        this.notify.play();
-      }
-    }
-  }
+
 
   // invert Player turn
   invertPlayerTurn() {
@@ -637,20 +625,7 @@ class Board {
 }
 
 // Piece class to create pieces
-class Piece {
-  constructor(color) {
-    this.color = color;
-    this.isKing = false;
-    this.piece = document.createElement("div");
-    this.piece.className = "piece";
-    this.piece.classList.add("piece-" + color);
-  }
-  // create a new piece
-  get_piece(id) {
-    this.piece.id = id;
-    return this.piece;
-  }
-}
+
 
 // Menu class
 class Menu {
@@ -662,7 +637,7 @@ class Menu {
     menu.id = "menu";
     menu.classList.add("menu");
     menu.innerHTML = `<div id="close-menu"><i class="far fa-times-circle"></i></div>`;
-    if (board.isPlaying) {
+    if (isPlaying) {
       menu.innerHTML += `<div class="menu-item" id="new-game">Reset Game!</div>`;
     } else {
       menu.innerHTML += `<div class="menu-item" id="new-game">Start Game!</div>`;
@@ -671,35 +646,35 @@ class Menu {
         <div class="menu-item" id="options">Options</div>
         <div class="menu-item" id="rules">Rules</div>
         <div class="menu-item" id="results">Results</div>`;
-    board.game.appendChild(menu);
+    game.appendChild(menu);
 
     document.getElementById("close-menu").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.hiddenMenu();
-      board.menuIsOpen = false;
+      menuIsOpen = false;
     });
     document.getElementById("new-game").addEventListener("click", () => {
-      board.playSound("menu");
-      if (board.isPlaying == true) {
+      playSound("menu");
+      if (isPlaying) {
         this.hiddenMenu();
         location.reload();
       } else {
         board.startGame();
-        board.isPlaying = true;
-        board.menuIsOpen = false;
+        isPlaying = true; 
+        menuIsOpen = false;
         this.hiddenMenu();
       }
     });
     document.getElementById("options").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.options();
     });
     document.getElementById("rules").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.rules();
     });
     document.getElementById("results").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.results();
     });
   }
@@ -707,18 +682,18 @@ class Menu {
   hiddenMenu() {
     const smallMenu = document.createElement("div");
     smallMenu.classList.add("menu-hidden");
-    board.game.appendChild(smallMenu);
-    board.game.removeChild(document.getElementById("menu"));
+    game.appendChild(smallMenu);
+    game.removeChild(document.getElementById("menu"));
     smallMenu.innerHTML = `<i class="fa fa-cog" aria-hidden="true"></i>`;
 
     smallMenu.addEventListener("click", () => {
-      board.playSound("menu");
-      if (!board.menuIsOpen) {
+      playSound("menu");
+      if (!menuIsOpen) {
         this.createMenu();
-        board.menuIsOpen = true;
-      } else if (board.menuIsOpen) {
+        menuIsOpen = true;
+      } else if (menuIsOpen) {
         this.hiddenMenu();
-        board.menuIsOpen = false;
+        menuIsOpen = false;
       }
     });
   }
@@ -730,7 +705,7 @@ class Menu {
     <div id="close-menu"><i class="far fa-times-circle"></i></div>
     <div class="menu-item" id="options">Options</div>
     `;
-    if (board.optionSound) {
+    if (localStorage.getItem("sound") == "true") {
       menu.innerHTML += `<div class="submenu" id="sound"><span class="space">Sound On/Off</span>  
                         <label class="switch" id="sound-switch">
                         <input type="checkbox" checked>
@@ -743,7 +718,7 @@ class Menu {
                         <span class="slider round"></span>
                         </label></div>`;
     }
-    if (board.optionHighlight) {
+    if (optionHighlight) {
       menu.innerHTML += `<div class="submenu" id="highlight"><span class="space-s">Forced Highlight  </span>
                           <label class="switch" id="highlight-switch">
                           <input type="checkbox" checked>
@@ -762,33 +737,33 @@ class Menu {
     //check if sound switch is off
     const switchSound = document.getElementById("sound-switch");
     switchSound.addEventListener("change", () => {
-      if (board.optionSound) {
-        board.optionSound = false;
+      if (localStorage.getItem("sound") == "true") {
+        localStorage.setItem('sound', false);
       } else {
-        board.optionSound = true;
+        localStorage.setItem('sound', true);
       }
-      board.playSound("menu");
+      playSound("menu");
     });
 
     const switchHighlight = document.getElementById("highlight-switch");
     switchHighlight.addEventListener("change", () => {
-      board.playSound("menu");
-      if (board.optionHighlight) {
-        board.optionHighlight = false;
+      playSound("menu");
+      if (optionHighlight) {
+        optionHighlight = false;
       } else {
-        board.optionHighlight = true;
+        optionHighlight = true;
       }
     });
 
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.hiddenMenu();
-      board.menuIsOpen = false;
+      menuIsOpen = false;
     });
 
     document.getElementById("back").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.clearMenu();
       this.createMenu();
     });
@@ -823,13 +798,13 @@ class Menu {
 
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.hiddenMenu();
-      board.menuIsOpen = false;
+      menuIsOpen = false;
     });
 
     document.getElementById("rules-back").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.clearMenu();
       this.createMenu();
     });
@@ -851,19 +826,19 @@ class Menu {
     menu.innerHTML += `<div class="submenu results-menu" id="rules-back"><i class="fa fa-backward" aria-hidden="true"></i></div>`;
     // add event listeners
     document.getElementById("close-menu").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.hiddenMenu();
-      board.menuIsOpen = false;
+      menuIsOpen = false;
     });
 
     document.getElementById("rules-back").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       this.clearMenu();
       this.createMenu();
     });
 
     document.getElementById("reset-score").addEventListener("click", () => {
-      board.playSound("menu");
+      playSound("menu");
       localStorage.setItem("whiteScore", 0);
       localStorage.setItem("blackScore", 0);
       document.getElementById("player-score").innerHTML = "Player 0";

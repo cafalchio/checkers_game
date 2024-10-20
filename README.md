@@ -1,6 +1,26 @@
 # Checker's Game
 
+### UPDATES:
+
+<b>This game was my first js program and was made as part of my full stack course. Off course I decided to make something complicated for my experience and despite it was working in the end, the code is messy and spagetti, I can see it now, but I was really proud of finishing it at the time. Now, I can use some of my experience to redo the game and add some features. 
+
+Recently I started to experiment with lichess (lichess.org) chess bot and decided to create my own bot. However, I think I decided to start creating a better bot for my own checkers game. 
+Because the messy code, I decided to make a plan:</b>
+
+1. First need to redo the messy code, so I can thing about new features
+2. Create a easy protocol to comunicate with the board
+3. Create a better bot to play against users (the one I created was just a random player)
+4. I have being trying to find an excuse to create multiplayer using sockets, so this can be a great opportunity.
+
+
+#### Desing plan
+
+* To be able to add a bot, I need the board to communicate with the bot by receiving and sending board information and moves.
+* 
+
+
 ## Introduction
+
 
 The Checker's Game is a game that consists of a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move. There are many variations of the game. The rules implemented in this project are based on the international rules but using a 8x8 board.
 The game code was developed in javascript and the interface was developed in HTML and CSS.
