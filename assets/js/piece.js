@@ -13,4 +13,23 @@ export default class Piece {
     }
   }
 
+
+ export function promoteToKing(pieces) {
+    /* Change the piece to king if it reaches the end of the board
+    Input (obj): Piece
+    */
+
+    pieces.forEach((item) => {
+      if (item.classList.contains("piece-white") && item.parentNode.id < 8) {
+        item.classList.add("white-king");
+        item.isKing = true;
+      } else if (
+        item.classList.contains("piece-black") &&
+        item.parentNode.id > 55
+      ) {
+        item.classList.add("black-king");
+        item.isKing = true;
+      }
+    });
+  }
   

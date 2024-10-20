@@ -1,4 +1,4 @@
-import Piece from "./piece.js";
+import Piece, {promoteToKing} from "./piece.js";
 import playSound from "./sounds.js";
 
 
@@ -9,6 +9,39 @@ let optionHighlight = true;
 let game = document.getElementById("game");
 
 
+function createPieces() {
+  /* Create the pieces on the board*/
+  const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
+  const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
+  // get squares
+  const squares = document.querySelectorAll(".square");
+  // create pieces
+  for (let i = 0; i < 64; i++) {
+    const bPiece = new Piece("black");
+    const wPiece = new Piece("white");
+    if (blackPieces.includes(i)) {
+      squares[i].appendChild(bPiece.get_piece(100 + i));
+      squares[i].setAttribute("occupied", "true");
+    }
+    if (whitePieces.includes(i)) {
+      squares[i].appendChild(wPiece.get_piece(200 + i));
+      squares[i].setAttribute("occupied", "true");
+    }
+  }
+}
+
+
+function removeMoving() {
+  document.addEventListener("movestart", (event) => {
+    event.preventDefault();
+    const oldPossibleMoves = document.querySelectorAll(".possible");
+    if (oldPossibleMoves.length > 0) {
+      oldPossibleMoves.forEach((item) => {
+        item.classList.remove("possible");
+      });
+    }
+  });
+}
 
 class Board {
 
@@ -46,11 +79,11 @@ class Board {
     }
   }
   // Method to start the game
-  startGame() {
+  startGame() { // This should be inside a game class
     /* Start the game*/
-    this.createPieces();
-    this.removeMoving();
-    this.gameControl();
+    createPieces();
+    removeMoving();
+    this.gameControl(); // This needs to go get out of board and be the one that controls games and the variables that were removed to global
   }
 
   // Method to control the game turns
@@ -67,7 +100,7 @@ class Board {
         item.movable = false;
         item.addEventListener("click", this.pieceClick);
       });
-      this.promoteToKing(blackPieces);
+      promoteToKing(blackPieces);
       setTimeout(() => {
         this.checkWinner();
       }, 1000);
@@ -96,7 +129,7 @@ class Board {
       whitePieces.forEach((item) => {
         item.movable = false;
       });
-      this.promoteToKing(whitePieces);
+      promoteToKing(whitePieces);
       setTimeout(() => {
         this.checkWinner();
       }, 1000);
@@ -110,41 +143,6 @@ class Board {
       setTimeout(board.computerMove, timeMove);
     }
     board.pieceTaking = null;
-  }
-
-  // Method to create pieces
-  createPieces() {
-    /* Create the pieces on the board*/
-    const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
-    const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
-    // get squares
-    const squares = document.querySelectorAll(".square");
-    // create pieces
-    for (let i = 0; i < 64; i++) {
-      const bPiece = new Piece("black");
-      const wPiece = new Piece("white");
-      if (blackPieces.includes(i)) {
-        squares[i].appendChild(bPiece.get_piece(100 + i));
-        squares[i].setAttribute("occupied", "true");
-      }
-      if (whitePieces.includes(i)) {
-        squares[i].appendChild(wPiece.get_piece(200 + i));
-        squares[i].setAttribute("occupied", "true");
-      }
-    }
-  }
-
-  // Method to avoid bug of piece being moved to another square
-  removeMoving() {
-    document.addEventListener("movestart", (event) => {
-      event.preventDefault();
-      const oldPossibleMoves = document.querySelectorAll(".possible");
-      if (oldPossibleMoves.length > 0) {
-        oldPossibleMoves.forEach((item) => {
-          item.classList.remove("possible");
-        });
-      }
-    });
   }
 
   // Method to add click event listeners
@@ -382,24 +380,7 @@ class Board {
   }
 
   // Promote to king
-  promoteToKing(pieces) {
-    /* Change the piece to king if it reaches the end of the board
-    Input (obj): Piece
-    */
 
-    pieces.forEach((item) => {
-      if (item.classList.contains("piece-white") && item.parentNode.id < 8) {
-        item.classList.add("white-king");
-        item.isKing = true;
-      } else if (
-        item.classList.contains("piece-black") &&
-        item.parentNode.id > 55
-      ) {
-        item.classList.add("black-king");
-        item.isKing = true;
-      }
-    });
-  }
 
   updateScore(color) {
     /* Update the score
