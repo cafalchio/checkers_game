@@ -1,4 +1,4 @@
-import Piece, {promoteToKing} from "./piece.js";
+import Piece, {promoteToKing, createPieces} from "./piece.js";
 import playSound from "./sounds.js";
 
 
@@ -9,26 +9,7 @@ let optionHighlight = true;
 let game = document.getElementById("game");
 
 
-function createPieces() {
-  /* Create the pieces on the board*/
-  const blackPieces = [1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23];
-  const whitePieces = [40, 42, 44, 46, 49, 51, 53, 55, 56, 58, 60, 62];
-  // get squares
-  const squares = document.querySelectorAll(".square");
-  // create pieces
-  for (let i = 0; i < 64; i++) {
-    const bPiece = new Piece("black");
-    const wPiece = new Piece("white");
-    if (blackPieces.includes(i)) {
-      squares[i].appendChild(bPiece.get_piece(100 + i));
-      squares[i].setAttribute("occupied", "true");
-    }
-    if (whitePieces.includes(i)) {
-      squares[i].appendChild(wPiece.get_piece(200 + i));
-      squares[i].setAttribute("occupied", "true");
-    }
-  }
-}
+
 
 
 function removeMoving() {
@@ -145,36 +126,7 @@ class Board {
     board.pieceTaking = null;
   }
 
-  // Method to add click event listeners
-  pieceClick(e) {
-    /* Method to add click event listeners to the pieces*/
-    const moving = document.querySelectorAll(".moving");
-    moving.forEach((item) => {
-      item.classList.remove("moving");
-    });
-    const oldPossibleMoves = document.querySelectorAll(".possible");
-    if (oldPossibleMoves.length > 0) {
-      oldPossibleMoves.forEach((item) => {
-        item.classList.remove("possible");
-      });
-    }
-    if (e.target.classList[0] == "piece" && e.target.movable) {
-      e.target.classList.add("moving");
-      // check for possible moves
-      const possibleMove = board.checkpossibleMove(e.target);
-      if (possibleMove.length > 0) {
-        possibleMove.forEach((item) => {
-          const square = document.getElementById(item);
-          square.classList.add("possible");
-          square.addEventListener("click", board.movePiece);
-        });
-      } else {
-        e.target.classList.remove("moving");
-      }
-    } else {
-      return false;
-    }
-  }
+  
 
   // add square click to possible squares
   movePiece(e) {
