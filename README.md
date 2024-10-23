@@ -16,7 +16,16 @@ Because the messy code, I decided to make a plan:</b>
 #### Desing plan
 
 * To be able to add a bot, I need the board to communicate with the bot by receiving and sending board information and moves.
-* 
+  
+  - Board: the board will be a interface between engine and user, it will receive coordinates to update the pieces for the UI
+
+  - Game: Game will control the turns, winner and time
+
+  - Engine: Will receive a board state and will return a move
+
+ 
+
+
 
 
 ## Introduction
