@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Checker's Game is a game that consists of a board with 64 squares, 32 of which are occupied by 16 black and 16 white pieces. The pieces are placed in the 12 squares closest to each player. The objective of the game is to capture all the opponent's pieces or to block them so that they cannot move. There are many variations of the game. The rules implemented in this project are based on the international rules but using a 8x8 board.
+The Checker's Game is played on a board with 64 squares and 12 pieces per side. The objective is to capture all the opponent's pieces or block them so they cannot move. Two rulesets are available on the 8x8 board: Flying Kings (the default), where kings move diagonally any distance, and British draughts, which uses short-range kings.
 The game code was developed in javascript and the interface was developed in HTML and CSS.
 
 <a href="https://cafalchio.github.io/checkers_game/" rel="nofolow">Visit and play the live version of the game here</a>
@@ -71,13 +71,13 @@ All menus pages have a button to return to the main page and a button to close t
 
 ### Options Menu
 
-The options menu allows the user to change the game settings. The user can change the sound On/Off and the higlight On/Off. The highlight is the highlight of the possible moves of the selected piece. The sound is the sound of the pieces moving and the sound of the pieces being captured.
+The options menu allows the user to change the sound and forced-capture highlights, select English or French, and choose between Flying Kings and British draughts. The initial language follows the browser preference (French when French is preferred, otherwise English); selected language and ruleset are saved.
 
 ![Options menu](assets/images/options_menu.png)
 
 ### Rules Menu
 
-The rules menu shows the rules of the game. The rules are based on the international rules but using a 8x8 board. The text can be scrolled up and down.
+The rules menu shows the rules for the selected ruleset. The text can be scrolled up and down.
 
 ![Rules menu](assets/images/rules_menu.png)
 
@@ -95,6 +95,12 @@ Once in the Game, the user can go back to the menu using the small cog icon in t
 ![Game](assets/images/game_play.png)
 
 ## Testing
+
+The core state and rules modules have dependency-free Node unit tests:
+
+```bash
+npm test
+```
 
 The website was tested on a desktop computer and a mobile phone.
 Also, W3C and Jigsaw validation was used to validate the website HTML and CSS.
@@ -124,7 +130,7 @@ Lighhouse mobile and desktop testing:
 
 - Based on the checkers rules, the player needs to capture as many pieces as possible. The game is not programmed to do that neither to check if the player is taking the best possible move. The game is programmed to force a take.
 
-- The computer is not programmed to take the best possible move. The computer is programmed to take a random piece.
+- The computer uses a shallow move-scoring heuristic on Medium and Hard, and random choices on Easy. It does not search future turns.
 
 - It was reported to crash in Android, but I was not able to reproduce the error.
 
