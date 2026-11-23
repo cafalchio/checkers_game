@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Checkers Game is played against the computer, with 8x8 British draughts or 10x10 International draughts. The objective is to capture all the opponent's pieces or block them so they cannot move. You can play as White or Black at three difficulty levels. International draughts is the default, with 20 pieces per side, flying kings, backward man captures, and compulsory longest sequences. The interface is available in **English and French**.
+
+Checkers Game is played against the computer, with 8x8 British draughts or 10x10 International draughts. The objective is to capture all the opponent's pieces or block them so they cannot move. You can play as White or Black at three difficulty levels (Easy is the default). International draughts is the default ruleset, with 20 pieces per side, flying kings, backward man captures, and compulsory longest sequences. The interface is available in **English and French**.
 
 The game logic is written in vanilla JavaScript (ES modules), and the interface in HTML and CSS. No build step or framework is needed.
 
@@ -66,7 +67,8 @@ assets/js/
 ├── script.js            # UI layer: Board, Piece and Menu classes, computer AI, i18n strings
 ├── last-move.js         # Classic script: renders last-move highlight and captured "ghosts"
 └── core/
-    ├── game-state.js    # GameState: serializable, DOM-free position (squares, turn, ruleset, revision)
+    ├── rulesets.js      # RULESETS config (board size and rule flags), getBoardSize, getSquareCount
+    ├── game-state.js    # GameState: serializable, DOM-free position
     └── rules-engine.js  # RulesEngine: captures, simple moves, mandatory capture, move validation
 ```
 
@@ -93,14 +95,14 @@ A footer gives access to **Options**, **Rules** and **Results**.
 After choosing "Against computer", you configure the game and press **Start Game!**:
 
 - **Play as**: White or Black. If you choose Black, the computer moves first.
-- **Difficulty**: Easy, Medium or Hard.
-- **Rule set**: International draughts or British draughts.
+- **Difficulty**: Easy (default), Medium or Hard.
+- **Rule set**: International draughts (default) or British draughts.
 
-Difficulty and ruleset are remembered for next time. The chosen colour is not.
+Difficulty and ruleset are remembered for next time. The chosen colour is not. Changing the ruleset rebuilds the board straight away; the pieces are placed when you press Start.
 
 ### In-Game Menu
 
-Once a game is running, the small cog icon opens a menu with **Restart**, **Rules** and **Results**. Restart reloads the page. The menu closes when you click outside it. Options (language, highlight) are only reachable from the main menu, before a game starts.
+Once a game is running, the small cog button opens a menu with **Restart**, **Rules** and **Results**. Restart reloads the page. The menu closes when you click outside it or press its close icon. Options (language, highlight) are only reachable from the main menu, before a game starts.
 
 ![Restart Game](assets/images/reset_game.png)
 
@@ -115,7 +117,7 @@ Two always-visible buttons control **sound** (off by default) and **fullscreen**
 
 ### Rules Menu
 
-Shows the rules for the currently selected ruleset, in the selected language. The text can be scrolled.
+Shows the rules for the currently selected ruleset, in the selected language. Only the "King" paragraph differs between British and International. The text can be scrolled.
 
 ![Rules menu](assets/images/rules_menu.png)
 
@@ -131,12 +133,12 @@ Shows the number of games won by the player and by the computer, with a button t
 
 - British: 8x8 board with 12 pieces per side. International: 10x10 board with 20 pieces per side.
 - Move by **click** (select a piece, then a highlighted square) or by **dragging** (pointer events, so it works with mouse and touch).
-- **Captures are mandatory.** A multi-capture is played one jump at a time with the same piece. International captures must use the longest available sequence; captured pieces remain as blockers and are removed when the sequence ends. The computer also shows each jump before continuing.
-- A piece reaching the last row becomes a king.
-- The last move is highlighted, and the pieces captured by it are shown as faint "ghosts" until the next move.
+- **Captures are mandatory.** A multi-capture is played one jump at a time with the same piece. International captures must use the longest available sequence; captured pieces remain as blockers and are removed when the sequence ends. British captures do not have to be the longest, and captured pieces are removed immediately. The computer also shows each jump before continuing.
+- A piece reaching the last row becomes a king. In International draughts kings are "flying" (move and capture any distance) and men may capture backward. In British draughts kings move one square and men capture forward only.
+- The last move is highlighted, and the pieces captured by it are shown as faint "ghosts" until the next move. While a multi-jump is in progress, the previous turn and the jumps made so far are both shown.
 - Captured pieces are collected in trays beside the board.
-- A game-over dialog announces the winner (no pieces left, or no legal moves) and returns to the menu.
-- The computer plays with a random "thinking" delay that is shorter on higher difficulties.
+- A game-over dialog announces the winner (no pieces left, or no legal moves) and returns to the menu (by reloading the page).
+- The computer plays with a random "thinking" delay that is shorter on higher difficulties (roughly 1.8-3.8 s on Easy, 1.2-2.5 s on Medium, 0.55-1.25 s on Hard), plus 0.5 s between the jumps of a multi-capture.
 
 | Difficulty | Quiet moves | Captures |
 | --- | --- | --- |
@@ -144,7 +146,7 @@ Shows the number of games won by the player and by the computer, with a button t
 | Medium | Heuristic, but random 35% of the time | Heuristic, but random 35% of the time |
 | Hard | Always the best-scoring move | Always the best-scoring capture |
 
-The heuristic is a one-move scoring function (advancement, mobility, centre control, promotion bonus, and penalties for leaving pieces capturable). It does not search future turns.
+The heuristic is a one-move scoring function: advancement (x2), mobility of the moved piece (x2), distance from the centre, a +80 promotion bonus, and penalties for leaving pieces capturable (-100 if the moved piece itself can be captured, -10 for each other capture the opponent gets). It does not search future turns.
 
 ### Saved Data
 
@@ -152,7 +154,7 @@ Stored in the browser's `localStorage`:
 
 | Key | Meaning |
 | --- | --- |
-| `language` | `en` or `fr` |
+| `language` | `en` or `fr` (written only once the user changes it) |
 | `ruleset` | `international` or `british` |
 | `difficulty` | `easy`, `medium` or `hard` |
 | `soundEnabled` | `"true"` or `"false"` |
@@ -174,9 +176,14 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
+There are no automated tests for the AI, drag-and-drop, menus or `last-move.js`.
+
 Validation (screenshots may predate the current code and should be re-run, see [Technical Debt](#technical-debt)):
 
-- W3C HTML validation: `assets/images/W3C.png`
+- W3C HTML validation:
+
+  ![W3C](assets/images/W3C.png)
+
 - Jigsaw CSS validation:
 
   ![Jigsaw](assets/images/jigsaw.png)
@@ -193,20 +200,19 @@ Validation (screenshots may predate the current code and should be re-run, see [
 
 ## Known Issues and Rule Deviations
 
-User-visible behaviour that differs from what players, or the in-game rules text, may expect.
+User-visible behaviour that differs from what players, or the in-game rules text, may expect. Items marked *(from code review)* were found by reading the code and have not been reproduced in play.
 
 **Rules**
 
 - **No draw detection.** The rules text promises a draw "after 30 moves by kings without a capture" and when "neither side can force a win", but `checkWinner` only detects "no pieces" and "no legal moves". Two kings can shuffle forever, and the results screen has no draw counter. *Either implement it or remove the sentence from both translations.*
-- **Draw detection is incomplete.** No draw counter or forced-draw detection is implemented.
+- **Promotion in the middle of a capture** *(from code review)*. `getCapturePaths` stops a path as soon as a man lands on the last row. That is correct for British draughts, but in International draughts a man that can keep capturing from that row must continue as a man and is only promoted if the sequence ends there. In addition, `submitMove` decides whether the turn continues *after* the provisional move has already promoted the piece, so a newly promoted piece can keep capturing as a king in both rulesets, which British rules do not allow.
+- **The Rules text is generic.** It does not mention that International men may capture backward, and the same simple-move and jump paragraphs are shown for both rulesets.
 - International multi-captures are performed one jump at a time. Captured pieces stay on the board as blockers until the sequence finishes, then are removed together as required by the rules.
 
 **Game**
 
-- The computer uses a shallow one-move heuristic (Medium, Hard) or random choices (Easy). It does not search future turns, so it is easy to beat on tactics.
-- It was reported to crash on Android, but I was not able to reproduce it. Likely suspects are listed in [Technical Debt](#technical-debt) (unguarded `localStorage`, uncaught `throw`s inside timers, unhandled `Audio.play()` rejections).
-- "Restart" and "OK" after game over both call `location.reload()`, so there is no in-place restart and the chosen colour is lost.
-- Changing language during a game is not possible (Options is not in the in-game menu), and only the turn message is re-translated when it is.
+- **Blocked-side check** *(from code review)*. `checkWinner` counts legal moves for both colours at the start of every turn, not only for the side to move. A side that is blocked at that moment can be declared the loser even though the opponent's move would have freed it. It should evaluate only the player whose turn it is.
+- Before a game starts, the close (x) icon on the Options, Rules and Results screens does nothing, because `closeMenu` only works while a game is running. Use the back control instead.
 
 ## Technical Debt
 
@@ -216,33 +222,36 @@ Ordered roughly by risk. "Where" points to the relevant code.
 
 | # | Debt | Where | Suggested fix |
 | --- | --- | --- | --- |
-| 1 | **Unguarded `localStorage`**: reads and writes are not wrapped in `try/catch`. In private modes or with blocked storage the constructor throws and the game never loads. This is a plausible cause of the Android crash. | `Board` constructor, `updateScore`, `Menu.results` | Small `storage` helper with `try/catch` and in-memory fallback. |
+| 1 | **Unguarded `localStorage`**: reads and writes are not wrapped in `try/catch`. In private modes or with blocked storage the constructor throws and the game never loads. This is a plausible cause of the Android crash. | `Board` constructor, sound toggle handler, `setLanguage`, `setRuleset`, `setDifficulty`, `updateScore`, `Menu.results` | Small `storage` helper with `try/catch` and in-memory fallback. |
 | 2 | **Uncaught `throw` inside timers**: `submitMove` and `scoreComputerMove` throw when the DOM and state disagree. They run from `setTimeout` callbacks, so one inconsistency freezes the game silently. | `submitMove`, `scoreComputerMove`, `computerMove` | Catch at the `computerMove` boundary, log, and recover or show a message. |
 | 3 | **Two sources of truth**: `GameState` plus `pieceElements`, `piecePositions` (WeakMap), expando properties on DOM nodes (`piece.movable`, `piece.suppressClick`), and the `needTake` / `takeIt` arrays. They must be kept in sync by hand. | `Board` | Render the DOM from `GameState` in one `render()` function; derive "movable" and capture lists from the `RulesEngine` on demand. |
-| 4 | **Rules text and code disagree** (draw rule, see above). | `translations`, `checkWinner` | Implement or remove. |
-| 5 | **UI coverage is limited to a Playwright smoke flow**, and `script.js` is one ~1000-line file mixing i18n data, board rendering, AI, drag handling and menus. | `script.js` | Split into modules (`i18n.js`, `ai.js`, `board-view.js`, `menu.js`); move the AI to a pure function over `GameState` so it can be unit tested. |
+| 4 | **Rules text and code disagree** (draw rule, mid-capture promotion; see Known Issues). | `translations`, `checkWinner`, `getCapturePaths`, `submitMove` | Implement or remove the draw rule; make promotion happen only when a sequence ends (International) and end the turn on promotion (British). |
+| 5 | **UI coverage is limited to a Playwright smoke flow**, and `script.js` is one file of well over 1,000 lines mixing i18n data, board rendering, AI, drag handling and menus. | `script.js` | Split into modules (`i18n.js`, `ai.js`, `board-view.js`, `menu.js`); move the AI to a pure function over `GameState` so it can be unit tested. |
 
 ### Medium
 
 | # | Debt | Where | Suggested fix |
 | --- | --- | --- | --- |
 | 6 | **Global singleton coupling**: `Piece`, listeners and timers reference the global `board` (declared after the classes). Listeners are shared functions (`pieceClick`, `movePiece`) that use `board` instead of `this`. | `Piece.get_piece`, `pieceClick`, `movePiece`, `gameControl` | Pass the board in, or bind handlers. |
-| 7 | **Implicit event ordering**: `submitMove` dispatches `checkers:move` *before* it moves captured pieces in the DOM, and `last-move.js` throws if the captured piece is already gone. | `submitMove`, `last-move.js` | Include the captured piece colour/king flag in the event detail, or dispatch after rendering. |
-| 8 | **Duplicate AI paths**: `takePiece` and `moveComputerPiece` each implement the random-vs-heuristic choice. Magic numbers (0.35, delay ranges, loop cap 12, 80/100/10 weights) are inline. | `takePiece`, `moveComputerPiece`, `gameControl` | One `chooseMove(candidates, difficulty)` plus a `DIFFICULTY` config object. |
+| 7 | **Implicit event ordering**: `submitMove` dispatches `checkers:move` *before* it moves captured pieces in the DOM, and `last-move.js` throws if the captured piece is already gone (the error is reported but not propagated, so the highlight history can end up half-updated). | `submitMove`, `last-move.js` | Include the captured piece colour/king flag in the event detail, or dispatch after rendering. |
+| 8 | **Duplicate AI paths**: `takePiece` and `moveComputerPiece` each implement the random-vs-heuristic choice. Magic numbers (0.35, the delay ranges, the 2/2/80/100/10 score weights) are inline. | `takePiece`, `moveComputerPiece`, `scoreComputerMove`, `gameControl` | One `chooseMove(candidates, difficulty)` plus a `DIFFICULTY` config object. |
 | 9 | **Fragile capture bookkeeping**: `takeIt` entries are `[piece, captured, landing]` tuples built as a side effect of `checkpossibleMove`, which also returns moves and mutates `needTake`. | `checkpossibleMove`, `checkIfcanTake`, `getComputerCaptures` | Make it a pure query on `RulesEngine`. |
-| 10 | **Misleading score keys**: `whiteScore` / `blackScore` actually mean player / computer, and `updateScore` has an unreachable null branch. | `updateScore`, `Menu.results` | Rename (with a one-time migration) to `playerWins` / `computerWins`. |
+| 10 | **Misleading score keys**: `whiteScore` / `blackScore` actually mean player / computer, and `updateScore` has an unreachable null branch (and does nothing if the key is missing). | `updateScore`, `Menu.results` | Rename (with a one-time migration) to `playerWins` / `computerWins`. |
 | 11 | **Timers are never cancelled** (computer move, `checkWinner`, 3 s fullscreen error). "Restart" works only because it reloads the page. | `gameControl`, `toggleFullscreen` | Track timer ids; clear on restart. |
-| 12 | **Checking for a winner on a 1 s timer** after every turn, and `checkWinner` counts *moves* in variables called `...PiecesLeft`. | `checkWinner` | Check right after each move, and rename variables. |
-| 13 | **Accessibility**: close and back controls are `<div>` icons (not focusable or keyboard operable); the game-over dialog does not trap focus; the board is not keyboard playable. | `Menu.*`, `showGameOver` | Use `<button>`s with labels; add keyboard controls. |
+| 12 | **Checking for a winner on a 1 s timer** after every turn, and `checkWinner` counts *moves* in variables called `...PiecesLeft`. | `checkWinner` | Check right after each move, only for the side to move, and rename variables. |
+| 13 | **Accessibility**: the close and back controls (`#close-menu`, `#rules-back`) are `<div>` icons (not focusable or keyboard operable); the game-over dialog does not trap focus or close on Escape; pieces and squares are `<div>`s, so the board is not keyboard playable. | `Menu.*`, `showGameOver` | Use `<button>`s with labels; add keyboard controls. |
+| 14 | **Manual cache-busting**: the app version is currently duplicated in `index.html` and the core module imports in `script.js`, so every release must update several locations consistently. | `index.html`, `script.js`, CSS and core modules | Replace the manual version with build-time hashed file names or a shared release constant. |
 
 ### Low (cleanup)
 
-- **Dead code**: `whiteKing`, `blackKing`, `this.turn` counter, `removeMoving()` (registers a `movestart` listener), `CheckersRules` alias, `RulesEngine.getCaptureMoves`, `hasLegalMoves` (unused in `script.js`), `Piece.color`, and the in-game branch of `setRuleset`, which is unreachable since the setup menu is only shown before a game.
+- **Dead code**: `whiteKing`, `blackKing`, the `this.turn` counter, `removeMoving()` (registers another `movestart` listener on every start), the `CheckersRules` alias, `RulesEngine.getCaptureMoves`, `hasLegalMoves` (unused in `script.js`, which re-implements it in `checkWinner`), `Piece.color`, and `Board.setRuleset`'s in-game branch plus everything after it (the setup menu is only shown before a game, so `isPlaying` is always false there and the method always returns early).
+- **Stale 8x8 constants**: `rules-engine.js` still exports `BOARD_SIZE = 8` and `SQUARE_COUNT = 64` and defines unused `inBounds` / `squareAt` helpers. These are wrong for International draughts and should be removed. The exported `getLegalMoves` and `validateMove` wrapper functions are also unused by `script.js`.
+- **Unused translation keys**: `chooseColor` and `sound`. The `*WinsPieces` and `*WinsMoves` strings are identical in each language.
 - **Latent bug**: `playSound("notify")` references `this.notify`, which is never created.
 - **Unhandled promise rejections**: `Audio.play()` is not awaited or caught (autoplay restrictions). All three audio files are created eagerly at start-up.
 - **`/*jshint esversion: 6 */` is outdated**: the code uses object spread (ES2018), `async/await` (ES2017) and ES modules. Update the config and re-run JSHint; the README screenshot is likely stale.
 - **Font Awesome is loaded twice**, as v4.7 CSS and v5.0.6 JS from two different CDNs, and the menu mixes `fa` and `far` classes. Neither include has SRI. Pick one version, preferably self-hosted.
-- **Manual cache-busting**: version `0.22` is hard-coded in five places in `index.html` (two CSS, two JS, and the `#app-version` text).
+- **Manual cache-busting**: version `0.24` is hard-coded in `index.html` (two CSS files, two JS files, and `#app-version`) and duplicated in the core module imports.
 - **Leftover template metadata** in `index.html`: `author` / `copyright` mention "247games LLC", and `X-UA-Compatible` (IE) is obsolete. Confirm they are intended.
 - **Naming and typos**: `plyerScore`, `get_piece`, `checkpossibleMove` (mixed styles); the original README had `rel="nofolow"` and "Lighhouse".
 - **Screenshots** in `assets/images` show the old menu layout (single menu with Start/Options/Rules/Results). Retake them.
