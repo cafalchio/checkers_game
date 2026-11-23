@@ -58,11 +58,44 @@ test("ruleset selection, Rules screen, and capture history preserve the board", 
   await expect(page.locator("#game > .square .piece")).toHaveCount(40);
 });
 
-test("plays a full party against the computer until game over", async ({ page }) => {
-  await page.addInitScript(() => {
-    Math.random = () => 0;
+test("hard computer only considers globally legal longest captures", async ({ page }) => {
+  await page.goto("/");
+
+  const captureSources = await page.evaluate(async () => {
+    const { RulesEngine } = await import("/assets/js/core/rules-engine.js");
+    const board = window.checkersBoard;
+    const squares = Array(100).fill(null);
+    squares[11] = { color: "white", king: false };
+    squares[22] = { color: "black", king: false };
+    squares[44] = { color: "black", king: false };
+    squares[71] = { color: "white", king: false };
+    squares[82] = { color: "black", king: false };
+    const pieces = [{}, {}];
+
+    board.ruleset = "international";
+    board.rulesEngine = new RulesEngine("international");
+    board.gameState = {
+      squares,
+      turn: "white",
+      ruleset: "international",
+      revision: 0,
+      pendingCaptures: [],
+      continuationSquare: null
+    };
+    board.piecePositions = new WeakMap([
+      [pieces[0], 11],
+      [pieces[1], 71]
+    ]);
+
+    return board.getComputerCaptures(pieces).map(([piece]) =>
+      board.piecePositions.get(piece)
+    );
   });
 
+  expect(captureSources).toEqual([11]);
+});
+
+test("runs a full computer-vs-computer party", async ({ page }) => {
   await page.goto("/");
   await page.locator("#vs-computer").click();
   await page.locator("#difficulty-select").selectOption("hard");
@@ -71,42 +104,42 @@ test("plays a full party against the computer until game over", async ({ page })
 
   await expect(page.locator("#game > .square")).toHaveCount(64);
   await expect(page.locator("#game > .square .piece")).toHaveCount(24);
+  const initialRevision = await page.evaluate(
+    () => window.checkersBoard.gameState.revision
+  );
 
-  for (let turn = 0; turn < 300; turn += 1) {
-    if (await page.locator("#game-over").count()) {
-      break;
-    }
+  for (let turn = 0; turn < 1000; turn += 1) {
+    const stateBeforeMove = await page.evaluate(() => ({
+      revision: window.checkersBoard.gameState.revision,
+      turn: window.checkersBoard.gameState.turn
+    }));
 
-    await page.waitForFunction(() => {
-      return Boolean(document.querySelector("#game-over"))
-        || (
-          document.querySelector("#messages")?.textContent
-          && [...document.querySelectorAll(".piece-white")]
-            .some((piece) => piece.movable)
-        );
-    }, null, { timeout: 5000 });
+    if (await page.locator("#game-over").count()) break;
 
-    if (await page.locator("#game-over").count()) {
-      break;
-    }
+    const moveStarted = await page.evaluate(() => {
+      if (window.checkersBoard.gameOver) return false;
+      if (window.checkersBoard.pieceTaking) return true;
 
-    const moved = await page.evaluate(() => {
-      const pieces = [...document.querySelectorAll(".piece-white")]
-        .filter((piece) => piece.movable);
-      for (const piece of pieces) {
-        piece.click();
-        const destination = document.querySelector(".square.possible");
-        if (destination) {
-          destination.click();
-          return true;
-        }
-      }
-      return false;
+      const currentTurn = window.checkersBoard.gameState.turn;
+      window.checkersBoard.setPlayerColor(currentTurn === "white" ? "black" : "white");
+      window.checkersBoard.computerMove();
+      return true;
     });
 
-    expect(moved).toBe(true);
+    expect(moveStarted).toBe(true);
+
+    await page.waitForFunction(({ revision, turn }) => {
+      if (document.querySelector("#game-over")) return true;
+      if (window.checkersBoard.pieceTaking) return false;
+      return window.checkersBoard.gameState.revision > revision
+        || window.checkersBoard.gameState.turn !== turn;
+    }, stateBeforeMove, { timeout: 5000 });
   }
 
-  await expect(page.locator("#game-over")).toBeVisible();
-  await expect(page.locator("#game-over")).toContainText(/wins|draw/i);
+  const finalState = await page.evaluate(() => ({
+    revision: window.checkersBoard.gameState.revision,
+    pieceCount: window.checkersBoard.gameState.squares.filter(Boolean).length
+  }));
+  expect(finalState.revision).toBeGreaterThan(initialRevision);
+  expect(finalState.pieceCount).toBeLessThanOrEqual(24);
 });

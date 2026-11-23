@@ -1,6 +1,6 @@
 //Board class that create and command the game
 /*jshint esversion: 11 */
-const APP_VERSION = window.APP_VERSION || "0.23";
+const APP_VERSION = window.APP_VERSION || "0.24";
 const coreVersion = `v=${encodeURIComponent(APP_VERSION)}`;
 const { GameState } = await import(`./core/game-state.js?${coreVersion}`);
 const {
@@ -750,8 +750,18 @@ class Board {
   getComputerCaptures(pieces) {
     this.takeIt = [];
     this.needTake = [];
+    const mandatoryCaptures = this.rulesEngine.getMandatoryCaptures(
+      this.gameState,
+      this.gameState.turn
+    );
     pieces.forEach((piece) => {
-      this.checkpossibleMove(piece);
+      const from = this.piecePositions.get(piece);
+      const options = mandatoryCaptures.get(from);
+      if (!options) return;
+      this.needTake.push(piece);
+      options.forEach((option) => {
+        this.takeIt.push([piece, option.captures[0], option.to]);
+      });
     });
     return this.takeIt.slice();
   }
@@ -1579,6 +1589,7 @@ class Menu {
 
 // Game menu
 const board = new Board();
+window.checkersBoard = board;
 const menu = new Menu();
 menu.createMenu();
 document.addEventListener("click", (event) => {

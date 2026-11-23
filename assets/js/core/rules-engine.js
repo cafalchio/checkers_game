@@ -1,4 +1,4 @@
-const APP_VERSION = globalThis.APP_VERSION || "0.23";
+const APP_VERSION = globalThis.APP_VERSION || "0.24";
 const { GameState } =
   await import(`./game-state.js?v=${encodeURIComponent(APP_VERSION)}`);
 const { getBoardSize, getSquareCount, RULESETS } =
