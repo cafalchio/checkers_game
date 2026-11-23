@@ -2,6 +2,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/core/game-state.test.js tests/core/rules-engine.test.js"
+    "test": "node --test tests/core/game-state.test.js tests/core/rules-engine.test.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
   }
 }

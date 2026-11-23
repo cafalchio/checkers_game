@@ -3,6 +3,20 @@
   position: relative;
 }
 
+.square.last-capture {
+  position: relative;
+}
+
+.square.last-capture::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: max(1px, 0.35vmin) dashed rgba(255, 91, 73, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+}
+
 .square.last-move::after {
   content: "";
   position: absolute;

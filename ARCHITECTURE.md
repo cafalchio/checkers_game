@@ -14,7 +14,8 @@ The game is a static, dependency-free web app: plain HTML, CSS and vanilla JavaS
 │   ├── js/script.js        # DOM controller and computer opponent
 │   ├── js/core/
 │   │   ├── game-state.js   # Serializable, DOM-independent position model
-│   │   └── rules-engine.js # Pure move and capture validation
+│   │   ├── rules-engine.js # Pure move and capture validation
+│   │   └── rulesets.js     # Board and variant rule configuration
 │   ├── audio/              # move.mp3, capture.mp3, menu.mp3
 │   └── images/             # Wood textures, piece sprites, README screenshots
 ├── LICENSE                 # MIT
@@ -47,7 +48,7 @@ Owns the game state and rules. A single global instance, `board`, is created at 
 | `playerColor`, `computerColor` | The selected human side and the opposite computer side |
 | `needTake` | Pieces that currently have a mandatory capture |
 | `takeIt` | Capture descriptors: `[piece, enemySquareId, landingSquareId]` |
-| `pieceTaking` | Piece in the middle of a multi-capture (computer only) |
+| `pieceTaking` | Piece locked to the current multi-capture sequence |
 | `optionSound`, `optionHighlight` | Settings toggled from the Options menu |
 | `menuIsOpen`, `isPlaying` | UI state |
 | `turn` | Turn counter (incremented in `gameControl`, otherwise unused) |
@@ -78,9 +79,9 @@ Builds and swaps the in-board menu panel: main menu, color choice, Options, Rule
 
 ## Data model
 
-`GameState` is the source of truth. It stores 64 `null` or `{ color, king }` entries, the current turn, ruleset and revision. `RulesEngine` reads snapshots and validates moves. The DOM renders accepted state changes and supplies user input; it is not scanned to reconstruct the board.
+`GameState` is the source of truth. It stores 64 or 100 `null` or `{ color, king }` entries, the current turn, ruleset, revision, pending captured squares and the square that must continue a capture. `RulesEngine` validates each jump while enforcing mandatory and longest capture sequences. The DOM renders accepted state changes and supplies user input; it is not scanned to reconstruct the board.
 
-- Squares are `div.square` with ids `0`–`63` in row-major order (`id = row * 8 + col`), alternating `.white` / `.black`. Only `.black` squares are playable; `.white` has `pointer-events: none`.
+- Squares are `div.square` with ids `0`–`63` (British) or `0`–`99` (International), in row-major order (`id = row * boardSize + col`), alternating `.white` / `.black`. Only `.black` squares are playable; `.white` has `pointer-events: none`.
 - Square 0 is light, so dark squares are those where `row + col` is odd.
 - Each square has an optional rendered piece. `pieceElements` and `piecePositions` map this view to the corresponding model square.
 - Piece ids remain stable after movement and are only DOM identifiers. Rules, turn ownership, promotion, captures and winner detection use `GameState`.
@@ -109,11 +110,11 @@ startGame()
         │         user clicks square → movePiece
         │              ├─ validate and apply command to GameState
         │              ├─ render the accepted position and capture tray
-        │              └─ keep the turn for a continued capture, otherwise switch
+        │                      └─ keep the turn and lock the capturing piece until its sequence ends, otherwise switch
         └─ Computer's turn
              ├─ freeze player pieces; schedule model-based checkWinner
              └─ setTimeout(computerMove, 1.2–3.2 s)
-                  ├─ forced capture → takePiece()
+                  ├─ forced capture → takePiece(), then visibly schedule each continuation jump
                   └─ otherwise choose a legal move with model-based scoring
                        └─ submit AI command through the same GameState path
 ```
@@ -142,7 +143,7 @@ Settings (sound, highlight) and the game state are not persisted. A finished or 
 - Kings move diagonally in all directions; the selected ruleset controls whether they can fly across empty squares
 - Win by capturing everything or leaving the opponent without moves
 
-Not implemented: choosing the maximum capture sequence or draw detection (the in-game Rules text mentions a 30-move rule). The computer uses a shallow move-scoring heuristic at higher difficulties and random choices at Easy; it does not search future turns.
+International captures require a longest sequence and are presented one jump at a time; captured pieces remain as blockers until the sequence finishes. Draw detection is not implemented (the in-game Rules text mentions a 30-move rule). The computer uses a shallow move-scoring heuristic at higher difficulties and random choices at Easy; it does not search future turns.
 
 ## Styling notes
 
