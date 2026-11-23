@@ -1,3 +1,4 @@
 .vs/*
-node_modules/*
-test-results/*
+node_modules/
+playwright-report/
+test-results/

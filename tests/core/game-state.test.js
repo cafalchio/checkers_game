@@ -73,3 +73,25 @@ test("applyMove promotes a man and rejects a stale or invalid command", () => {
     /empty/
   );
 });
+
+test("International men can continue a capture as men before final promotion", () => {
+  const squares = Array(100).fill(null);
+  squares[21] = { color: "white", king: false };
+  squares[12] = { color: "black", king: false };
+  const state = new GameState({
+    squares,
+    turn: "white",
+    ruleset: "international",
+    revision: 0
+  });
+
+  const snapshot = state.applyMove({
+    from: 21,
+    to: 3,
+    captures: [12],
+    keepTurn: true,
+    revision: 0
+  });
+
+  assert.deepEqual(snapshot.squares[3], { color: "white", king: false });
+});

@@ -2,7 +2,6 @@
 
 ## Introduction
 
-
 Checkers Game is played against the computer, with 8x8 British draughts or 10x10 International draughts. The objective is to capture all the opponent's pieces or block them so they cannot move. You can play as White or Black at three difficulty levels (Easy is the default). International draughts is the default ruleset, with 20 pieces per side, flying kings, backward man captures, and compulsory longest sequences. The interface is available in **English and French**.
 
 The game logic is written in vanilla JavaScript (ES modules), and the interface in HTML and CSS. No build step or framework is needed.
@@ -72,10 +71,11 @@ assets/js/
     └── rules-engine.js  # RulesEngine: captures, simple moves, mandatory capture, move validation
 ```
 
-- **`GameState`** holds plain board data (64 squares for British or 100 for International, turn, ruleset, revision counter), so it can later be sent over a network. `applyMove` checks state integrity and turn ownership, handles king promotion, and rejects stale revisions.
-- **`RulesEngine`** is stateless apart from the chosen ruleset. It decides what is legal (`getCaptureOptions`, `getSimpleMoves`, `getMandatoryCaptures`, `getLegalMoves`, `validateMove`, `hasLegalMoves`).
+- **`rulesets.js`** is the single place where the two variants differ. Each ruleset is a frozen object with `boardSize`, `menCaptureBackward`, `flyingKings`, `longestCaptureMandatory` and `deferCapturedPieces`. International has all four flags on (10x10); British has them off (8x8).
+- **`GameState`** holds plain board data (64 squares for British or 100 for International, `turn`, `ruleset`, a `revision` counter, `pendingCaptures` and `continuationSquare`), so it can later be sent over a network. `pendingCaptures` lists pieces already jumped in a multi-capture that are still on the board as blockers (International only). `continuationSquare` is the square of the piece that must keep capturing. `applyMove` checks state integrity and turn ownership, handles king promotion, removes captured pieces (immediately in British, at the end of the sequence in International), and rejects stale revisions.
+- **`RulesEngine`** is stateless apart from the chosen ruleset. It decides what is legal. Public queries: `getCaptureOptions`, `getSimpleMoves`, `getMandatoryCaptures`, `getLegalMoves`, `validateMove`, `hasLegalMoves`. Internally it enumerates full capture paths (`getCapturePaths`) and derives the first-jump options from them (`getFirstCaptureOptions`), applying the longest-sequence filter when the ruleset requires it.
 - **`script.js`** keeps the rendered DOM in sync with `GameState`. Every move goes through `Board.submitMove`, which validates, applies the move to the state, updates the DOM and dispatches a `checkers:move` event that `last-move.js` listens to.
-- **Square numbering**: squares are indexed 0-63, row-major from the top-left. Black starts on the top three rows, White on the bottom three. White always moves first.
+- **Square numbering**: squares are indexed row-major from the top-left: 0-63 for British, 0-99 for International. Black starts at the top (three rows in British, four in International), White at the bottom. White always moves first.
 
 ## Features
 
@@ -212,6 +212,10 @@ User-visible behaviour that differs from what players, or the in-game rules text
 **Game**
 
 - **Blocked-side check** *(from code review)*. `checkWinner` counts legal moves for both colours at the start of every turn, not only for the side to move. A side that is blocked at that moment can be declared the loser even though the opponent's move would have freed it. It should evaluate only the player whose turn it is.
+- The computer uses a shallow one-move heuristic (Medium, Hard) or random choices (Easy). It does not search future turns, so it is easy to beat on tactics.
+- It was reported to crash on Android, but I was not able to reproduce it. Likely suspects are listed in [Technical Debt](#technical-debt) (unguarded `localStorage`, uncaught `throw`s inside timers, unhandled `Audio.play()` rejections).
+- "Restart" and "OK" after game over both call `location.reload()`, so there is no in-place restart and the chosen colour is lost.
+- Changing language during a game is not possible (Options is not in the in-game menu), and only the turn message is re-translated when it is.
 - Before a game starts, the close (x) icon on the Options, Rules and Results screens does nothing, because `closeMenu` only works while a game is running. Use the back control instead.
 
 ## Technical Debt
@@ -240,7 +244,7 @@ Ordered roughly by risk. "Where" points to the relevant code.
 | 11 | **Timers are never cancelled** (computer move, `checkWinner`, 3 s fullscreen error). "Restart" works only because it reloads the page. | `gameControl`, `toggleFullscreen` | Track timer ids; clear on restart. |
 | 12 | **Checking for a winner on a 1 s timer** after every turn, and `checkWinner` counts *moves* in variables called `...PiecesLeft`. | `checkWinner` | Check right after each move, only for the side to move, and rename variables. |
 | 13 | **Accessibility**: the close and back controls (`#close-menu`, `#rules-back`) are `<div>` icons (not focusable or keyboard operable); the game-over dialog does not trap focus or close on Escape; pieces and squares are `<div>`s, so the board is not keyboard playable. | `Menu.*`, `showGameOver` | Use `<button>`s with labels; add keyboard controls. |
-| 14 | **Manual cache-busting**: the app version is currently duplicated in `index.html` and the core module imports in `script.js`, so every release must update several locations consistently. | `index.html`, `script.js`, CSS and core modules | Replace the manual version with build-time hashed file names or a shared release constant. |
+| 14 | **Cache versioning**: one `APP_VERSION` global in `index.html` currently patches the CSS and JS URLs. A build or hashed filenames would reduce repeated manual setup. | `index.html`, `script.js`, core modules | Keep the global version and use hashed filenames or a build step for stronger cache guarantees. |
 
 ### Low (cleanup)
 
@@ -251,9 +255,9 @@ Ordered roughly by risk. "Where" points to the relevant code.
 - **Unhandled promise rejections**: `Audio.play()` is not awaited or caught (autoplay restrictions). All three audio files are created eagerly at start-up.
 - **`/*jshint esversion: 6 */` is outdated**: the code uses object spread (ES2018), `async/await` (ES2017) and ES modules. Update the config and re-run JSHint; the README screenshot is likely stale.
 - **Font Awesome is loaded twice**, as v4.7 CSS and v5.0.6 JS from two different CDNs, and the menu mixes `fa` and `far` classes. Neither include has SRI. Pick one version, preferably self-hosted.
-- **Manual cache-busting**: version `0.24` is hard-coded in `index.html` (two CSS files, two JS files, and `#app-version`) and duplicated in the core module imports.
+- **Manual cache-busting**: version `0.23` is centralized in the `APP_VERSION` global in `index.html`; page resources are rewritten with that value at load time.
 - **Leftover template metadata** in `index.html`: `author` / `copyright` mention "247games LLC", and `X-UA-Compatible` (IE) is obsolete. Confirm they are intended.
-- **Naming and typos**: `plyerScore`, `get_piece`, `checkpossibleMove` (mixed styles); the original README had `rel="nofolow"` and "Lighhouse".
+- **Naming and typos**: `plyerScore`, `get_piece`, `checkpossibleMove` (mixed styles). The `#options` id is reused for the title of the Rules screen, and `#rules-back` for the back control of the Results screen.
 - **Screenshots** in `assets/images` show the old menu layout (single menu with Start/Options/Rules/Results). Retake them.
 - **Dependence on `package.json`**: the tests and the `type: "module"` setting are not verified in this review. Make sure they are committed and that CI (e.g. a GitHub Action) runs `npm test`.
 

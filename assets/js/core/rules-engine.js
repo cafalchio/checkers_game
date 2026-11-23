@@ -1,18 +1,10 @@
-import { GameState } from "./game-state.js";
-import { getBoardSize, RULESETS } from "./rulesets.js";
+const APP_VERSION = globalThis.APP_VERSION || "0.23";
+const { GameState } =
+  await import(`./game-state.js?v=${encodeURIComponent(APP_VERSION)}`);
+const { getBoardSize, getSquareCount, RULESETS } =
+  await import(`./rulesets.js?v=${encodeURIComponent(APP_VERSION)}`);
 
-export { getBoardSize, getSquareCount, RULESETS } from "./rulesets.js";
-
-export const BOARD_SIZE = 8;
-export const SQUARE_COUNT = BOARD_SIZE * BOARD_SIZE;
-
-function inBounds(row, column) {
-  return row >= 0 && row < BOARD_SIZE && column >= 0 && column < BOARD_SIZE;
-}
-
-function squareAt(row, column) {
-  return inBounds(row, column) ? row * BOARD_SIZE + column : -1;
-}
+export { getBoardSize, getSquareCount, RULESETS };
 
 export class RulesEngine {
   constructor(ruleset = "international") {
@@ -110,7 +102,10 @@ export class RulesEngine {
             nextOccupancy[current] = null;
             if (!this.config.deferCapturedPieces) nextOccupancy[enemy] = null;
             const promotionRow = landingRow === 0 || landingRow === size - 1;
-            const becomesKing = isKing || promotionRow;
+            const becomesKing = isKing || (
+              promotionRow &&
+              !this.config.menCaptureBackward
+            );
             nextOccupancy[landing] = { color: piece.color, king: becomesKing };
             const original = occupancy.map((item) => item ? { ...item } : null);
             for (let i = 0; i < occupancy.length; i++) occupancy[i] = nextOccupancy[i];
